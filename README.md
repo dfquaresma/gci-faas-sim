@@ -1,1 +1,1 @@
-# gci-serverless-simulation
+# GCI Serverless Simulation
