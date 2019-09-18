@@ -8,7 +8,7 @@ YELLOW='\033[1;33m'
 NC='\033[0m'
 
 echo "FLAGS: ${FLAGS:=nogci gci}"
-echo "NUMBER_OF_EXPERIMENTS: ${NUMBER_OF_EXPERIMENTS:=32}"
+echo "NUMBER_OF_EXPERIMENTS: ${NUMBER_OF_EXPERIMENTS:=8}"
 
 mkdir -p ./input-entries/
 for flag in ${FLAGS};
