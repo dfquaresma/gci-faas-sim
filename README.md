@@ -1,1 +1,1 @@
-# GCI Serverless Simulation
+# GCI FaaS Simulation
