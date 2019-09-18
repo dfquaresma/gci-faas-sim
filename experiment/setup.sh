@@ -10,3 +10,4 @@ then
 fi
 
 sudo docker run -d --network=host --cpus=1.0 --cpuset-cpus=0 --rm --name container-${CONTAINER_TAG} image-${CONTAINER_TAG}
+sleep 5

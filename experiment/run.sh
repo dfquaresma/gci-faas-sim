@@ -7,13 +7,13 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
-echo "FLAGS: ${FLAGS:=nogci gci}"
+echo "FLAGS: ${FLAGS:=gci nogci}"
 echo "NUMBER_OF_EXPERIMENTS: ${NUMBER_OF_EXPERIMENTS:=8}"
 
 mkdir -p ./input-entries/
-for flag in ${FLAGS};
+for expid in `seq 1 ${NUMBER_OF_EXPERIMENTS}`;
 do
-    for expid in `seq 1 ${NUMBER_OF_EXPERIMENTS}`;
+    for flag in ${FLAGS};
     do
         echo -e "${YELLOW}TEARING DOWN CONTAINERS${NC}"
         bash teardown.sh
