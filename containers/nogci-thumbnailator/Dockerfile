@@ -40,7 +40,7 @@ USER app
 ENV upstream_url="http://127.0.0.1:8081"
 ENV mode="http"
 ENV CLASSPATH="/home/app/entrypoint-1.0/lib/*"
-ENV image_url="https://user-images.githubusercontent.com/883386/53553708-ebb88a00-3b46-11e9-9ea8-73c6b7f9dfa1.jpg"
+ENV image_url="https://i.imgur.com/BhlDUOR.jpg"
 ENV scale="0.1"
 
 ENV fprocess="java -XX:+UnlockExperimentalVMOptions com.openfaas.entrypoint.App"
