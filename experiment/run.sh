@@ -25,6 +25,6 @@ do
         CONTAINER_TAG="${flag}" bash setup.sh
 
         echo -e "${RED}RUNNING WORKLOAD FOR ${CONTAINER_TAG} EXPID ${EXPID}${NC}"
-        FILE_NAME="${flag}${expid}.csv" bash workload.sh
+        FILE_NAME="./input-entries/${flag}${expid}.csv" bash workload.sh
     done;
 done
