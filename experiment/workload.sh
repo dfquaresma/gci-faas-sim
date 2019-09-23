@@ -9,7 +9,7 @@ then
   exit
 fi
 
-echo -e "status,latency" > ${FILE_NAME}
+echo -e "status;latency" > ${FILE_NAME}
 for i in `seq 1 10000`
 do
     curl -X GET -o /dev/null -s -w '%{http_code};%{time_total}\n' localhost:8080 >> ${FILE_NAME}

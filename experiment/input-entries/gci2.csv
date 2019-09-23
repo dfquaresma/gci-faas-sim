@@ -1,4 +1,4 @@
-status.latency
+status,latency
 200,0.395337
 200,0.084934
 200,0.061659
