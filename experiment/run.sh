@@ -14,6 +14,7 @@ echo -e "${YELLOW}BUILDING UP CONTAINERS${NC}"
 bash build.sh
 
 mkdir -p ./input-entries/
+mkdir -p ./gc-logs/
 for expid in `seq 1 ${NUMBER_OF_EXPERIMENTS}`;
 do
     for flag in ${FLAGS};
@@ -26,5 +27,8 @@ do
 
         echo -e "${RED}RUNNING WORKLOAD FOR ${CONTAINER_TAG} EXPID ${EXPID}${NC}"
         FILE_NAME="./input-entries/${flag}${expid}.csv" bash workload.sh
+
+        echo -e "${RED}GETTING RESULTS FOR ${CONTAINER_TAG} EXPID ${EXPID}${NC}"
+        CONTAINER_TAG="${flag}" FILE_NAME="./input-entries/${flag}${expid}.log" bash getresults.sh
     done;
 done
