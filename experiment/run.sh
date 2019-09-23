@@ -14,7 +14,6 @@ echo -e "${YELLOW}BUILDING UP CONTAINERS${NC}"
 bash build.sh
 
 mkdir -p ./input-entries/
-mkdir -p ./gc-logs/
 for expid in `seq 1 ${NUMBER_OF_EXPERIMENTS}`;
 do
     for flag in ${FLAGS};
