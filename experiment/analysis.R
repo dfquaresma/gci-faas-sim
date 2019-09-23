@@ -16,15 +16,15 @@ print_summary_table <- function(nogci, gci) {
     cat("Latency(ms) ", tag, " ")
     cat("avg:", signif(t.test(df)$conf.int, digits = 2), " | ")
     cat("50:", signif(p50, digits = 4), " | ")
-    cat("95:", signif(p95, digits = 4), " | ")
-    cat("99:", signif(p99, digits = 4), " |\n")
+    cat("95:", signif(p95, digits = 4), " | " )
+    cat("99:", signif(p99, digits = 4), " | ")
     cat("99.9:", signif(p999, digits = 4), " | ")
     cat("99.99:", signif(p9999, digits = 4), " | ")
     cat("Dist.Tail.:", signif(p9999-p50, digits = 4))
     cat("\n")
   }
   stats(nogcireq, paste("NOGCI", sep=""))
-  stats(gcireq, paste("GCI", sep=""))
+  stats(gcireq, paste("GCI  ", sep=""))
 }
 
 read.al <- function(path) {
