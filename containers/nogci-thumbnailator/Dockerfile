@@ -43,7 +43,7 @@ ENV CLASSPATH="/home/app/entrypoint-1.0/lib/*"
 ENV image_url="http://s3.amazonaws.com/wallpapers2/wallpapers/images/000/000/408/thumb/375.jpg?1487671636"
 ENV scale="0.1"
 
-ENV fprocess="java -server -Xms128m -Xmx128m -cp /home/app/entrypoint-1.0/lib/* -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:+ExplicitGCInvokesConcurrent -XX:G1NewSizePercent=75 -XX:G1MaxNewSizePercent=75 -Xlog:gc:file=gc_thumb.log com.openfaas.entrypoint.App"
+ENV fprocess="java -server -Xms128m -Xmx128m -cp /home/app/entrypoint-1.0/lib/* -XX:+UnlockExperimentalVMOptions  -XX:+UseG1GC -XX:+DisableExplicitGC -Xlog:gc:file=gc_thumb.log com.openfaas.entrypoint.App"
 EXPOSE 8080
 
 HEALTHCHECK --interval=2s CMD [ -e /tmp/.lock ] || exit 1
