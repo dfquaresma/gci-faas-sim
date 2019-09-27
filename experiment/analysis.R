@@ -68,3 +68,13 @@ plot_ecdf = function(GCI, NOGCI, limit) {
          pt.cex = 1, cex = 1.2, text.col = "black",
          horiz = F , inset = c(0.1, 0.1))
 }
+
+#commands to run on R terminal
+#source("analysis.R")
+#gci = filter(rbind(read.al(paste("./", "gci", 1, ".csv", sep=""))), status == 200)
+#nogci = filter(rbind(read.al(paste("./", "nogci", 1, ".csv", sep=""))), status == 200)
+#plot_ecdf(gci,nogci, 130)
+#plot(gci$latency)
+#plot(nogci$latency)
+#hist(gci$latency)
+#hist(nogci$latency)
