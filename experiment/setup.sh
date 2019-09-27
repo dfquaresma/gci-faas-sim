@@ -9,5 +9,5 @@ then
   exit
 fi
 
-sudo docker run -d --network=host --cpus=1.0 --cpuset-cpus=0 --rm --name container-${CONTAINER_TAG} image-${CONTAINER_TAG}
+sudo docker run -d --network=host --cpus=2.0 --cpuset-cpus="0,1" --rm --name container-${CONTAINER_TAG} image-${CONTAINER_TAG}
 sleep 5
