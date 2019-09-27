@@ -47,3 +47,24 @@ print_all_entries_table <- function() {
     print_entries_table(i)
   }
 }
+
+plot_ecdf = function(GCI, NOGCI, limit) {
+  ecdf_GCI = ecdf(GCI$latency)
+  ecdf_NOGCI = ecdf(NOGCI$latency)
+
+  x_limit = c(0, limit)
+
+  plot(ecdf_GCI, verticals=TRUE, do.points=FALSE
+       , main="ECDF", xlab="tempo de execução (ms)"
+       , ylab="frequencia", col='blue',
+       xlim=x_limit)
+  plot(ecdf_NOGCI, verticals=TRUE
+       , do.points=FALSE, add=TRUE, col='red',
+       xlim=x_limit)
+
+  legend("bottomright",
+         legend=c("GCI", "NOGCI"),
+         col=c("blue", "red"), pch = c(16,16), bty = "n",
+         pt.cex = 1, cex = 1.2, text.col = "black",
+         horiz = F , inset = c(0.1, 0.1))
+}
