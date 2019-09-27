@@ -48,9 +48,9 @@ COPY gci/* /home/app/gci/
 ENV PATH_TO_GCI="/home/app/gci"
 RUN bash ${PATH_TO_GCI}/libgcso-entrypoint.sh
 
-ENV fprocess="java -server -Xms128m -Xmx128m -cp /home/app/entrypoint-1.0/lib/* -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:+ExplicitGCInvokesConcurrent -XX:G1NewSizePercent=75 -XX:G1MaxNewSizePercent=75 -Xlog:gc:file=gc_thumb.log -Djvmtilib=/home/app/gci/libgc.so -javaagent:/home/app/gci/gciagent-0.1-jar-with-dependencies.jar=8500 com.openfaas.entrypoint.App"
+ENV fprocess="taskset 0x1 java -server -Xms128m -Xmx128m -cp /home/app/entrypoint-1.0/lib/* -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:+ExplicitGCInvokesConcurrent -XX:G1NewSizePercent=75 -XX:G1MaxNewSizePercent=75 -Xlog:gc:file=gc_thumb.log -Djvmtilib=/home/app/gci/libgc.so -javaagent:/home/app/gci/gciagent-0.1-jar-with-dependencies.jar=8500 com.openfaas.entrypoint.App"
 EXPOSE 8080
 
 HEALTHCHECK --interval=2s CMD [ -e /tmp/.lock ] || exit 1
 
-CMD ["sh","-c","nohup ./gci/gci-proxy --port=8081 --target=127.0.0.1:8082 --gci_target=127.0.0.1:8500 --ygen=67108864 > /tmp/log & fwatchdog"]
+CMD ["sh","-c","taskset 0x2 nohup ./gci/gci-proxy --port=8081 --target=127.0.0.1:8082 --gci_target=127.0.0.1:8500 --ygen=67108864 > /tmp/log & taskset 0x2 fwatchdog"]
