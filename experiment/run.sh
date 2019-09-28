@@ -12,7 +12,7 @@ echo "NUMBER_OF_EXPERIMENTS: ${NUMBER_OF_EXPERIMENTS:=1}"
 echo "FUNCTION_TARGET_IP: ${FUNCTION_TARGET_IP:=10.11.16.93}"
 echo "WORKLOAD_TARGET_IP: ${WORKLOAD_TARGET_IP:=10.11.16.117}"
 echo "ID_RSA_PATH: ${ID_RSA_PATH:=id_rsa}"
-echo "PATH: ${PATH:='./input-entries/'}"
+echo "REPO_PATH: ${REPO_PATH:='./input-entries/'}"
 echo "CD_TO_SCRIPTS_PATH: ${CD_TO_SCRIPTS_PATH:='cd /home/ubuntu/gci-faas-sim/experiment/'}"
 
 ssh-keygen -f "/home/ubuntu/.ssh/known_hosts" -R ${FUNCTION_TARGET_IP}
@@ -32,9 +32,9 @@ do
         ssh -i ${ID_RSA_PATH} ubuntu@${FUNCTION_TARGET_IP} -o StrictHostKeyChecking=no "${CD_TO_SCRIPTS_PATH}; sudo CONTAINER_TAG=${flag} bash setup.sh"
 
         echo -e "${RED}RUNNING WORKLOAD FOR ${CONTAINER_TAG} EXPID ${EXPID}${NC}"
-        ssh -i ${ID_RSA_PATH} ubuntu@${WORKLOAD_TARGET_IP} -o StrictHostKeyChecking=no "${CD_TO_SCRIPTS_PATH}; sudo PATH=${PATH} FILE_NAME=${PATH}${flag}${expid}.csv bash workload.sh"
+        ssh -i ${ID_RSA_PATH} ubuntu@${WORKLOAD_TARGET_IP} -o StrictHostKeyChecking=no "${CD_TO_SCRIPTS_PATH}; sudo REPO_PATH=${REPO_PATH} FILE_NAME=${REPO_PATH}${flag}${expid}.csv bash workload.sh"
 
         echo -e "${RED}GETTING RESULTS FOR ${CONTAINER_TAG} EXPID ${EXPID}${NC}"
-        ssh -i ${ID_RSA_PATH} ubuntu@${FUNCTION_TARGET_IP} -o StrictHostKeyChecking=no "${CD_TO_SCRIPTS_PATH}; sudo CONTAINER_TAG="${flag}" PATH=${PATH} FILE_NAME=${PATH}${flag}${expid}.log bash getlogs.sh"
+        ssh -i ${ID_RSA_PATH} ubuntu@${FUNCTION_TARGET_IP} -o StrictHostKeyChecking=no "${CD_TO_SCRIPTS_PATH}; sudo CONTAINER_TAG="${flag}" REPO_PATH=${REPO_PATH} FILE_NAME=${REPO_PATH}${flag}${expid}.log bash getlogs.sh"
     done;
 done
