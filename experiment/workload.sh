@@ -3,12 +3,13 @@ date
 set -x
 
 # To avoid execution without passing environment variables
-if [[ (-z "$FILE_NAME") ]];
+if [[ (-z "$FILE_NAME") || (-z "$PATH") ]];
 then
-  echo -e "${RED}FILE_NAME MISSING: workload.sh${NC}"
+  echo -e "${RED}FILE_NAME AND/OR PATH MISSING: workload.sh${NC}"
   exit
 fi
 
+mkdir -p ${PATH}
 echo -e "status;latency" > ${FILE_NAME}
 for i in `seq 1 10000`
 do
