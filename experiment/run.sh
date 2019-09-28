@@ -12,8 +12,8 @@ echo "NUMBER_OF_EXPERIMENTS: ${NUMBER_OF_EXPERIMENTS:=1}"
 echo "FUNCTION_TARGET_IP: ${FUNCTION_TARGET_IP:=10.11.16.93}"
 echo "WORKLOAD_TARGET_IP: ${WORKLOAD_TARGET_IP:=10.11.16.117}"
 echo "ID_RSA_PATH: ${ID_RSA_PATH:=id_rsa}"
-echo "REPO_PATH: ${REPO_PATH:='./input-entries/'}"
-echo "CD_TO_SCRIPTS_PATH: ${CD_TO_SCRIPTS_PATH:='cd /home/ubuntu/gci-faas-sim/experiment'}"
+echo "REPO_PATH: ${REPO_PATH:=./input-entries/}"
+echo "CD_TO_SCRIPTS_PATH: ${CD_TO_SCRIPTS_PATH:=cd /home/ubuntu/gci-faas-sim/experiment}"
 
 ssh-keygen -f "/home/ubuntu/.ssh/known_hosts" -R ${FUNCTION_TARGET_IP}
 ssh-keygen -f "/home/ubuntu/.ssh/known_hosts" -R ${WORKLOAD_TARGET_IP}
