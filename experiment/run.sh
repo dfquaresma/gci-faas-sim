@@ -32,7 +32,7 @@ do
         ssh -i ${ID_RSA_PATH} ubuntu@${FUNCTION_TARGET_IP} -o StrictHostKeyChecking=no "${CD_TO_SCRIPTS_PATH}; sudo CONTAINER_TAG=${flag} bash setup.sh"
 
         echo -e "${RED}RUNNING WORKLOAD FOR ${CONTAINER_TAG} EXPID ${EXPID}${NC}"
-        ssh -i ${ID_RSA_PATH} ubuntu@${WORKLOAD_TARGET_IP} -o StrictHostKeyChecking=no "${CD_TO_SCRIPTS_PATH}; sudo REPO_PATH=${REPO_PATH} FILE_NAME=${REPO_PATH}${flag}${expid}.csv bash workload.sh"
+        ssh -i ${ID_RSA_PATH} ubuntu@${WORKLOAD_TARGET_IP} -o StrictHostKeyChecking=no "${CD_TO_SCRIPTS_PATH}; sudo FUNCTION_TARGET_IP=${FUNCTION_TARGET_IP} REPO_PATH=${REPO_PATH} FILE_NAME=${REPO_PATH}${flag}${expid}.csv bash workload.sh"
 
         echo -e "${RED}GETTING RESULTS FOR ${CONTAINER_TAG} EXPID ${EXPID}${NC}"
         ssh -i ${ID_RSA_PATH} ubuntu@${FUNCTION_TARGET_IP} -o StrictHostKeyChecking=no "${CD_TO_SCRIPTS_PATH}; sudo CONTAINER_TAG="${flag}" REPO_PATH=${REPO_PATH} FILE_NAME=${REPO_PATH}${flag}${expid}.log bash getlogs.sh"
