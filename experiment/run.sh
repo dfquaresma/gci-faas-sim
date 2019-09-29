@@ -22,7 +22,7 @@ ssh-keygen -f "/home/ubuntu/.ssh/known_hosts" -R ${WORKLOAD_TARGET_IP}
 ssh -i ${ID_RSA_PATH} ubuntu@${WORKLOAD_TARGET_IP} -o StrictHostKeyChecking=no "sudo rm -rf /home/ubuntu/gci-faas-sim/experiment/input-entries"
 
 echo -e "${YELLOW}BUILDING UP CONTAINERS${NC}"
-ssh -i ${ID_RSA_PATH} ubuntu@${TARGET_IP} -o StrictHostKeyChecking=no "${CD_TO_SCRIPTS_PATH}; sudo bash build.sh"
+ssh -i ${ID_RSA_PATH} ubuntu@${TARGET_IP} -o StrictHostKeyChecking=no "${CD_TO_SCRIPTS_PATH}; git pull; sudo bash build.sh"
 
 for expid in `seq 1 ${NUMBER_OF_EXPERIMENTS}`;
 do
