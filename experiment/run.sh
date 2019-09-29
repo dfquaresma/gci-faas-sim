@@ -8,7 +8,7 @@ YELLOW='\033[1;33m'
 NC='\033[0m'
 
 echo "FLAGS: ${FLAGS:=gci nogci}"
-echo "NUMBER_OF_EXPERIMENTS: ${NUMBER_OF_EXPERIMENTS:=5}"
+echo "NUMBER_OF_EXPERIMENTS: ${NUMBER_OF_EXPERIMENTS:=2}"
 echo "FUNCTION_TARGET_IP: ${FUNCTION_TARGET_IP:=10.11.16.93}"
 echo "WORKLOAD_TARGET_IP: ${WORKLOAD_TARGET_IP:=10.11.16.117}"
 echo "ID_RSA_PATH: ${ID_RSA_PATH:=id_rsa}"
@@ -21,8 +21,9 @@ ssh -i ${ID_RSA_PATH} ubuntu@${FUNCTION_TARGET_IP} -o StrictHostKeyChecking=no "
 ssh-keygen -f "/home/ubuntu/.ssh/known_hosts" -R ${WORKLOAD_TARGET_IP}
 ssh -i ${ID_RSA_PATH} ubuntu@${WORKLOAD_TARGET_IP} -o StrictHostKeyChecking=no "sudo rm -rf /home/ubuntu/gci-faas-sim/experiment/input-entries"
 
-echo -e "${YELLOW}BUILDING UP CONTAINERS${NC}"
-ssh -i ${ID_RSA_PATH} ubuntu@${WORKLOAD_TARGET_IP} -o StrictHostKeyChecking=no "${CD_TO_SCRIPTS_PATH}; git pull; sudo bash build.sh"
+echo -e "${YELLOW}BUILDING UP${NC}"
+ssh -i ${ID_RSA_PATH} ubuntu@${FUNCTION_TARGET_IP} -o StrictHostKeyChecking=no "${CD_TO_SCRIPTS_PATH}; git pull; sudo bash build.sh"
+ssh -i ${ID_RSA_PATH} ubuntu@${WORKLOAD_TARGET_IP} -o StrictHostKeyChecking=no "${CD_TO_SCRIPTS_PATH}; git pull"
 
 for expid in `seq 1 ${NUMBER_OF_EXPERIMENTS}`;
 do
