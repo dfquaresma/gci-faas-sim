@@ -1,26 +1,15 @@
-
-
 ```{r}
 source("analysis.R")
 gci = filter(rbind(
-  read.al(paste("./input-entries/", "gci", 1, ".csv", sep="")),
-  read.al(paste("./input-entries/", "gci", 2, ".csv", sep="")),
-  read.al(paste("./input-entries/", "gci", 3, ".csv", sep="")),
-  read.al(paste("./input-entries/", "gci", 4, ".csv", sep="")),
-  read.al(paste("./input-entries/", "gci", 5, ".csv", sep=""))
+  read.al(paste("./input-entries/", "gci", 1, ".csv", sep=""))
   ), status == 200)
 nogci = filter(rbind(
-  read.al(paste("./input-entries/", "nogci", 1, ".csv", sep="")),
-  read.al(paste("./input-entries/", "nogci", 2, ".csv", sep="")),
-  read.al(paste("./input-entries/", "nogci", 3, ".csv", sep="")),
-  read.al(paste("./input-entries/", "nogci", 4, ".csv", sep="")),
-  read.al(paste("./input-entries/", "nogci", 5, ".csv", sep=""))
+  read.al(paste("./input-entries/", "nogci", 1, ".csv", sep=""))
   ), status == 200)
 print_summary_table(nogci, gci)
 ```
 
 ```{r}
-
 plot_ecdf(gci,nogci, 150)
 ```
 
