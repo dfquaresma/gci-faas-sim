@@ -10,4 +10,5 @@ then
 fi
 
 mkdir -p ${REPO_PATH}
-docker cp "container-${CONTAINER_TAG}:/home/app/gc_thumb.log" ${FILE_NAME}
+docker cp "container-${CONTAINER_TAG}:/home/app/gc_thumb.log" "${FILE_NAME}-gc.log"
+docker logs container-${CONTAINER_TAG} >${FILE_NAME}-stdout.log 2>${FILE_NAME}-stderr.log
