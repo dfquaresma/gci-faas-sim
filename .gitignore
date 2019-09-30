@@ -1,3 +1,7 @@
 *.project
 *.Rhistory
 *.RData
+./containers/*.classpath*
+./containers/*.settings*
+./containers/*.gradle*
+./containers/*bin*
