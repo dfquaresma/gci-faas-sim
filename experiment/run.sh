@@ -8,7 +8,8 @@ YELLOW='\033[1;33m'
 NC='\033[0m'
 
 echo "FLAGS: ${FLAGS:=gci nogci}"
-echo "NUMBER_OF_EXPERIMENTS: ${NUMBER_OF_EXPERIMENTS:=1}"
+echo "INITIAL_EXPID: ${INITIAL_EXPID:=1}"
+echo "NUMBER_OF_EXPERIMENTS: ${NUMBER_OF_EXPERIMENTS:=5}"
 echo "NUMBER_OF_REQUESTS: ${NUMBER_OF_REQUESTS:=5000}"
 echo "FUNCTION_TARGET_IP: ${FUNCTION_TARGET_IP:=10.11.16.93}"
 echo "WORKLOAD_TARGET_IP: ${WORKLOAD_TARGET_IP:=10.11.16.117}"
@@ -26,7 +27,7 @@ echo -e "${YELLOW}BUILDING UP${NC}"
 ssh -i ${ID_RSA_PATH} ubuntu@${FUNCTION_TARGET_IP} -o StrictHostKeyChecking=no "${CD_TO_SCRIPTS_PATH}; git pull; sudo bash build.sh"
 ssh -i ${ID_RSA_PATH} ubuntu@${WORKLOAD_TARGET_IP} -o StrictHostKeyChecking=no "${CD_TO_SCRIPTS_PATH}; git pull"
 
-for expid in `seq 1 ${NUMBER_OF_EXPERIMENTS}`;
+for expid in `seq ${INITIAL_EXPID} ${NUMBER_OF_EXPERIMENTS}`;
 do
     for flag in ${FLAGS};
     do
