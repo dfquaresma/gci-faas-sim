@@ -42,7 +42,7 @@ public class Handler implements com.openfaas.model.IHandler {
         } else {
             res.setStatusCode(500);
         }
-
+        System.out.println("TEMPO DE SERVICO: " + Long.toString(after - before) + " nanoseconds");
         res.setBody(output);
         return res;
     }
