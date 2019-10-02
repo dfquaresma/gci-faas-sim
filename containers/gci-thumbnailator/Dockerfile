@@ -53,4 +53,4 @@ EXPOSE 8080
 
 HEALTHCHECK --interval=2s CMD [ -e /tmp/.lock ] || exit 1
 
-CMD ["sh","-c","taskset 0x2 nohup ./gci/gci-proxy --port=8081 --target=127.0.0.1:8082 --gci_target=127.0.0.1:8500 --ygen=104857600 > /home/app/gci-proxy.log & taskset 0x2 fwatchdog"]
+CMD ["sh","-c","taskset 0x2 nohup ./gci/gci-proxy --port=8081 --target=127.0.0.1:8082 --gci_target=127.0.0.1:8500 --ygen=104857600 >/home/app/proxy-stdout.log 2>/home/app/proxy-stderr.log & taskset 0x2 fwatchdog"]
