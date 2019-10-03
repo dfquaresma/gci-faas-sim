@@ -5,7 +5,7 @@ set -x
 echo "EXPID: ${EXPID:=14}"
 echo "FLAGS: ${FLAGS:=gci}"
 echo "NUMBER_OF_REQUESTS: ${NUMBER_OF_REQUESTS:=2500}"
-echo "REPO_PATH: ${REPO_PATH:=./local-input-entries/}"
+echo "REPO_PATH: ${REPO_PATH:=./local-debug-input/}"
 
 mkdir -p ${REPO_PATH}
 sudo bash build.sh
