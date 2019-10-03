@@ -2,12 +2,7 @@ require(dplyr)
 require(ggplot2)
 require(quantileCI)
 
-print_summary_table <- function(nogci, gci) {
-  nogci <- filter(nogci, status == 200)
-  gci <- filter(gci, status == 200)
-  nogcireq <- nogci$latency
-  gcireq <- gci$latency
-  stats <- function(df, tag) {
+stats <- function(df, tag) {
     p50 = quantileCI::quantile_confint_nyblom(df, 0.5)
     p95 = quantileCI::quantile_confint_nyblom(df, 0.95)
     p99 = quantileCI::quantile_confint_nyblom(df, 0.99)
@@ -24,9 +19,15 @@ print_summary_table <- function(nogci, gci) {
     cat("99.999:", signif(p99999, digits = 4), " | ")
     cat("Dist.Tail.:", signif(p99999-p50, digits = 4))
     cat("\n")
-  }
-  stats(nogcireq, paste("NOGCI", sep=""))
-  stats(gcireq, paste("GCI  ", sep=""))
+}
+
+print_latency_summary_table <- function(first, second, first_tag, second_tag) {
+  first <- filter(first, status == 200)
+  second <- filter(second, status == 200)
+  firstreqs <- first$latency
+  secondreqs <- second$latency
+  stats(firstreqs, paste(first_tag, sep=""))
+  stats(secondreqs, paste(second_tag, sep=""))
 }
 
 read.al <- function(path) {
