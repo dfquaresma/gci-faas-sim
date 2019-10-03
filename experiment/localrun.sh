@@ -15,11 +15,9 @@ do
     sudo bash teardown.sh
     sudo CONTAINER_TAG=${flag} bash setup.sh
 
-    #echo -e "servicetime;status;latency" > ${REPO_PATH}${flag}${EXPID}.csv
     echo -e "servicetime;latency;status" > ${REPO_PATH}${flag}${EXPID}.csv
     for i in `seq 1 ${NUMBER_OF_REQUESTS}`;
     do
-        #curl -X GET -o /dev/null -s -w '%{http_code};%{time_total}\n' localhost:8080 >> ${REPO_PATH}${flag}${EXPID}.csv
         curl -X GET -s -w ';%{time_total};%{http_code}\n' localhost:8080 >> ${REPO_PATH}${flag}${EXPID}.csv
     done
     sed -i 's/,/./g' ${REPO_PATH}${flag}${EXPID}.csv
