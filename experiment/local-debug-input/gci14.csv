@@ -1,4 +1,4 @@
-servicetime,status,latency
+servicetime,latency,status
 0.21474455,0.505401,200
 0.028830849,0.078216,200
 0.015005574,0.063431,200
