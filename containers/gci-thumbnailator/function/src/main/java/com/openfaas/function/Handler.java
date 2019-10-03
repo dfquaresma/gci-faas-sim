@@ -39,7 +39,7 @@ public class Handler implements com.openfaas.model.IHandler {
         String output = err + System.lineSeparator();
         if (err.length() == 0) {
             float serviceTime = ((float) Long.toString(after - before)) / 1000000000;
-            output = serviceTime; // Service Time in Nanoseconds
+            output = "" + serviceTime; // Service Time in Nanoseconds
         } else {
             res.setStatusCode(500);
         }
