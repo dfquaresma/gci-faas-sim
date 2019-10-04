@@ -1,13 +1,7 @@
-
-
 ```{r}
 source("analysis.R")
-gci = filter(rbind(
-  read.al(paste("./input-entries/", "gci", 1, ".csv", sep=""))
-  ), status == 200)
-nogci = filter(rbind(
-  read.al(paste("./input-entries/", "nogci", 1, ".csv", sep=""))
-  ), status == 200)
+gci = filter(rbind(read.al(paste("./input-entries/", "gci", 1, ".csv", sep=""))), status == 200)
+nogci = filter(rbind(read.al(paste("./input-entries/", "nogci", 1, ".csv", sep=""))), status == 200)
 print_latency_summary_table(nogci, gci, "NOGCI", "GCI  ")
 plot_ecdf(gci,nogci, 150)
 ```
@@ -23,9 +17,15 @@ hist(nogci$latency)
 ```
 
 ```{r}
-gci = filter(rbind(
-  read.al(paste("./local-debug-input/", "gci", 14, ".csv", sep=""))
-  ), status == 200)
+gci = filter(rbind(read.al(paste("./local-debug-input/", "gci", 1, ".csv", sep=""))), status == 200)
+gci$servicetime <- gci$servicetime * 1000
 stats(gci$servicetime, paste("gci-servicetime", sep=""))
 stats(gci$latency,     paste("gci-latency    ", sep=""))
+```
+
+```{r}
+nogci = filter(rbind(read.al(paste("./local-debug-input/", "nogci", 1, ".csv", sep=""))), status == 200)
+nogci$servicetime <- nogci$servicetime * 1000
+stats(nogci$servicetime, paste("no-gci-servicetime", sep=""))
+stats(nogci$latency,     paste("no-gci-latency    ", sep=""))
 ```

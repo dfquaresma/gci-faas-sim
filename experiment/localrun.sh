@@ -2,8 +2,8 @@
 date
 set -x
 
-echo "EXPID: ${EXPID:=14}"
-echo "FLAGS: ${FLAGS:=gci}"
+echo "EXPID: ${EXPID:=1}"
+echo "FLAGS: ${FLAGS:=gci nogci}"
 echo "NUMBER_OF_REQUESTS: ${NUMBER_OF_REQUESTS:=2500}"
 echo "REPO_PATH: ${REPO_PATH:=./local-debug-input/}"
 
@@ -29,5 +29,4 @@ do
     docker logs container-${flag} >${REPO_PATH}${flag}${EXPID}-stdout.log 2>${REPO_PATH}${flag}${EXPID}-stderr.log
 done
 
-
-
+sudo bash teardown.sh
