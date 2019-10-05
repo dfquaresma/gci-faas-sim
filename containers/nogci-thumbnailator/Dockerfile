@@ -37,16 +37,18 @@ RUN unzip ./entrypoint-1.0.zip
 RUN chown -R app /home/app
 USER app
 
-ENV entrypoint_port="8081"
+#ENV entrypoint_port="8081"
+ENV entrypoint_port="8080"
 ENV upstream_url="http://127.0.0.1:8081"
 ENV mode="http"
 ENV CLASSPATH="/home/app/entrypoint-1.0/lib/*"
 ENV image_url="http://s3.amazonaws.com/wallpapers2/wallpapers/images/000/000/408/thumb/375.jpg?1487671636"
 ENV scale="0.1"
 
-ENV fprocess="taskset 0x1 java -server -Xms128m -Xmx128m -cp /home/app/entrypoint-1.0/lib/* -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -Xlog:gc:file=/home/app/gc_thumb.log com.openfaas.entrypoint.App"
+#ENV fprocess="taskset 0x1 java -server -Xms128m -Xmx128m -cp /home/app/entrypoint-1.0/lib/* -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -Xlog:gc:file=/home/app/gc_thumb.log com.openfaas.entrypoint.App"
 EXPOSE 8080
 
 HEALTHCHECK --interval=2s CMD [ -e /tmp/.lock ] || exit 1
 
-CMD ["sh","-c","taskset 0x2 fwatchdog"]
+#CMD ["sh","-c","taskset 0x2 fwatchdog"]
+CMD ["sh","-c","taskset 0x1 java -server -Xms128m -Xmx128m -cp /home/app/entrypoint-1.0/lib/* -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -Xlog:gc:file=/home/app/gc_thumb.log com.openfaas.entrypoint.App"]
