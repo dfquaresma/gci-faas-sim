@@ -51,4 +51,4 @@ EXPOSE 8080
 HEALTHCHECK --interval=2s CMD [ -e /tmp/.lock ] || exit 1
 
 #CMD ["sh","-c","taskset 0x2 fwatchdog"]
-CMD ["sh","-c","taskset 0x1 java -server -Xms128m -Xmx128m -cp /home/app/entrypoint-1.0/lib/* -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -Xlog:gc:file=/home/app/gc_thumb.log com.openfaas.entrypoint.App"]
+CMD ["sh","-c","taskset 0x1 java -server -Xms128m -Xmx128m -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -Xlog:gc:file=/home/app/gc_thumb.log com.openfaas.entrypoint.App"]
