@@ -21,7 +21,7 @@ import com.openfaas.model.*;
 public class App {
 
     public static void main(String[] args) throws Exception {
-        int port = 8081;
+        int port = Integer.parseInt(System.getenv("entrypoint_port"));
 
         IHandler handler = new com.openfaas.function.Handler();
 
