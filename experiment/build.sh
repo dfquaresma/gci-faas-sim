@@ -2,7 +2,7 @@
 date
 set -x
 
-cd ../runtime/thumbnailator-server-maven/
+cd ../runtime/thumb-func/
 mvn clean install
 
 cd ../../experiment
