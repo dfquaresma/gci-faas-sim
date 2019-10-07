@@ -14,7 +14,6 @@ for i in `seq 1 ${NUMBER_OF_REQUESTS}`
 do
     curl_return=$(curl -X GET -o /dev/null -s -w '%{http_code};%{time_total}\n' ${FUNCTION_TARGET_IP}:8080)
     echo ${curl_return} >> ${FILE_NAME}
-    echo ${curl_return}
 done
 
 sed -i 's/,/./g' ${FILE_NAME}
