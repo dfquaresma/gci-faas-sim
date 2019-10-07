@@ -2,5 +2,5 @@
 date
 set -x
 
-sudo docker rm -f container-gci container-nogci
+killall proxy; pkill -f java;
 sleep 5
