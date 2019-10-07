@@ -19,5 +19,5 @@ then
 fi
 
 ssh-keygen -f "/home/ubuntu/.ssh/known_hosts" -R ${FUNCTION_TARGET_IP}
-ssh -i ./id_rsa ubuntu@${FUNCTION_TARGET_IP} -o StrictHostKeyChecking=no ${SETUP_COMMAND}
+ssh -i ./id_rsa ubuntu@${FUNCTION_TARGET_IP} -o StrictHostKeyChecking=no "${SETUP_COMMAND}"
 sleep 5
