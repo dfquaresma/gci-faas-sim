@@ -1,1 +1,0 @@
-Forking - taskset [0x1 java -server -Xms128m -Xmx128m -cp /home/app/entrypoint-1.0/lib/* -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -Xlog:gc:file=/home/app/gc_thumb.log com.openfaas.entrypoint.App]
