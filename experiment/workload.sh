@@ -9,7 +9,6 @@ then
   exit
 fi
 
-mkdir -p ${RESULTS_PATH}
 echo -e "status;latency" > ${FILE_NAME}
 for i in `seq 1 ${NUMBER_OF_REQUESTS}`
 do
