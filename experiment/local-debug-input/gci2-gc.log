@@ -1,10 +1,11 @@
 [0.008s][info][gc] Using G1
-[26.220s][info][gc] GC(0) Pause Full (JvmtiEnv ForceGarbageCollection) 75M->5M(128M) 28.034ms
-[46.857s][info][gc] GC(1) Pause Full (JvmtiEnv ForceGarbageCollection) 57M->5M(128M) 23.651ms
-[67.674s][info][gc] GC(2) Pause Full (JvmtiEnv ForceGarbageCollection) 56M->5M(128M) 23.344ms
-[88.215s][info][gc] GC(3) Pause Full (JvmtiEnv ForceGarbageCollection) 56M->5M(128M) 23.970ms
-[109.002s][info][gc] GC(4) Pause Full (JvmtiEnv ForceGarbageCollection) 55M->5M(128M) 32.890ms
-[129.800s][info][gc] GC(5) Pause Full (JvmtiEnv ForceGarbageCollection) 56M->5M(128M) 26.007ms
-[150.386s][info][gc] GC(6) Pause Full (JvmtiEnv ForceGarbageCollection) 56M->4M(128M) 25.120ms
-[170.956s][info][gc] GC(7) Pause Full (JvmtiEnv ForceGarbageCollection) 54M->4M(128M) 22.390ms
-[191.732s][info][gc] GC(8) Pause Full (JvmtiEnv ForceGarbageCollection) 54M->4M(128M) 19.139ms
+[16.142s][info][gc] GC(0) Pause Full (JvmtiEnv ForceGarbageCollection) 49M->5M(128M) 24.780ms
+[37.105s][info][gc] GC(1) Pause Full (JvmtiEnv ForceGarbageCollection) 57M->5M(128M) 24.246ms
+[57.897s][info][gc] GC(2) Pause Full (JvmtiEnv ForceGarbageCollection) 55M->5M(128M) 20.183ms
+[78.509s][info][gc] GC(3) Pause Full (JvmtiEnv ForceGarbageCollection) 57M->5M(128M) 23.845ms
+[99.417s][info][gc] GC(4) Pause Full (JvmtiEnv ForceGarbageCollection) 55M->5M(128M) 20.139ms
+[120.146s][info][gc] GC(5) Pause Full (JvmtiEnv ForceGarbageCollection) 55M->5M(128M) 24.009ms
+[140.846s][info][gc] GC(6) Pause Full (JvmtiEnv ForceGarbageCollection) 55M->5M(128M) 21.772ms
+[161.410s][info][gc] GC(7) Pause Full (JvmtiEnv ForceGarbageCollection) 55M->4M(128M) 24.812ms
+[182.339s][info][gc] GC(8) Pause Full (JvmtiEnv ForceGarbageCollection) 55M->4M(128M) 29.454ms
+[203.357s][info][gc] GC(9) Pause Full (JvmtiEnv ForceGarbageCollection) 55M->4M(128M) 20.147ms
