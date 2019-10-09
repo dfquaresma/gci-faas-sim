@@ -5,9 +5,9 @@ date: "october, 2019"
 output: pdf_document
 ---
 
-# Experimentos utilizando Of-Watchdog
+# Experimentos utilizando apenas runtime
 #### intervalo de confiança
-```{r}
+```{r echo=FALSE}
 source("analysis.R")
 gci = filter(rbind(read.al(paste("./results/", "gci", 1, ".csv", sep=""))), status == 200)
 gci$servicetime <- gci$servicetime * 1000
@@ -20,49 +20,16 @@ stats(nogci$servicetime, paste("no-gci-servicetime", sep=""))
 stats(nogci$latency,     paste("no-gci-latency    ", sep=""))
 ```
 #### plot
-```{r}
+```{r echo=FALSE}
 plot(gci$latency, ylab="latência", main="latências de 5000 requisições com GCI")
 plot(nogci$latency, ylab="latência", main="latências de 5000 requisições sem GCI")
 ```
-```{r}
+```{r echo=FALSE}
 plot(gci$servicetime, ylab="tempo de serviço", main="tempo de serviço de 5000 requisições com GCI")
 plot(nogci$servicetime, ylab="tempo de serviço", main="tempo de serviço de 5000 requisições sem GCI")
 ```
 #### hist
-```{r}
-hist(gci$latency, main="latências de 5000 requisições com GCI")
-hist(nogci$latency, main="latências de 5000 requisições sem GCI")
-```
-```{r}
-hist(gci$servicetime, main="tempo de serviço de 5000 requisições com GCI")
-hist(nogci$servicetime, main="tempo de serviço de 5000 requisições sem GCI")
-```
-
-# Experimentos sem Of-Watchdog
-
-#### intervalo de confiança
-```{r}
-gci = filter(rbind(read.al(paste("./local-debug-input/", "gci", 2, ".csv", sep="")), read.al(paste("./local-debug-input/", "gci", 2, ".csv", sep=""))), status == 200)
-gci$servicetime <- gci$servicetime * 1000
-stats(gci$servicetime, paste("gci-servicetime", sep=""))
-stats(gci$latency,     paste("gci-latency    ", sep=""))
-
-nogci = filter(rbind(read.al(paste("./local-debug-input/", "nogci", 2, ".csv", sep="")), read.al(paste("./local-debug-input/", "gci", 2, ".csv", sep=""))), status == 200)
-nogci$servicetime <- nogci$servicetime * 1000
-stats(nogci$servicetime, paste("no-gci-servicetime", sep=""))
-stats(nogci$latency,     paste("no-gci-latency    ", sep=""))
-```
-#### plot
-```{r}
-plot(gci$latency, ylab="latência", main="latências de 5000 requisições com GCI")
-plot(nogci$latency, ylab="latência", main="latências de 5000 requisições sem GCI")
-```
-```{r}
-plot(gci$servicetime, ylab="tempo de serviço", main="tempo de serviço de 5000 requisições com GCI")
-plot(nogci$servicetime, ylab="tempo de serviço", main="tempo de serviço de 5000 requisições sem GCI")
-```
-#### hist
-```{r}
+```{r echo=FALSE}
 hist(gci$latency, main="latências de 5000 requisições com GCI")
 hist(nogci$latency, main="latências de 5000 requisições sem GCI")
 ```
