@@ -9,10 +9,10 @@ then
   exit
 fi
 
-echo -e "status;latency" > ${FILE_NAME}
+echo -e "servicetime;latency;status" > ${FILE_NAME}
 for i in `seq 1 ${NUMBER_OF_REQUESTS}`
 do
-    curl_return=$(curl -X GET -o /dev/null -s -w '%{http_code};%{time_total}\n' ${FUNCTION_TARGET_IP}:8080)
+    curl_return=$(curl -X GET -s -w ';%{time_total};%{http_code}\n' localhost:8080)
     echo ${curl_return} >> ${FILE_NAME}
 done
 
