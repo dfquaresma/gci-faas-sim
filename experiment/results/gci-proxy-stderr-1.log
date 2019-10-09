@@ -1,0 +1,17 @@
+panic: Problem calling proxy:"dial tcp4 127.0.0.1:8082: connect: connection refused"
+
+goroutine 8 [running]:
+main.(*transport).RoundTrip(0xc0000f40c0, 0xc0000dc500)
+	/home/davidfq/Desktop/gci-proxy/transport.go:48 +0x29e
+main.(*transport).RoundTrip-fm(0xc0000dc500)
+	/home/davidfq/Desktop/gci-proxy/main.go:46 +0x34
+github.com/valyala/fasthttp.(*Server).serveConn(0xc0000fc000, 0x72c260, 0xc00015a060, 0x0, 0x0)
+	/home/davidfq/go/pkg/mod/github.com/valyala/fasthttp@v1.5.0/server.go:2018 +0x568
+github.com/valyala/fasthttp.(*Server).serveConn-fm(0x72c260, 0xc00015a060, 0x1, 0x0)
+	/home/davidfq/go/pkg/mod/github.com/valyala/fasthttp@v1.5.0/server.go:1578 +0x3e
+github.com/valyala/fasthttp.(*workerPool).workerFunc(0xc0000fe000, 0xc00000cb60)
+	/home/davidfq/go/pkg/mod/github.com/valyala/fasthttp@v1.5.0/workerpool.go:212 +0xc3
+github.com/valyala/fasthttp.(*workerPool).getCh.func1(0xc0000fe000, 0xc00000cb60, 0x66ace0, 0xc00000cb60)
+	/home/davidfq/go/pkg/mod/github.com/valyala/fasthttp@v1.5.0/workerpool.go:184 +0x35
+created by github.com/valyala/fasthttp.(*workerPool).getCh
+	/home/davidfq/go/pkg/mod/github.com/valyala/fasthttp@v1.5.0/workerpool.go:183 +0x119
