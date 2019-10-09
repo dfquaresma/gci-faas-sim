@@ -2,5 +2,5 @@
 date
 set -x
 
-killall proxy; pkill -f java;
+killall gci-proxy; pkill -f java;
 sleep 5
