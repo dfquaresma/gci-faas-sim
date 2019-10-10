@@ -16,6 +16,7 @@ echo "FUNCTION_TARGET_PORT: ${FUNCTION_TARGET_PORT:=8080}"
 echo "WORKLOAD_TARGET_IP: ${WORKLOAD_TARGET_IP:=10.11.16.128}"
 echo "ID_RSA_PATH: ${ID_RSA_PATH:=id_rsa}"
 echo "RESULTS_PATH: ${RESULTS_PATH:=/home/ubuntu/gci-faas-sim/experiment/results/}"
+echo "LOCAL_RESULTS_PATH: ${RESULTS_PATH:=/home/davidfq/gci-faas-sim/experiment/results/}"
 echo "CD_TO_SCRIPTS_PATH: ${CD_TO_SCRIPTS_PATH:=cd /home/ubuntu/gci-faas-sim/experiment}"
 
 ssh-keygen -f "/home/ubuntu/.ssh/known_hosts" -R ${FUNCTION_TARGET_IP}
@@ -43,10 +44,10 @@ do
     done;
 done
 
-mkdir -p ${RESULTS_PATH}
+mkdir -p ${LOCAL_RESULTS_PATH}
 
-scp -i ${ID_RSA_PATH} -o StrictHostKeyChecking=no ubuntu@${FUNCTION_TARGET_IP}:"${RESULTS_PATH}*.log" $RESULTS_PATH
+scp -i ${ID_RSA_PATH} -o StrictHostKeyChecking=no ubuntu@${FUNCTION_TARGET_IP}:"${RESULTS_PATH}*.log" $LOCAL_RESULTS_PATH
 ssh -i ${ID_RSA_PATH} ubuntu@${FUNCTION_TARGET_IP} -o StrictHostKeyChecking=no "sudo rm -rf ${RESULTS_PATH}"
 
-scp -i ${ID_RSA_PATH} -o StrictHostKeyChecking=no ubuntu@${WORKLOAD_TARGET_IP}:"${RESULTS_PATH}*.csv" $RESULTS_PATH
+scp -i ${ID_RSA_PATH} -o StrictHostKeyChecking=no ubuntu@${WORKLOAD_TARGET_IP}:"${RESULTS_PATH}*.csv" $LOCAL_RESULTS_PATH
 ssh -i ${ID_RSA_PATH} ubuntu@${WORKLOAD_TARGET_IP} -o StrictHostKeyChecking=no "sudo rm -rf ${RESULTS_PATH}"
