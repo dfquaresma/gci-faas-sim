@@ -1,34 +1,34 @@
 GET http://localhost:8082
 GET http://localhost:8500
-X-gci: ch
+gci: ch
 
 GET http://localhost:8082
 GET http://localhost:8500
-X-gci: ch
+gci: ch
 
 GET http://localhost:8082
 GET http://localhost:8500
-X-gci: gc
+gci: gc
 
 GET http://localhost:8082
 GET http://localhost:8500
-dX-gci: ch
+gci: ch
 
 GET http://localhost:8082
 GET http://localhost:8500
-X-gci: ch
+gci: ch
 
 GET http://localhost:8082
 GET http://localhost:8500
-X-gci: gc
+gci: gc
 
 GET http://localhost:8082
 GET http://localhost:8500
-X-gci: ch
+gci: ch
 
 GET http://localhost:8082
 GET http://localhost:8500
-X-gci: gc
+gci: gc
 
 GET http://localhost:8082
 GET http://localhost:8082
