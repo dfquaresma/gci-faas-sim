@@ -11,10 +11,8 @@ output: pdf_document
 source("analysis.R")
 agent = filter(filter(rbind(read.al(paste("./manual-tests-agent-only/", "vegeta-output", ".csv", sep=""))), status == 200), latency > 10000000000)
 agent$latency = agent$latency / 1000000000
-plot(agent$latency)
 noagent = filter(filter(rbind(read.al(paste("./manual-tests-no-agent/", "vegeta-output", ".csv", sep=""))), status == 200), latency > 10000000000)
 noagent$latency = noagent$latency / 1000000000
-plot(noagent$latency)
 ```
 #### plot
 ```{r}
