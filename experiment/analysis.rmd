@@ -1,5 +1,5 @@
 ---
-title: "GCI Impact"
+title: "Agent Impact"
 author: "David Ferreira Quaresma (david.quaresma@ccc.ufcg.edu.br)"
 date: "october, 2019"
 output: pdf_document
@@ -9,31 +9,24 @@ output: pdf_document
 #### intervalo de confiança
 ```{r}
 source("analysis.R")
-gci = filter(rbind(read.al(paste("./results/", "gci", 1, ".csv", sep=""))), status == 200)
-gci$servicetime <- gci$servicetime * 1000
-stats(gci$servicetime, paste("gci-servicetime", sep=""))
-stats(gci$latency,     paste("gci-latency    ", sep=""))
-
-nogci = filter(rbind(read.al(paste("./results/", "nogci", 1, ".csv", sep=""))), status == 200)
-nogci$servicetime <- nogci$servicetime * 1000
-stats(nogci$servicetime, paste("no-gci-servicetime", sep=""))
-stats(nogci$latency,     paste("no-gci-latency    ", sep=""))
+agent = filter(filter(rbind(read.al(paste("./manual-tests-agent-only/", "vegeta-output", ".csv", sep=""))), status == 200), latency > 10000000000)
+agent$latency = agent$latency / 1000000000
+plot(agent$latency)
+noagent = filter(filter(rbind(read.al(paste("./manual-tests-no-agent/", "vegeta-output", ".csv", sep=""))), status == 200), latency > 10000000000)
+noagent$latency = noagent$latency / 1000000000
+plot(noagent$latency)
 ```
 #### plot
 ```{r}
-plot(gci$latency, ylab="latência", main="latências de 5000 requisições com GCI")
-plot(nogci$latency, ylab="latência", main="latências de 5000 requisições sem GCI")
-```
-```{r}
-plot(gci$servicetime, ylab="tempo de serviço", main="tempo de serviço de 5000 requisições com GCI")
-plot(nogci$servicetime, ylab="tempo de serviço", main="tempo de serviço de 5000 requisições sem GCI")
+plot(agent$latency, ylab="latência", main="latências de 5000 requisições com agent")
+plot(noagent$latency, ylab="latência", main="latências de 5000 requisições sem agent")
 ```
 #### hist
 ```{r}
-hist(gci$latency, main="latências de 5000 requisições com GCI")
-hist(nogci$latency, main="latências de 5000 requisições sem GCI")
+hist(agent$latency, main="latências de 5000 requisições com agent")
+hist(noagent$latency, main="latências de 5000 requisições sem agent")
 ```
+#### summary table
 ```{r}
-hist(gci$servicetime, main="tempo de serviço de 5000 requisições com GCI")
-hist(nogci$servicetime, main="tempo de serviço de 5000 requisições sem GCI")
+print_latency_summary_table(agent, noagent, "AGENT", "NOAGENT")
 ```
