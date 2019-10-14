@@ -1,3 +1,4 @@
+timestamp,status,latency,bytes_out,bytes_in,error,response_body,attack_name,request_sequence_number
 1571080264695718329,200,377405440,0,10,,MC4xNTQ4MTkxMw==,,0
 1571080265073126864,200,100607858,0,11,,MC4wNDk1OTc2ODQ=,,1
 1571080265173739682,200,63423975,0,11,,MC4wMTg4Njk4MzY=,,2
