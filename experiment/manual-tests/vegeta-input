@@ -17,94 +17,6 @@ GET http://localhost:8082
 GET http://localhost:8082
 
 GET http://localhost:8082
-<<<<<<< HEAD:experiment/manual-tests/vegeta-input
-
-GET http://localhost:8500
-gci: ch
-
-=======
->>>>>>> e2fc657eac6cd8eb8b6730b0c2e064c76a6c9897:experiment/vegeta-input
-GET http://localhost:8082
-
-GET http://localhost:8082
-
-GET http://localhost:8082
-
-GET http://localhost:8082
-
-GET http://localhost:8082
-
-GET http://localhost:8082
-
-GET http://localhost:8082
-
-GET http://localhost:8082
-
-GET http://localhost:8082
-
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8500
-gci: ch
-<<<<<<< HEAD:experiment/manual-tests/vegeta-input
-
-GET http://localhost:8082
-
-GET http://localhost:8082
-
-GET http://localhost:8082
-
-GET http://localhost:8082
-
-GET http://localhost:8082
-
-GET http://localhost:8082
-
-GET http://localhost:8082
-
-GET http://localhost:8082
-
-GET http://localhost:8082
-
-GET http://localhost:8082
-
-GET http://localhost:8500
-gci: ch
-
-GET http://localhost:8082
-
-GET http://localhost:8082
-=======
->>>>>>> e2fc657eac6cd8eb8b6730b0c2e064c76a6c9897:experiment/vegeta-input
-
-GET http://localhost:8082
-
-GET http://localhost:8082
-
-GET http://localhost:8082
-
-GET http://localhost:8082
-
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-
-GET http://localhost:8082
-
-GET http://localhost:8082
 
 GET http://localhost:8500
 gci: ch
@@ -142,75 +54,6 @@ GET http://localhost:8082
 
 GET http://localhost:8082
 
-GET http://localhost:8082
-
-GET http://localhost:8082
-
-GET http://localhost:8082
-
-GET http://localhost:8082
-
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8500
-gci: ch
-
-GET http://localhost:8082
-
-GET http://localhost:8082
-
-GET http://localhost:8082
-
-GET http://localhost:8082
-
-GET http://localhost:8082
-
-GET http://localhost:8082
-
-GET http://localhost:8082
-
-GET http://localhost:8082
-
-GET http://localhost:8082
-
-GET http://localhost:8082
-
-GET http://localhost:8500
-gci: ch
-
-GET http://localhost:8082
-
-GET http://localhost:8082
-
-GET http://localhost:8082
-
-GET http://localhost:8082
-
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
 GET http://localhost:8082
 
 GET http://localhost:8082
@@ -266,49 +109,30 @@ GET http://localhost:8082
 GET http://localhost:8082
 
 GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
+
 GET http://localhost:8500
 gci: ch
 
 GET http://localhost:8082
+
 GET http://localhost:8082
+
 GET http://localhost:8082
+
 GET http://localhost:8082
+
 GET http://localhost:8082
+
 GET http://localhost:8082
+
 GET http://localhost:8082
+
 GET http://localhost:8082
+
 GET http://localhost:8082
+
 GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
+
 GET http://localhost:8500
 gci: ch
 
@@ -354,17 +178,101 @@ GET http://localhost:8082
 GET http://localhost:8082
 
 GET http://localhost:8082
-<<<<<<< HEAD:experiment/manual-tests/vegeta-input
+
+GET http://localhost:8500
+gci: ch
+
+GET http://localhost:8082
+
+GET http://localhost:8082
+
+GET http://localhost:8082
+
+GET http://localhost:8082
+
+GET http://localhost:8082
+
+GET http://localhost:8082
+
+GET http://localhost:8082
+
+GET http://localhost:8082
+
+GET http://localhost:8082
+
+GET http://localhost:8082
+
+GET http://localhost:8500
+gci: ch
+
+GET http://localhost:8082
+
+GET http://localhost:8082
+
+GET http://localhost:8082
+
+GET http://localhost:8082
+
+GET http://localhost:8082
+
+GET http://localhost:8082
+
+GET http://localhost:8082
+
+GET http://localhost:8082
+
+GET http://localhost:8082
+
+GET http://localhost:8082
+
+GET http://localhost:8500
+gci: ch
+
+GET http://localhost:8082
+
+GET http://localhost:8082
+
+GET http://localhost:8082
+
+GET http://localhost:8082
+
+GET http://localhost:8082
+
+GET http://localhost:8082
+
+GET http://localhost:8082
+
+GET http://localhost:8082
+
+GET http://localhost:8082
+
+GET http://localhost:8082
+
+GET http://localhost:8500
+gci: ch
+
+GET http://localhost:8082
+
+GET http://localhost:8082
+
+GET http://localhost:8082
+
+GET http://localhost:8082
+
+GET http://localhost:8082
+
+GET http://localhost:8082
+
+GET http://localhost:8082
+
+GET http://localhost:8082
+
+GET http://localhost:8082
+
+GET http://localhost:8082
 
 GET http://localhost:8500
 gci: ch
 
 GET http://localhost:8500
 gci: gc
-=======
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
-GET http://localhost:8082
->>>>>>> e2fc657eac6cd8eb8b6730b0c2e064c76a6c9897:experiment/vegeta-input
