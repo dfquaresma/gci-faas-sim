@@ -9,11 +9,14 @@ import java.awt.image.AffineTransformOp;
 import java.net.URL;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
+import org.apache.log4j.Logger;
 
 public class Handler implements com.openfaas.model.IHandler {
     static boolean exit; 
     static double scale;
     static BufferedImage image;
+    private static final Logger LOGGER = Logger.getLogger(Handler.class);
+    private int reqCount;
 
     static {
         try {
@@ -44,6 +47,8 @@ public class Handler implements com.openfaas.model.IHandler {
             res.setStatusCode(500);
         }
         res.setBody(output);
+        LOGGER.info(this.reqCount + "HANDLER LEVEL - SERVICE TIME OF callFunction: " + output);
+        this.reqCount++;
         return res;
     }
 
