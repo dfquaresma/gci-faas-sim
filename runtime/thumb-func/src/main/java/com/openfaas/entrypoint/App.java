@@ -11,7 +11,8 @@ import java.io.OutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,7 +36,7 @@ public class App {
     }
 
     static class InvokeHandler implements HttpHandler {
-        private static final Logger LOGGER = Logger.getLogger(InvokeHandler.class);
+        private static final Logger LOGGER = LoggerFactory.getLogger(InvokeHandler.class);
         private int reqCount;
         private long before;
         private long after;

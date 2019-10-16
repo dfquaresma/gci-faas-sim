@@ -9,13 +9,14 @@ import java.awt.image.AffineTransformOp;
 import java.net.URL;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 public class Handler implements com.openfaas.model.IHandler {
     static boolean exit; 
     static double scale;
     static BufferedImage image;
-    private static final Logger LOGGER = Logger.getLogger(Handler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Handler.class);
     private int reqCount;
 
     static {
