@@ -11,8 +11,6 @@ import java.io.OutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,7 +34,6 @@ public class App {
     }
 
     static class InvokeHandler implements HttpHandler {
-        private static final Logger LOGGER = LoggerFactory.getLogger(InvokeHandler.class);
         private int reqCount;
         private long before;
         private long after;
@@ -53,7 +50,7 @@ public class App {
             this.before = System.nanoTime();
             String method = t.getRequestMethod();
             this.after = System.nanoTime();
-            LOGGER.info(this.reqCount + " - APP LEVEL - SERVICE TIME OF getRequestMethod: " + Float.toString(((float) (this.after - this.before)) / 1000000000));
+            System.out.println(this.reqCount + " - APP LEVEL - SERVICE TIME OF getRequestMethod: " + Float.toString(((float) (this.after - this.before)) / 1000000000));
 
             this.before = System.nanoTime();
             if (method.equalsIgnoreCase("POST")) {
@@ -68,13 +65,13 @@ public class App {
                 requestBody = result.toString("UTF-8");
 	        }
             this.after = System.nanoTime();
-            LOGGER.info(this.reqCount + " - APP LEVEL - SERVICE TIME OF POST CASE: " + Float.toString(((float) (this.after - this.before)) / 1000000000));
+            System.out.println(this.reqCount + " - APP LEVEL - SERVICE TIME OF POST CASE: " + Float.toString(((float) (this.after - this.before)) / 1000000000));
 
             // System.out.println(requestBody);
             this.before = System.nanoTime();
             Headers reqHeaders = t.getRequestHeaders();
             this.after = System.nanoTime();
-            LOGGER.info(this.reqCount + " - APP LEVEL - SERVICE TIME OF getRequestHeaders: " + Float.toString(((float) (this.after - this.before)) / 1000000000));
+            System.out.println(this.reqCount + " - APP LEVEL - SERVICE TIME OF getRequestHeaders: " + Float.toString(((float) (this.after - this.before)) / 1000000000));
 
             Map<String, String> reqHeadersMap = new HashMap<String, String>();
 
@@ -86,29 +83,29 @@ public class App {
                 }
             }
             this.after = System.nanoTime();
-            LOGGER.info(this.reqCount + " - APP LEVEL - SERVICE TIME OF COPYING HEADERS: " + Float.toString(((float) (this.after - this.before)) / 1000000000));
+            System.out.println(this.reqCount + " - APP LEVEL - SERVICE TIME OF COPYING HEADERS: " + Float.toString(((float) (this.after - this.before)) / 1000000000));
 
             this.before = System.nanoTime();
             IRequest req = new Request(requestBody, reqHeadersMap,t.getRequestURI().getRawQuery(), t.getRequestURI().getPath());
             this.after = System.nanoTime();
-            LOGGER.info(this.reqCount + " - APP LEVEL - SERVICE TIME OF CREATING REQ: " + Float.toString(((float) (this.after - this.before)) / 1000000000));
+            System.out.println(this.reqCount + " - APP LEVEL - SERVICE TIME OF CREATING REQ: " + Float.toString(((float) (this.after - this.before)) / 1000000000));
             
             this.before = System.nanoTime();
             IResponse res = this.handler.Handle(req);
             this.after = System.nanoTime();
-            LOGGER.info(this.reqCount + " - APP LEVEL - SERVICE TIME OF this.handler.Handle(req): " + Float.toString(((float) (this.after - this.before)) / 1000000000));
+            System.out.println(this.reqCount + " - APP LEVEL - SERVICE TIME OF this.handler.Handle(req): " + Float.toString(((float) (this.after - this.before)) / 1000000000));
 
             this.before = System.nanoTime();
             String response = res.getBody();
             byte[] bytesOut = response.getBytes("UTF-8");
             this.after = System.nanoTime();
-            LOGGER.info(this.reqCount + " - APP LEVEL - SERVICE TIME OF getBody AND getBytes: " + Float.toString(((float) (this.after - this.before)) / 1000000000));
+            System.out.println(this.reqCount + " - APP LEVEL - SERVICE TIME OF getBody AND getBytes: " + Float.toString(((float) (this.after - this.before)) / 1000000000));
 
             this.before = System.nanoTime();
             Headers responseHeaders = t.getResponseHeaders();
             String contentType = res.getContentType();
             this.after = System.nanoTime();
-            LOGGER.info(this.reqCount + " - APP LEVEL - SERVICE TIME OF getResponseHeaders AND getContentType: " + Float.toString(((float) (this.after - this.before)) / 1000000000));
+            System.out.println(this.reqCount + " - APP LEVEL - SERVICE TIME OF getResponseHeaders AND getContentType: " + Float.toString(((float) (this.after - this.before)) / 1000000000));
             
             if(contentType.length() > 0) {
                 responseHeaders.set("Content-Type", contentType);
@@ -119,19 +116,19 @@ public class App {
                 responseHeaders.set(entry.getKey(), entry.getValue());
             }
             this.after = System.nanoTime();
-            LOGGER.info(this.reqCount + " - APP LEVEL - SERVICE TIME OF responseHeaders.set(entry.getKey(), entry.getValue());: " + Float.toString(((float) (this.after - this.before)) / 1000000000));
+            System.out.println(this.reqCount + " - APP LEVEL - SERVICE TIME OF responseHeaders.set(entry.getKey(), entry.getValue());: " + Float.toString(((float) (this.after - this.before)) / 1000000000));
            
             this.before = System.nanoTime();
             t.sendResponseHeaders(res.getStatusCode(), bytesOut.length);
             this.after = System.nanoTime();
-            LOGGER.info(this.reqCount + " - APP LEVEL - SERVICE TIME OF t.sendResponseHeaders(res.getStatusCode(), bytesOut.length);: " + Float.toString(((float) (this.after - this.before)) / 1000000000));
+            System.out.println(this.reqCount + " - APP LEVEL - SERVICE TIME OF t.sendResponseHeaders(res.getStatusCode(), bytesOut.length);: " + Float.toString(((float) (this.after - this.before)) / 1000000000));
 
             this.before = System.nanoTime();
             OutputStream os = t.getResponseBody();
             os.write(bytesOut);
             os.close();
             this.after = System.nanoTime();
-            LOGGER.info(this.reqCount + " - APP LEVEL - SERVICE TIME OF getResponseBody, write, close: " + Float.toString(((float) (this.after - this.before)) / 1000000000));
+            System.out.println(this.reqCount + " - APP LEVEL - SERVICE TIME OF getResponseBody, write, close: " + Float.toString(((float) (this.after - this.before)) / 1000000000));
 
             //System.out.println("Request / " + Integer.toString(bytesOut.length) +" bytes written.");
             this.reqCount++;
