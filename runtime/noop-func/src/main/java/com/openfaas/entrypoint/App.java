@@ -95,7 +95,7 @@ public class App {
             os.write(bytesOut);
             os.close();
 
-            System.out.println("Request / " + Integer.toString(bytesOut.length) +" bytes written.");
+            //System.out.println("Request / " + Integer.toString(bytesOut.length) +" bytes written.");
         }
     }
 

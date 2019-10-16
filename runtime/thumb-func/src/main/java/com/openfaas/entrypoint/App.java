@@ -35,6 +35,11 @@ public class App {
 
     static class InvokeHandler implements HttpHandler {
         IHandler handler;
+      
+        long before = System.nanoTime();
+        long after = System.nanoTime();
+        float serviceTimeFlt = ((float) (after - before)) / 1000000000; // service time in seconds
+        String serviceTimeStr = Float.toString(serviceTime);
 
         private InvokeHandler(IHandler handler) {
             this.handler = handler;
@@ -95,7 +100,7 @@ public class App {
             os.write(bytesOut);
             os.close();
 
-            System.out.println("Request / " + Integer.toString(bytesOut.length) +" bytes written.");
+            //System.out.println("Request / " + Integer.toString(bytesOut.length) +" bytes written.");
         }
     }
 
