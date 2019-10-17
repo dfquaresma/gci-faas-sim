@@ -1,5 +1,5 @@
-[0.006s][info][gc] Using G1
-[0.877s][info][gc] GC(0) Pause Young (Normal) (G1 Evacuation Pause) 8M->3M(128M) 6.508ms
-[0.966s][info][gc] GC(1) Pause Young (Normal) (G1 Evacuation Pause) 8M->3M(128M) 4.580ms
-[30.265s][info][gc] GC(2) Pause Young (Normal) (G1 Evacuation Pause) 79M->4M(128M) 8.874ms
-[53.726s][info][gc] GC(3) Pause Young (Normal) (G1 Evacuation Pause) 78M->4M(128M) 6.261ms
+[0.007s][info][gc] Using G1
+[0.867s][info][gc] GC(0) Pause Young (Normal) (G1 Evacuation Pause) 8M->3M(128M) 6.140ms
+[0.959s][info][gc] GC(1) Pause Young (Normal) (G1 Evacuation Pause) 8M->3M(128M) 4.814ms
+[30.994s][info][gc] GC(2) Pause Young (Normal) (G1 Evacuation Pause) 79M->4M(128M) 8.094ms
+[54.742s][info][gc] GC(3) Pause Young (Normal) (G1 Evacuation Pause) 78M->4M(128M) 8.827ms
