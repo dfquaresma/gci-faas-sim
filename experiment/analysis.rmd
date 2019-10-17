@@ -9,9 +9,9 @@ output: pdf_document
 #### intervalo de confiança
 ```{r}
 source("analysis.R")
-agent = filter(filter(rbind(read.al(paste("./manual-tests-agent-only/", "vegeta-output", ".csv", sep=""))), status == 200), latency > 10000000000)
+agent = filter(filter(rbind(read.al(paste("./manual-tests/agent-thumb/", "vegeta-output", ".csv", sep=""))), status == 200), latency > 10000000000)
 agent$latency = agent$latency / 1000000000
-noagent = filter(filter(rbind(read.al(paste("./manual-tests-no-agent/", "vegeta-output", ".csv", sep=""))), status == 200), latency > 10000000000)
+noagent = filter(filter(rbind(read.al(paste("./manual-tests/no-agent/", "vegeta-output", ".csv", sep=""))), status == 200), latency > 10000000000)
 noagent$latency = noagent$latency / 1000000000
 ```
 #### plot
