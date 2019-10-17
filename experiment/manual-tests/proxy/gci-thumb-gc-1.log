@@ -1,4 +1,4 @@
 [0.007s][info][gc] Using G1
-[60.957s][info][gc] GC(0) Pause Full (JvmtiEnv ForceGarbageCollection) 73M->4M(128M) 22.971ms
-[77.023s][info][gc] GC(1) Pause Full (JvmtiEnv ForceGarbageCollection) 57M->4M(128M) 18.146ms
-[93.075s][info][gc] GC(2) Pause Full (JvmtiEnv ForceGarbageCollection) 56M->4M(128M) 19.016ms
+[32.377s][info][gc] GC(0) Pause Full (JvmtiEnv ForceGarbageCollection) 74M->4M(128M) 26.118ms
+[56.123s][info][gc] GC(1) Pause Full (JvmtiEnv ForceGarbageCollection) 80M->4M(128M) 18.807ms
+[71.812s][info][gc] GC(2) Pause Full (JvmtiEnv ForceGarbageCollection) 55M->4M(128M) 19.421ms
