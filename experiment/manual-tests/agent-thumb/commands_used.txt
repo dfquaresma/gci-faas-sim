@@ -1,5 +1,8 @@
-command executed on VM 10.11.16.117
+# run at gci-faas-sim/experiment
+## command executed on VM 10.11.16.117
+rm -rf manual-tests/agent-thumb/gci-thumb-*
 killall java; entrypoint_port=8082 scale=0.1 image_url=http://s3.amazonaws.com/wallpapers2/wallpapers/images/000/000/408/thumb/375.jpg?1487671636 taskset 0x1 nice -20 nohup java -server -Xms128m -Xmx128m -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=90 -XX:G1MaxNewSizePercent=90 -Xlog:gc:file=./manual-tests/agent-thumb/gci-thumb-gc-1.log -Djvmtilib=/home/ubuntu/gci-faas-sim/gci-files/libgc.so -javaagent:/home/ubuntu/gci-faas-sim/gci-files/gciagent-0.1-jar-with-dependencies.jar=8500 -jar /home/ubuntu/gci-faas-sim/runtime/thumb-func/target/thumbnailator-server-maven-0.0.1-SNAPSHOT.jar >./manual-tests/agent-thumb/gci-thumb-stdout-1.log 2>./manual-tests/agent-thumb/gci-thumb-stderr-1.log &
 
-command executed on VM 10.11.16.128
+## command executed on VM 10.11.16.128
+rm -rf manual-tests/agent-thumb/vegeta-output.csv
 ./vegeta attack -connections=1 -duration=60s -rate=0 -max-workers=1 -targets=./manual-tests/agent-thumb/vegeta-input | ./vegeta encode -output=./manual-tests/agent-thumb/vegeta-output.csv -to=csv
