@@ -1,0 +1,5 @@
+command executed on VM 10.11.16.117
+killall java; entrypoint_port=8082  taskset 0x1 nice -20 nohup java -server -Xms128m -Xmx128m -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=90 -XX:G1MaxNewSizePercent=90 -Xlog:gc:file=./manual-tests/agent-noop/gci-noop-gc-1.log -Djvmtilib=/home/ubuntu/gci-faas-sim/gci-files/libgc.so -javaagent:/home/ubuntu/gci-faas-sim/gci-files/gciagent-0.1-jar-with-dependencies.jar=8500 -jar /home/ubuntu/gci-faas-sim/runtime/noop-func/target/noop-server-maven-0.0.1-SNAPSHOT.jar >./manual-tests/agent-noop/gci-noop-stdout-1.log 2>./manual-tests/agent-noop/gci-noop-stderr-1.log &
+
+command executed on VM 10.11.16.128
+./vegeta attack -connections=1 -duration=60s -rate=0 -max-workers=1 -targets=./manual-tests/agent-noop/vegeta-input | ./vegeta encode -output=./manual-tests/agent-noop/vegeta-output.csv -to=csv
