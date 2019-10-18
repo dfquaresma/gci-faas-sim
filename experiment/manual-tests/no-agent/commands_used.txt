@@ -5,4 +5,4 @@ killall java; entrypoint_port=8080 scale=0.1 image_url=http://s3.amazonaws.com/w
 
 ## command executed on VM 10.11.16.128
 rm -rf manual-tests/no-agent/vegeta-output.csv
-./vegeta attack -connections=1 -duration=60s -rate=0 -max-workers=1 -targets=./manual-tests/no-agent/vegeta-input | ./vegeta encode -output=./manual-tests/no-agent/vegeta-output.csv -to=csv
+echo "timestamp,status,latency,bytes_out,bytes_in,error,response_body,attack_name,request_sequence_number" >> ./manual-tests/no-agent/vegeta-output.csv; ./vegeta attack -connections=1 -duration=60s -rate=0 -max-workers=1 -targets=./manual-tests/no-agent/vegeta-input | ./vegeta encode -output=./manual-tests/no-agent/vegeta-output.csv -to=csv
