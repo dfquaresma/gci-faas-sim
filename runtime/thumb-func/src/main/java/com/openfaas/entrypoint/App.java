@@ -3,100 +3,63 @@
 
 package com.openfaas.entrypoint;
 
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpServer;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.net.InetSocketAddress;
-
-import java.util.HashMap;
-import java.util.Map;
-import com.sun.net.httpserver.Headers;
-
 import com.openfaas.model.*;
 
-public class App {
+import java.net.*;
+import java.io.*;
+import java.util.*;
 
+public class App { 
+    
     public static void main(String[] args) throws Exception {
+        runServerWithNoDependencies();
+    }
+
+    // Look ma, no... dependencies
+    private static void runServerWithNoDependencies() {
         int port = Integer.parseInt(System.getenv("entrypoint_port"));
-
+        String newLine="\r\n";
+        IResponse res = new Response(); // we ignore body and headers at first moment
         IHandler handler = new com.openfaas.function.Handler();
+        try { 
+            ServerSocket socket = new ServerSocket(port);
+            while (true) {
+                Socket connection = socket.accept();
+                try { 
+                    BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    OutputStream out = new BufferedOutputStream(connection.getOutputStream());
+                    PrintStream pout = new PrintStream(out);
 
-        HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
-        InvokeHandler invokeHandler = new InvokeHandler(handler);
+                // read first line of request
+                String request = in.readLine();
+                if (request == null) continue;
 
-        server.createContext("/", invokeHandler);
-        server.setExecutor(null); // creates a default executor
-        server.start();
-    }
-
-    static class InvokeHandler implements HttpHandler {
-        private int reqCount;
-        private long before;
-        private long after;
-        IHandler handler;
-
-        private InvokeHandler(IHandler handler) {
-            this.handler = handler;
-        }
-
-        @Override
-        public void handle(HttpExchange t) throws IOException {            
-            this.before = System.nanoTime();
-            String requestBody = "";
-            String method = t.getRequestMethod();
-            if (method.equalsIgnoreCase("POST")) {
-                InputStream inputStream = t.getRequestBody();
-                ByteArrayOutputStream result = new ByteArrayOutputStream();
-                byte[] buffer = new byte[1024];
-                int length;
-                while ((length = inputStream.read(buffer)) != -1) {
-                    result.write(buffer, 0, length);
+                // we ignore the rest
+                while (true) { 
+                    String ignore = in.readLine();
+                    if (ignore == null || ignore.length() == 0) break;
                 }
-                // StandardCharsets.UTF_8.name() > JDK 7
-                requestBody = result.toString("UTF-8");
-            }
-            Headers reqHeaders = t.getRequestHeaders();
-            Map<String, String> reqHeadersMap = new HashMap<String, String>();
-            for (Map.Entry<String, java.util.List<String>> header : reqHeaders.entrySet()) {
-                java.util.List<String> headerValues = header.getValue();
-                if(headerValues.size() > 0) {
-                    reqHeadersMap.put(header.getKey(), headerValues.get(0));
+
+                if (!request.startsWith("GET ") || !(request.endsWith(" HTTP/1.0") || request.endsWith(" HTTP/1.1"))) {
+                    // bad request
+                    pout.print("HTTP/1.0 400 Bad Request" + newLine + newLine);
+                } else {
+                    res = handler.Handle(null);
+                    String status = "200 OK";
+                    if (res.getStatusCode() != 200) {
+                        status = "503 SERVICE UNAVAILABLE";
+                    }
+                    pout.print(
+                        "HTTP/1.0 " + status + newLine +
+                        "Content-Type: text/plain" + newLine +
+                        "Date: " + new Date() + newLine +
+                        "Content-length: " + res.getBody().length() + newLine + newLine +
+                        res.getBody());
                 }
-            }
-            IRequest req = new Request(requestBody, reqHeadersMap,t.getRequestURI().getRawQuery(), t.getRequestURI().getPath());
-            this.after = System.nanoTime();
-            System.out.println(this.reqCount + " - APP LEVEL - SERVICE TIME BEFORE CALLING FUNC: " + Float.toString(((float) (this.after - this.before)) / 1000000000));
-            
-            this.before = System.nanoTime();
-            IResponse res = this.handler.Handle(req);
-            this.after = System.nanoTime();
-            System.out.println(this.reqCount + " - APP LEVEL - FUNC SERVICE TIME: " + Float.toString(((float) (this.after - this.before)) / 1000000000));
 
-
-            this.before = System.nanoTime();
-            String response = res.getBody();
-            byte[] bytesOut = response.getBytes("UTF-8");
-            Headers responseHeaders = t.getResponseHeaders();
-            String contentType = res.getContentType();
-            if(contentType.length() > 0) {
-                responseHeaders.set("Content-Type", contentType);
+                pout.close();
+                } catch (Throwable tri) {System.err.println("Error handling request: " + tri);}
             }
-            for(Map.Entry<String, String> entry : res.getHeaders().entrySet()) {
-                responseHeaders.set(entry.getKey(), entry.getValue());
-            }
-            t.sendResponseHeaders(res.getStatusCode(), bytesOut.length);
-            OutputStream os = t.getResponseBody();
-            os.write(bytesOut);
-            os.close();
-            this.after = System.nanoTime();
-            System.out.println(this.reqCount + " - APP LEVEL - SERVICE TIME AFTER CALLING FUNC: " + Float.toString(((float) (this.after - this.before)) / 1000000000));
-           
-            this.reqCount++;
-        }
+        } catch (Throwable tr) {System.err.println("Could not start server: " + tr);}
     }
-
 }
