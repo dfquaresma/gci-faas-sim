@@ -1,8 +1,8 @@
 # run at gci-faas-sim/experiment
 ## command executed on VM 10.11.16.117
 rm -rf manual-tests/no-agent/gci-thumb-*
-killall java; entrypoint_port=8080 scale=0.1 image_url=http://s3.amazonaws.com/wallpapers2/wallpapers/images/000/000/408/thumb/375.jpg?1487671636 taskset 0x1 nice -20 java -server -Xms128m -Xmx128m -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -Xlog:gc:file=./manual-tests/no-agent/gci-thumb-gc-1.log -jar /home/ubuntu/gci-faas-sim/runtime/thumb-func/target/thumbnailator-server-maven-0.0.1-SNAPSHOT.jar >./manual-tests/no-agent/gci-thumb-stdout-1.log 2>./manual-tests/no-agent/gci-thumb-stderr-1.log &
+killall java; sleep 2; entrypoint_port=8080 scale=0.1 image_url=http://s3.amazonaws.com/wallpapers2/wallpapers/images/000/000/408/thumb/375.jpg?1487671636 taskset 0x1 nice -20 java -server -Xms128m -Xmx128m -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -Xlog:gc:file=./manual-tests/no-agent/gci-thumb-gc-1.log -jar /home/ubuntu/gci-faas-sim/runtime/thumb-func/target/thumbnailator-server-maven-0.0.1-SNAPSHOT.jar >./manual-tests/no-agent/gci-thumb-stdout-1.log 2>./manual-tests/no-agent/gci-thumb-stderr-1.log &
 
 ## command executed on VM 10.11.16.128
 rm -rf manual-tests/no-agent/vegeta-output.csv
-echo "timestamp,status,latency,bytes_out,bytes_in,error,response_body,attack_name,request_sequence_number" >> ./manual-tests/no-agent/vegeta-output.csv; ./vegeta attack -connections=1 -duration=60s -rate=0 -max-workers=1 -targets=./manual-tests/no-agent/vegeta-input | ./vegeta encode -output=./manual-tests/no-agent/vegeta-output.csv -to=csv
+./vegeta attack -connections=1 -duration=60s -rate=0 -max-workers=1 -targets=./manual-tests/no-agent/vegeta-input | ./vegeta encode -output=./manual-tests/no-agent/vegeta-output.csv -to=csv
