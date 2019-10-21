@@ -1,12 +1,12 @@
-[0.005s][info][gc] Using G1
-[0.963s][info][gc] GC(0) Pause Young (Normal) (G1 Evacuation Pause) 8M->3M(128M) 8.653ms
-[1.052s][info][gc] GC(1) Pause Young (Normal) (G1 Evacuation Pause) 8M->3M(128M) 4.540ms
-[27.974s][info][gc] GC(2) Pause Young (Normal) (G1 Evacuation Pause) 79M->3M(128M) 6.237ms
-[34.362s][info][gc] GC(3) Pause Young (Normal) (G1 Evacuation Pause) 78M->4M(128M) 3.659ms
-[40.569s][info][gc] GC(4) Pause Young (Normal) (G1 Evacuation Pause) 78M->4M(128M) 2.810ms
-[46.758s][info][gc] GC(5) Pause Young (Normal) (G1 Evacuation Pause) 79M->4M(128M) 3.004ms
-[52.960s][info][gc] GC(6) Pause Young (Normal) (G1 Evacuation Pause) 79M->4M(128M) 3.127ms
-[59.046s][info][gc] GC(7) Pause Young (Normal) (G1 Evacuation Pause) 79M->4M(128M) 2.569ms
-[65.226s][info][gc] GC(8) Pause Young (Normal) (G1 Evacuation Pause) 79M->4M(128M) 2.670ms
-[71.503s][info][gc] GC(9) Pause Young (Normal) (G1 Evacuation Pause) 79M->4M(128M) 3.411ms
-[78.015s][info][gc] GC(10) Pause Young (Normal) (G1 Evacuation Pause) 79M->4M(128M) 2.833ms
+[0.007s][info][gc] Using G1
+[0.867s][info][gc] GC(0) Pause Young (Normal) (G1 Evacuation Pause) 7M->3M(128M) 6.148ms
+[0.938s][info][gc] GC(1) Pause Young (Normal) (G1 Evacuation Pause) 8M->3M(128M) 5.323ms
+[14.277s][info][gc] GC(2) Pause Young (Normal) (G1 Evacuation Pause) 79M->3M(128M) 3.429ms
+[20.807s][info][gc] GC(3) Pause Young (Normal) (G1 Evacuation Pause) 78M->4M(128M) 3.697ms
+[27.010s][info][gc] GC(4) Pause Young (Normal) (G1 Evacuation Pause) 79M->4M(128M) 3.652ms
+[33.113s][info][gc] GC(5) Pause Young (Normal) (G1 Evacuation Pause) 79M->4M(128M) 2.884ms
+[39.257s][info][gc] GC(6) Pause Young (Normal) (G1 Evacuation Pause) 79M->4M(128M) 2.804ms
+[45.582s][info][gc] GC(7) Pause Young (Normal) (G1 Evacuation Pause) 79M->4M(128M) 2.713ms
+[51.895s][info][gc] GC(8) Pause Young (Normal) (G1 Evacuation Pause) 79M->4M(128M) 2.741ms
+[58.096s][info][gc] GC(9) Pause Young (Normal) (G1 Evacuation Pause) 79M->4M(128M) 2.945ms
+[64.323s][info][gc] GC(10) Pause Young (Normal) (G1 Evacuation Pause) 79M->4M(128M) 3.190ms
