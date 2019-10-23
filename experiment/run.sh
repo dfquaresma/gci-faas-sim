@@ -7,7 +7,7 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
-echo "FLAGS: ${FLAGS:=gci nogci}"
+echo "FLAGS: ${FLAGS:=true false}"
 echo "INITIAL_EXPID: ${INITIAL_EXPID:=1}"
 echo "NUMBER_OF_EXPERIMENTS: ${NUMBER_OF_EXPERIMENTS:=1}"
 echo "NUMBER_OF_REQUESTS: ${NUMBER_OF_REQUESTS:=5000}"
@@ -38,11 +38,8 @@ do
         echo -e "${YELLOW}TEARING DOWN CONTAINERS${NC}"
         ssh -i ${ID_RSA_PATH} ubuntu@${FUNCTION_TARGET_IP} -o StrictHostKeyChecking=no "${CD_TO_SCRIPTS_PATH}; sudo bash teardown.sh"
 
-        echo -e "${YELLOW}SETTING UP CONTAINERS${NC}"
-        ssh -i ${ID_RSA_PATH} ubuntu@${WORKLOAD_TARGET_IP} -o StrictHostKeyChecking=no "${CD_TO_SCRIPTS_PATH}; sudo LOG_PATH=${RESULTS_PATH} EXPID=${expid} FUNCTION_TARGET_IP=${FUNCTION_TARGET_IP} GCI_FLAG=${flag} bash setup.sh"
-
         echo -e "${RED}RUNNING WORKLOAD FOR ${CONTAINER_TAG} EXPID ${EXPID}${NC}"
-        ssh -i ${ID_RSA_PATH} ubuntu@${WORKLOAD_TARGET_IP} -o StrictHostKeyChecking=no "${CD_TO_SCRIPTS_PATH}; sudo NUMBER_OF_REQUESTS=${NUMBER_OF_REQUESTS} FUNCTION_TARGET_IP=${FUNCTION_TARGET_IP} TARGET_PORT=${FUNCTION_TARGET_PORT} RESULTS_PATH=${RESULTS_PATH} FILE_NAME=${RESULTS_PATH}${flag}${expid}.csv bash workload.sh"
+        ssh -i ${ID_RSA_PATH} ubuntu@${WORKLOAD_TARGET_IP} -o StrictHostKeyChecking=no "${CD_TO_SCRIPTS_PATH}; workload --expid=${expid} --logpath=${RESULTS_PATH} --target=${FUNCTION_TARGET_IP}:${FUNCTION_TARGET_PORT} --useGci=${flag} --nreqs=${NUMBER_OF_REQUESTS} --resultspath=${RESULTS_PATH} --filename=${RESULTS_PATH}${flag}${expid}.csv"
     done;
 done
 
