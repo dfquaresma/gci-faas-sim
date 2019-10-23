@@ -35,7 +35,7 @@ var (
 	logPath     = flag.String("logpath", "", "the absolute path to save logs. It has no default value")
 	nReqs       = flag.Int64("nreqs", 10000, "number of requests, default 10000")
 	fileName    = flag.String("filename", "", "results file name. It has no default value")
-	resultsPath = flag.String("resultsPath", "", "absolute path for save results made. It has no default value")
+	resultsPath = flag.String("resultspath", "", "absolute path for save results made. It has no default value")
 )
 
 func main() {
