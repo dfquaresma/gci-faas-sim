@@ -1,18 +1,17 @@
 package main
 
-import(
+import (
+	"bufio"
+	"flag"
+	"fmt"
+	"io/ioutil"
+	"log"
+	"net/http"
 	"os"
 	"os/exec"
-	"log"
-	"time"
-	"fmt"
-	"flag"
-	"io"
-	"io/ioutil"
-	"net/http"
 	"strconv"
 	"strings"
-	"bufio"
+	"time"
 )
 
 const (
@@ -23,7 +22,7 @@ const (
 	scale            = "scale=0.1 "
 	image_url        = "image_url=http://s3.amazonaws.com/wallpapers2/wallpapers/images/000/000/408/thumb/375.jpg?1487671636 "
 	runtimeCoreSet   = "taskset 0x1 nice -20 "
-	proxyCoreSet     = "taskset 0x2 nice -20 " 
+	proxyCoreSet     = "taskset 0x2 nice -20 "
 	noGcijavaGCFlags = "-server -Xms128m -Xmx128m -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC "
 	gcijavaGCFlags   = "-server -Xms128m -Xmx128m -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=90 -XX:G1MaxNewSizePercent=90 "
 	proxyFlags       = "--port=8080 --target=127.0.0.1:8082 --gci_target=127.0.0.1:8500 --ygen=104857600 "
@@ -52,13 +51,10 @@ func main() {
 	} else {
 		setupCommand = getNoGciSetupCommand(*logPath, *expId)
 	}
-	upServerCmd, _, _, err := setupFunctionServer(setupCommand, *target)
-	if err != nil {
-		log.Fatal(err)
-	}
+	upServerCmd := setupFunctionServer(setupCommand, *target)
 	tsbefore := time.Now()
 	if err := upServerCmd.Start(); err != nil {
-		log.Fatal(err) 
+		log.Fatal(err)
 	}
 	status, body, err := sendFirstReq(*target)
 	if err != nil {
@@ -66,7 +62,7 @@ func main() {
 	}
 	tsafter := time.Now()
 	coldStart := time.Since(tsbefore).Nanoseconds()
-	output := make([]string, *nReqs + 1)
+	output := make([]string, *nReqs+1)
 	output[0] = fmt.Sprintf("id,status,responseTime,body,tsbefore,tsafter")
 	output[1] = fmt.Sprintf("%d,%d,%d,%s,%d,%d", 0, status, coldStart, body, tsbefore.UnixNano(), tsafter.UnixNano())
 	if err := workload(*target, *nReqs, output); err != nil {
@@ -81,19 +77,19 @@ func checkFlags() error {
 	// TO REVIEW
 	s := strings.Split(*target, ":")
 	if len(s) != 2 {
-		return  fmt.Errorf("target must seperate ip and port with ':'. target: %s", *target)
-	} 
-	if _, err := strconv.ParseInt(s[1],10,64); err != nil {
-		return  fmt.Errorf("target port must be a integer. target: %s", *target)
+		return fmt.Errorf("target must seperate ip and port with ':'. target: %s", *target)
+	}
+	if _, err := strconv.ParseInt(s[1], 10, 64); err != nil {
+		return fmt.Errorf("target port must be a integer. target: %s", *target)
 	}
 	if len(*logPath) == 0 {
-		return  fmt.Errorf("logPath cannot be empty")
+		return fmt.Errorf("logPath cannot be empty")
 	}
 	if *nReqs <= 0 {
-		return  fmt.Errorf("nReqs must be bigger than zero. nReqs: %d", *nReqs)
+		return fmt.Errorf("nReqs must be bigger than zero. nReqs: %d", *nReqs)
 	}
 	if len(*fileName) == 0 {
-		return  fmt.Errorf("fileName cannot be empty")
+		return fmt.Errorf("fileName cannot be empty")
 	}
 	if _, err := os.Stat(*resultsPath); os.IsNotExist(err) {
 		return fmt.Errorf("resultsPath must exist. resultsPath: %s", *resultsPath)
@@ -105,7 +101,7 @@ func getNoGciSetupCommand(logPath, expid string) string {
 	gcLogFlags := "-Xlog:gc:file=" + logPath + "gci-thumb-gc-" + expid + ".log "
 	envvars := noGciEntryPoint + scale + image_url + runtimeCoreSet
 	flags := noGcijavaGCFlags + gcLogFlags
-	logs :=  ">" + logPath + "nogci-" + funcName + "-stdout-" + expid + ".log 2>" + logPath + "nogci-" + funcName + "-stderr-" + expid + ".log "
+	logs := ">" + logPath + "nogci-" + funcName + "-stdout-" + expid + ".log 2>" + logPath + "nogci-" + funcName + "-stderr-" + expid + ".log "
 	return envvars + "java " + flags + "-jar " + jarPath + logs + "&"
 }
 
@@ -125,18 +121,12 @@ func getProxySetupCommand(logPath, expid string) string {
 	return proxyCoreSet + repoPath + "gci-files/gci-proxy " + proxyFlags + logs + "&"
 }
 
-func setupFunctionServer(setupCommand, target string) (*exec.Cmd, io.ReadCloser, io.ReadCloser, error) {
+func setupFunctionServer(setupCommand, target string) *exec.Cmd {
 	// TO REVIEW
 	ip := strings.Split(target, ":")[0]
 	command := "ssh -i ./id_rsa ubuntu@$" + ip + " -o StrictHostKeyChecking=no '" + setupCommand + "'"
-	upServerCmd := exec.Command("sh", "-c", command) 
-	upServerCmd.Env = os.Environ()
-	serverStdout, err := upServerCmd.StdoutPipe()
-	if err != nil {
-		return nil, nil, nil, err
-	}
-	serverStderr, err := upServerCmd.StderrPipe()
-	return upServerCmd, serverStdout, serverStderr, err
+	upServerCmd := exec.Command("sh", "-c", command)
+	return upServerCmd
 }
 
 func sendFirstReq(functionURL string) (int, string, error) {
@@ -144,7 +134,7 @@ func sendFirstReq(functionURL string) (int, string, error) {
 	maxFailsTolerated := 5000
 	for {
 		resp, err := http.Get(functionURL)
-		if err == nil  {
+		if err == nil {
 			if resp.StatusCode == http.StatusOK {
 				bodyBytes, err := ioutil.ReadAll(resp.Body)
 				if err != nil {
@@ -155,7 +145,7 @@ func sendFirstReq(functionURL string) (int, string, error) {
 			}
 		} else {
 			defer resp.Body.Close()
-			time.Sleep(1 * time.Millisecond)
+			time.Sleep(2 * time.Millisecond)
 			failsCount += 1
 			if failsCount == maxFailsTolerated {
 				return 0, "", err
@@ -188,7 +178,7 @@ func sendReq(URL string) (int, int64, string, int64, int64, error) {
 		return 0, 0, "", 0, 0, err
 	}
 	status := resp.StatusCode
-	responseTime := time.Since(before).Nanoseconds() 
+	responseTime := time.Since(before).Nanoseconds()
 	body := string(bodyBytes)
 	tsbefore := before.UnixNano()
 	tsafter := after.UnixNano()
@@ -197,7 +187,7 @@ func sendReq(URL string) (int, int64, string, int64, int64, error) {
 
 func createCsv(output []string, resultsPath, fileName string) error {
 	// TO REVIEW
-	file, err := os.OpenFile(resultsPath + fileName, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	file, err := os.OpenFile(resultsPath+fileName, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		return err
 	}
