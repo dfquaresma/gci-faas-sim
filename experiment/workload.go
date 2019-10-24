@@ -133,21 +133,18 @@ func sendFirstReq(target string) (int, string, error) {
 	maxFailsTolerated := 5000
 	for {
 		resp, err := http.Get("http://" + target)
-		if err == nil {
-			if resp.StatusCode == http.StatusOK {
-				bodyBytes, err := ioutil.ReadAll(resp.Body)
-				if err != nil {
-					return 0, "", err
-				}
-				resp.Body.Close()
-				return resp.StatusCode, string(bodyBytes), nil
-			}
-		} else {
-			time.Sleep(2 * time.Millisecond)
-			failsCount += 1
-			if failsCount == maxFailsTolerated {
+		if err == nil && resp.StatusCode == http.StatusOK {
+			bodyBytes, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
 				return 0, "", err
 			}
+			resp.Body.Close()
+			return resp.StatusCode, string(bodyBytes), nil
+		}
+		time.Sleep(2 * time.Millisecond)
+		failsCount += 1
+		if failsCount == maxFailsTolerated {
+			return 0, "", err
 		}
 	}
 }
