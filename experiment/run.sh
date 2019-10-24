@@ -44,7 +44,7 @@ do
 
         echo -e "${RED}RUNNING WORKLOAD, EXPID${expid}${NC}"
         tmp="nogci"
-        if [ "$expid" = "true" ]
+        if [ "$flag" = "true" ]
         then
             tmp="gci"
         fi
