@@ -10,6 +10,9 @@ import(
 	"io"
 	"io/ioutil"
 	"net/http"
+	"strconv"
+	"strings"
+	"bufio"
 )
 
 const (
@@ -29,7 +32,7 @@ const (
 )
 
 var (
-	expId       = flag.String("expid", "0", "Experiment's ID, default 0")
+	expId       = flag.String("expid", "test", "Experiment's ID, default value is test")
 	useGci      = flag.Bool("usegci", false, "Whether to use GCI, default false")
 	target      = flag.String("target", "", "function's ip and port separated as host:port. There's no default value")
 	logPath     = flag.String("logpath", "", "the absolute path to save logs. It has no default value")
@@ -49,7 +52,7 @@ func main() {
 	} else {
 		setupCommand = getNoGciSetupCommand(*logPath, *expId)
 	}
-	upServerCmd, _, _, err := setupFunctionServer(setupCommand)
+	upServerCmd, _, _, err := setupFunctionServer(setupCommand, *target)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -75,7 +78,26 @@ func main() {
 }
 
 func checkFlags() error {
-	// TODO
+	// TO REVIEW
+	s := strings.Split(*target, ":")
+	if len(s) != 2 {
+		return  fmt.Errorf("target must seperate ip and port with ':'. target: %s", *target)
+	} 
+	if _, err := strconv.ParseInt(s[1],10,64); err != nil {
+		return  fmt.Errorf("target port must be a integer. target: %s", *target)
+	}
+	if len(*logPath) == 0 {
+		return  fmt.Errorf("logPath cannot be empty")
+	}
+	if *nReqs <= 0 {
+		return  fmt.Errorf("nReqs must be bigger than zero. nReqs: %d", *nReqs)
+	}
+	if len(*fileName) == 0 {
+		return  fmt.Errorf("fileName cannot be empty")
+	}
+	if _, err := os.Stat(*resultsPath); os.IsNotExist(err) {
+		return fmt.Errorf("resultsPath must exist. resultsPath: %s", *resultsPath)
+	}
 	return nil
 }
 
@@ -103,8 +125,11 @@ func getProxySetupCommand(logPath, expid string) string {
 	return proxyCoreSet + repoPath + "gci-files/gci-proxy " + proxyFlags + logs + "&"
 }
 
-func setupFunctionServer(setupCommand string) (*exec.Cmd, io.ReadCloser, io.ReadCloser, error) {
-	upServerCmd := exec.Command("sh", setupCommand) 
+func setupFunctionServer(setupCommand, target string) (*exec.Cmd, io.ReadCloser, io.ReadCloser, error) {
+	// TO REVIEW
+	ip := strings.Split(target, ":")[0]
+	command := "ssh -i ./id_rsa ubuntu@$" + ip + " -o StrictHostKeyChecking=no '" + setupCommand + "'"
+	upServerCmd := exec.Command("sh", "-c", command) 
 	upServerCmd.Env = os.Environ()
 	serverStdout, err := upServerCmd.StdoutPipe()
 	if err != nil {
@@ -171,6 +196,16 @@ func sendReq(URL string) (int, int64, string, int64, int64, error) {
 }
 
 func createCsv(output []string, resultsPath, fileName string) error {
-	// TODO
+	// TO REVIEW
+	file, err := os.OpenFile(resultsPath + fileName, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		return err
+	}
+	datawriter := bufio.NewWriter(file)
+	for _, data := range output {
+		_, _ = datawriter.WriteString(data + "\n")
+	}
+	datawriter.Flush()
+	file.Close()
 	return nil
 }
