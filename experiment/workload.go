@@ -98,7 +98,7 @@ func checkFlags() error {
 }
 
 func getNoGciSetupCommand(logPath, expid string) string {
-	gcLogFlags := "-Xlog:gc:file=" + logPath + "gci-thumb-gc-" + expid + ".log "
+	gcLogFlags := "-Xlog:gc:file=" + logPath + "nogci-thumb-gc-" + expid + ".log "
 	envvars := noGciEntryPoint + scale + image_url + runtimeCoreSet
 	flags := noGcijavaGCFlags + gcLogFlags
 	logs := ">" + logPath + "nogci-" + funcName + "-stdout-" + expid + ".log 2>" + logPath + "nogci-" + funcName + "-stderr-" + expid + ".log "
