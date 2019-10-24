@@ -52,26 +52,25 @@ func main() {
 		setupCommand = getNoGciSetupCommand(*logPath, *expId)
 	}
 	upServerCmd := setupFunctionServer(setupCommand, *target)
-	//tsbefore := time.Now()
+	tsbefore := time.Now()
 	if err := upServerCmd.Start(); err != nil {
 		log.Fatal(err)
 	}
-	/*
-		status, body, err := sendFirstReq(*target)
-		if err != nil {
-			log.Fatal(err)
-		}
-		tsafter := time.Now()
-		coldStart := time.Since(tsbefore).Nanoseconds()
-		output := make([]string, *nReqs+1)
-		output[0] = fmt.Sprintf("id,status,responseTime,body,tsbefore,tsafter")
-		output[1] = fmt.Sprintf("%d,%d,%d,%s,%d,%d", 0, status, coldStart, body, tsbefore.UnixNano(), tsafter.UnixNano())
-		if err := workload(*target, *nReqs, output); err != nil {
-			log.Fatal(err)
-		}
-		if err := createCsv(output, *resultsPath, *fileName); err != nil {
-			log.Fatal(err)
-		}*/
+	status, body, err := sendFirstReq(*target)
+	if err != nil {
+		log.Fatal(err)
+	}
+	tsafter := time.Now()
+	coldStart := time.Since(tsbefore).Nanoseconds()
+	output := make([]string, *nReqs+1)
+	output[0] = fmt.Sprintf("id,status,responseTime,body,tsbefore,tsafter")
+	output[1] = fmt.Sprintf("%d,%d,%d,%s,%d,%d", 0, status, coldStart, body, tsbefore.UnixNano(), tsafter.UnixNano())
+	if err := workload(*target, *nReqs, output); err != nil {
+		log.Fatal(err)
+	}
+	if err := createCsv(output, *resultsPath, *fileName); err != nil {
+		log.Fatal(err)
+	}
 }
 
 func checkFlags() error {
@@ -114,7 +113,7 @@ func getGciSetupCommand(logPath, expid string) string {
 	gciagent := "-javaagent:" + repoPath + "gci-files/gciagent-0.1-jar-with-dependencies.jar=8500 "
 	gciFlags := libgc + gciagent
 	logs := ">" + logPath + "gci-" + funcName + "-stdout-" + expid + ".log 2>" + logPath + "gci-" + funcName + "-stderr-" + expid + ".log "
-	return envvars + "nohup java" + runtimeflags + gciFlags + "-jar " + jarPath + logs + "& " + getProxySetupCommand(logPath, expid)
+	return envvars + "nohup java " + runtimeflags + gciFlags + "-jar " + jarPath + logs + "& " + getProxySetupCommand(logPath, expid)
 }
 
 func getProxySetupCommand(logPath, expid string) string {
@@ -123,9 +122,8 @@ func getProxySetupCommand(logPath, expid string) string {
 }
 
 func setupFunctionServer(setupCommand, target string) *exec.Cmd {
-	// TO REVIEW
 	ip := strings.Split(target, ":")[0]
-	command := "ssh -i ./id_rsa ubuntu@$" + ip + " -o StrictHostKeyChecking=no '" + setupCommand + "'"
+	command := "ssh -i ./id_rsa ubuntu@" + ip + " -o StrictHostKeyChecking=no '" + setupCommand + "'"
 	fmt.Println(command)
 	upServerCmd := exec.Command("sh", "-c", command)
 	return upServerCmd
