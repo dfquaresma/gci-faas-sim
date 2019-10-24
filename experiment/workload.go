@@ -126,6 +126,7 @@ func setupFunctionServer(setupCommand, target string) *exec.Cmd {
 	// TO REVIEW
 	ip := strings.Split(target, ":")[0]
 	command := "ssh -i ./id_rsa ubuntu@$" + ip + " -o StrictHostKeyChecking=no '" + setupCommand + "'"
+	fmt.Println(command)
 	upServerCmd := exec.Command("sh", "-c", command)
 	return upServerCmd
 }
