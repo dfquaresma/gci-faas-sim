@@ -124,12 +124,12 @@ func getProxySetupCommand(logPath, expid string) string {
 func setupFunctionServer(setupCommand, target string) *exec.Cmd {
 	ip := strings.Split(target, ":")[0]
 	command := "ssh -i ./id_rsa ubuntu@" + ip + " -o StrictHostKeyChecking=no '" + setupCommand + "'"
-	fmt.Println(command)
 	upServerCmd := exec.Command("sh", "-c", command)
 	return upServerCmd
 }
 
 func sendFirstReq(functionURL string) (int, string, error) {
+	fmt.Println("SEND FIRST REQ")
 	failsCount := 0
 	maxFailsTolerated := 5000
 	for {
@@ -154,6 +154,7 @@ func sendFirstReq(functionURL string) (int, string, error) {
 }
 
 func workload(target string, nReqs int64, output []string) error {
+	fmt.Println("WORKLOAD")
 	for i := int64(2); i <= nReqs; i++ {
 		status, responseTime, body, tsbefore, tsafter, err := sendReq(target)
 		if err != nil {
