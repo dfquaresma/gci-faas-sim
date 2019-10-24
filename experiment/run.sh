@@ -29,7 +29,7 @@ ssh -i ${ID_RSA_PATH} ubuntu@${WORKLOAD_TARGET_IP} -o StrictHostKeyChecking=no "
 
 echo -e "${YELLOW}BUILDING UP${NC}"
 ssh -i ${ID_RSA_PATH} ubuntu@${FUNCTION_TARGET_IP} -o StrictHostKeyChecking=no "${CD_TO_SCRIPTS_PATH}; mkdir -p ${RESULTS_PATH} ;git pull; sudo bash build.sh"
-ssh -i ${ID_RSA_PATH} ubuntu@${WORKLOAD_TARGET_IP} -o StrictHostKeyChecking=no "${CD_TO_SCRIPTS_PATH}; mkdir -p ${RESULTS_PATH} ;git pull"
+ssh -i ${ID_RSA_PATH} ubuntu@${WORKLOAD_TARGET_IP} -o StrictHostKeyChecking=no "${CD_TO_SCRIPTS_PATH}; mkdir -p ${RESULTS_PATH} ;git pull; sudo bash build.sh"
 
 for expid in `seq ${INITIAL_EXPID} ${NUMBER_OF_EXPERIMENTS}`;
 do
