@@ -140,11 +140,11 @@ func sendFirstReq(functionURL string) (int, string, error) {
 				if err != nil {
 					return 0, "", err
 				}
-				defer resp.Body.Close()
+				resp.Body.Close()
 				return resp.StatusCode, string(bodyBytes), nil
 			}
 		} else {
-			defer resp.Body.Close()
+			resp.Body.Close()
 			time.Sleep(2 * time.Millisecond)
 			failsCount += 1
 			if failsCount == maxFailsTolerated {
