@@ -132,8 +132,7 @@ func sendFirstReq(target string) (int, string, error) {
 	failsCount := 0
 	maxFailsTolerated := 5000
 	for {
-		fmt.Println(target)
-		resp, err := http.Get(strings.TrimSpace(target))
+		resp, err := http.Get(target)
 		if err == nil {
 			if resp.StatusCode == http.StatusOK {
 				bodyBytes, err := ioutil.ReadAll(resp.Body)
@@ -154,7 +153,6 @@ func sendFirstReq(target string) (int, string, error) {
 }
 
 func workload(target string, nReqs int64, output []string) error {
-	fmt.Println("workload")
 	for i := int64(2); i <= nReqs; i++ {
 		status, responseTime, body, tsbefore, tsafter, err := sendReq(target)
 		if err != nil {
@@ -165,9 +163,9 @@ func workload(target string, nReqs int64, output []string) error {
 	return nil
 }
 
-func sendReq(URL string) (int, int64, string, int64, int64, error) {
+func sendReq(target string) (int, int64, string, int64, int64, error) {
 	before := time.Now()
-	resp, err := http.Get(URL)
+	resp, err := http.Get(target)
 	if err != nil {
 		return 0, 0, "", 0, 0, err
 	}
