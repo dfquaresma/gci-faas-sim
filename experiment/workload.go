@@ -52,25 +52,26 @@ func main() {
 		setupCommand = getNoGciSetupCommand(*logPath, *expId)
 	}
 	upServerCmd := setupFunctionServer(setupCommand, *target)
-	tsbefore := time.Now()
+	//tsbefore := time.Now()
 	if err := upServerCmd.Start(); err != nil {
 		log.Fatal(err)
 	}
-	status, body, err := sendFirstReq(*target)
-	if err != nil {
-		log.Fatal(err)
-	}
-	tsafter := time.Now()
-	coldStart := time.Since(tsbefore).Nanoseconds()
-	output := make([]string, *nReqs+1)
-	output[0] = fmt.Sprintf("id,status,responseTime,body,tsbefore,tsafter")
-	output[1] = fmt.Sprintf("%d,%d,%d,%s,%d,%d", 0, status, coldStart, body, tsbefore.UnixNano(), tsafter.UnixNano())
-	if err := workload(*target, *nReqs, output); err != nil {
-		log.Fatal(err)
-	}
-	if err := createCsv(output, *resultsPath, *fileName); err != nil {
-		log.Fatal(err)
-	}
+	/*
+		status, body, err := sendFirstReq(*target)
+		if err != nil {
+			log.Fatal(err)
+		}
+		tsafter := time.Now()
+		coldStart := time.Since(tsbefore).Nanoseconds()
+		output := make([]string, *nReqs+1)
+		output[0] = fmt.Sprintf("id,status,responseTime,body,tsbefore,tsafter")
+		output[1] = fmt.Sprintf("%d,%d,%d,%s,%d,%d", 0, status, coldStart, body, tsbefore.UnixNano(), tsafter.UnixNano())
+		if err := workload(*target, *nReqs, output); err != nil {
+			log.Fatal(err)
+		}
+		if err := createCsv(output, *resultsPath, *fileName); err != nil {
+			log.Fatal(err)
+		}*/
 }
 
 func checkFlags() error {
