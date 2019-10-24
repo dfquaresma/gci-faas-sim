@@ -9,11 +9,9 @@ output: pdf_document
 #### intervalo de confiança
 ```{r}
 source("analysis.R")
-
-agent = filter(rbind(read.al(paste("./manual-tests/agent-thumb/", "vegeta-output", ".csv", sep=""))), status == 200, grepl('MC4', response_body))
-noagent = filter(filter(rbind(read.al(paste("./manual-tests/no-agent/", "vegeta-output", ".csv", sep=""))), status == 200), latency > 10000000000)
-proxy = filter(filter(rbind(read.al(paste("./manual-tests/proxy/", "vegeta-output", ".csv", sep=""))), status == 200), latency > 10000000000)
-
+agent = filter(rbind(read.al(paste("../experiment/manual-tests/agent-thumb/", "vegeta-output", ".csv", sep=""))), status == 200, grepl('MC4', response_body))
+noagent = filter(filter(rbind(read.al(paste("../experiment/manual-tests/no-agent/", "vegeta-output", ".csv", sep=""))), status == 200), latency > 10000000000)
+proxy = filter(filter(rbind(read.al(paste("../experiment/manual-tests/proxy/", "vegeta-output", ".csv", sep=""))), status == 200), latency > 10000000000)
 agent$latency = agent$latency / 1000000000
 noagent$latency = noagent$latency / 1000000000
 proxy$latency = proxy$latency / 1000000000
@@ -32,23 +30,13 @@ hist(proxy$latency, main="latências de 5000 requisições com proxy")
 ```
 #### summary table for latency
 ```{r}
-print_latency_summary_table(agent, noagent, "AGENT", "NOAGENT")
-print_latency_summary_table(proxy, noagent, "PROXY", "NOAGENT")
+summary_table(agent$latency, "AGENT")
+summary_table(noagent$latency,"NOAGENT")
+summary_table(proxy$latency, "PROXY")
 ```
-
 
 #### summary table for service time
 ```{r}
-require("base64enc")
-
-get_service_time_column <- function(df) {
-  service_time = c()
-  for (val in df$response_body) {
-    service_time <- c(service_time, as.numeric(rawToChar(base64decode(toString(val)))))
-  }
-  return(service_time)
-}
-
 agent$service_time = get_service_time_column(agent)
 noagent$service_time = get_service_time_column(noagent)
 proxy$service_time = get_service_time_column(proxy)
@@ -57,7 +45,7 @@ agent$service_time = agent$service_time * 1000
 noagent$service_time = noagent$service_time * 1000
 proxy$service_time = proxy$service_time * 1000
 
-stats(agent$service_time, "AGENT")
-stats(noagent$service_time,"NOAGENT")
-stats(proxy$service_time, "PROXY")
+summary_table(agent$service_time, "AGENT")
+summary_table(noagent$service_time,"NOAGENT")
+summary_table(proxy$service_time, "PROXY")
 ```
