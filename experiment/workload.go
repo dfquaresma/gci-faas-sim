@@ -128,12 +128,12 @@ func setupFunctionServer(setupCommand, target string) *exec.Cmd {
 	return upServerCmd
 }
 
-func sendFirstReq(functionURL string) (int, string, error) {
-	fmt.Println("SEND FIRST REQ")
+func sendFirstReq(target string) (int, string, error) {
 	failsCount := 0
 	maxFailsTolerated := 5000
 	for {
-		resp, err := http.Get(functionURL)
+		fmt.Println(target)
+		resp, err := http.Get(strings.TrimSpace(target))
 		if err == nil {
 			if resp.StatusCode == http.StatusOK {
 				bodyBytes, err := ioutil.ReadAll(resp.Body)
@@ -154,7 +154,7 @@ func sendFirstReq(functionURL string) (int, string, error) {
 }
 
 func workload(target string, nReqs int64, output []string) error {
-	fmt.Println("WORKLOAD")
+	fmt.Println("workload")
 	for i := int64(2); i <= nReqs; i++ {
 		status, responseTime, body, tsbefore, tsafter, err := sendReq(target)
 		if err != nil {
