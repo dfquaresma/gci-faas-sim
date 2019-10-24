@@ -35,11 +35,20 @@ for expid in `seq ${INITIAL_EXPID} ${NUMBER_OF_EXPERIMENTS}`;
 do
     for flag in ${FLAGS};
     do
-        echo -e "${YELLOW}TEARING DOWN CONTAINERS${NC}"
+        echo -e "${YELLOW}TEARING DOWN${NC}"
         ssh -i ${ID_RSA_PATH} ubuntu@${FUNCTION_TARGET_IP} -o StrictHostKeyChecking=no "${CD_TO_SCRIPTS_PATH}; sudo bash teardown.sh"
 
-        echo -e "${RED}RUNNING WORKLOAD FOR ${CONTAINER_TAG} EXPID ${EXPID}${NC}"
-        ssh -i ${ID_RSA_PATH} ubuntu@${WORKLOAD_TARGET_IP} -o StrictHostKeyChecking=no "${CD_TO_SCRIPTS_PATH}; workload --expid=${expid} --logpath=${RESULTS_PATH} --target=${FUNCTION_TARGET_IP}:${FUNCTION_TARGET_PORT} --useGci=${flag} --nreqs=${NUMBER_OF_REQUESTS} --resultspath=${RESULTS_PATH} --filename=${RESULTS_PATH}${flag}${expid}.csv"
+        echo -e "${YELLOW}CREATING PATHS${NC}"
+        ssh -i ${ID_RSA_PATH} ubuntu@${FUNCTION_TARGET_IP} -o StrictHostKeyChecking=no "${CD_TO_SCRIPTS_PATH}; mkdir -p ${RESULTS_PATH}"
+        ssh -i ${ID_RSA_PATH} ubuntu@${WORKLOAD_TARGET_IP} -o StrictHostKeyChecking=no "${CD_TO_SCRIPTS_PATH}; mkdir -p ${RESULTS_PATH}"
+
+        echo -e "${RED}RUNNING WORKLOAD, EXPID${expid}${NC}"
+        tmp="nogci"
+        if [ "$expid" = "true" ]
+        then
+            tmp="gci"
+        fi
+        ssh -i ${ID_RSA_PATH} ubuntu@${WORKLOAD_TARGET_IP} -o StrictHostKeyChecking=no "${CD_TO_SCRIPTS_PATH}; workload --expid=${expid} --logpath=${RESULTS_PATH} --target=${FUNCTION_TARGET_IP}:${FUNCTION_TARGET_PORT} --useGci=${flag} --nreqs=${NUMBER_OF_REQUESTS} --resultspath=${RESULTS_PATH} --filename=${tmp}${expid}.csv"
     done;
 done
 
