@@ -33,7 +33,7 @@ const (
 var (
 	expId       = flag.String("expid", "test", "Experiment's ID, default value is test")
 	useGci      = flag.Bool("usegci", false, "Whether to use GCI, default false")
-	target      = flag.String("target", "", "function's ip and port separated as host:port. There's no default value")
+	target      = flag.String("target", "", "function's ip and port separated as host:port. There's no default value and should not start with http")
 	logPath     = flag.String("logpath", "", "the absolute path to save logs. It has no default value")
 	nReqs       = flag.Int64("nreqs", 10000, "number of requests, default 10000")
 	fileName    = flag.String("filename", "", "results file name. It has no default value")
@@ -132,7 +132,7 @@ func sendFirstReq(target string) (int, string, error) {
 	failsCount := 0
 	maxFailsTolerated := 5000
 	for {
-		resp, err := http.Get(target)
+		resp, err := http.Get("http://" + target)
 		if err == nil {
 			if resp.StatusCode == http.StatusOK {
 				bodyBytes, err := ioutil.ReadAll(resp.Body)
@@ -165,7 +165,7 @@ func workload(target string, nReqs int64, output []string) error {
 
 func sendReq(target string) (int, int64, string, int64, int64, error) {
 	before := time.Now()
-	resp, err := http.Get(target)
+	resp, err := http.Get("http://" + target)
 	if err != nil {
 		return 0, 0, "", 0, 0, err
 	}
