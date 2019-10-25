@@ -131,8 +131,11 @@ func setupFunctionServer(setupCommand, target string) *exec.Cmd {
 func sendFirstReq(target string) (int, string, error) {
 	failsCount := 0
 	maxFailsTolerated := 5000
+	if *useGci {
+		target = "http://" + strings.Split(target, ":")[0] + ":8082"
+	}
 	for {
-		resp, err := http.Get("http://" + target)
+		resp, err := http.Get(target)
 		if err == nil && resp.StatusCode == http.StatusOK {
 			bodyBytes, err := ioutil.ReadAll(resp.Body)
 			if err != nil {
