@@ -31,16 +31,16 @@ echo -e "${YELLOW}BUILDING UP${NC}"
 ssh -i ${ID_RSA_PATH} ubuntu@${FUNCTION_TARGET_IP} -o StrictHostKeyChecking=no "${CD_TO_SCRIPTS_PATH}; mkdir -p ${RESULTS_PATH} ;git pull; sudo bash build.sh"
 ssh -i ${ID_RSA_PATH} ubuntu@${WORKLOAD_TARGET_IP} -o StrictHostKeyChecking=no "${CD_TO_SCRIPTS_PATH}; mkdir -p ${RESULTS_PATH} ;git pull; sudo bash build.sh"
 
+echo -e "${YELLOW}CREATING PATHS${NC}"
+ssh -i ${ID_RSA_PATH} ubuntu@${FUNCTION_TARGET_IP} -o StrictHostKeyChecking=no "${CD_TO_SCRIPTS_PATH}; mkdir -p ${RESULTS_PATH}"
+ssh -i ${ID_RSA_PATH} ubuntu@${WORKLOAD_TARGET_IP} -o StrictHostKeyChecking=no "${CD_TO_SCRIPTS_PATH}; mkdir -p ${RESULTS_PATH}"
+
 for expid in `seq ${INITIAL_EXPID} ${NUMBER_OF_EXPERIMENTS}`;
 do
     for flag in ${FLAGS};
     do
         echo -e "${YELLOW}TEARING DOWN${NC}"
         ssh -i ${ID_RSA_PATH} ubuntu@${FUNCTION_TARGET_IP} -o StrictHostKeyChecking=no "${CD_TO_SCRIPTS_PATH}; sudo bash teardown.sh"
-
-        echo -e "${YELLOW}CREATING PATHS${NC}"
-        ssh -i ${ID_RSA_PATH} ubuntu@${FUNCTION_TARGET_IP} -o StrictHostKeyChecking=no "${CD_TO_SCRIPTS_PATH}; mkdir -p ${RESULTS_PATH}"
-        ssh -i ${ID_RSA_PATH} ubuntu@${WORKLOAD_TARGET_IP} -o StrictHostKeyChecking=no "${CD_TO_SCRIPTS_PATH}; mkdir -p ${RESULTS_PATH}"
 
         echo -e "${RED}RUNNING WORKLOAD, EXPID${expid}${NC}"
         tmp="nogci"
