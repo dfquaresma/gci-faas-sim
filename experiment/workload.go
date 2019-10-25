@@ -98,26 +98,26 @@ func checkFlags() error {
 }
 
 func getNoGciSetupCommand(logPath, expid string) string {
-	gcLogFlags := "-Xlog:gc:file=" + logPath + "nogci-thumb-gc-" + expid + ".log "
+	gcLogFlags := "-Xlog:gc:file=" + logPath + "nogci" + expid + "-thumb-gc.log "
 	envvars := noGciEntryPoint + scale + image_url + runtimeCoreSet
 	flags := noGcijavaGCFlags + gcLogFlags
-	logs := ">" + logPath + "nogci" + expid + "-" + funcName + "-stdout.log 2>" + logPath + "nogci-" + funcName + "-stderr-" + expid + ".log "
+	logs := ">" + logPath + "nogci" + expid + "-" + funcName + "-stdout.log 2>" + logPath + "nogci" + expid + "-" + funcName + "-stderr.log "
 	return envvars + "java " + flags + "-jar " + jarPath + logs + "&"
 }
 
 func getGciSetupCommand(logPath, expid string) string {
-	gcLogFlags := "-Xlog:gc:file=" + logPath + "gci-thumb-gc-" + expid + ".log "
+	gcLogFlags := "-Xlog:gc:file=" + logPath + "gci" + expid + "-thumb-gc.log "
 	envvars := gciEntryPoint + scale + image_url + runtimeCoreSet
 	runtimeflags := gcijavaGCFlags + gcLogFlags
 	libgc := "-Djvmtilib=" + repoPath + "gci-files/libgc.so "
 	gciagent := "-javaagent:" + repoPath + "gci-files/gciagent-0.1-jar-with-dependencies.jar=8500 "
 	gciFlags := libgc + gciagent
-	logs := ">" + logPath + "gci" + expid + "-" + funcName + "-stdout.log 2>" + logPath + "gci-" + funcName + "-stderr-" + expid + ".log "
+	logs := ">" + logPath + "gci" + expid + "-" + funcName + "-stdout.log 2>" + logPath + "gci" + expid + "-" + funcName + "-stderr.log "
 	return envvars + "nohup java " + runtimeflags + gciFlags + "-jar " + jarPath + logs + "& " + getProxySetupCommand(logPath, expid)
 }
 
 func getProxySetupCommand(logPath, expid string) string {
-	logs := ">" + logPath + "gci-proxy-stdout-" + expid + ".log 2>" + logPath + "gci-proxy-stderr-" + expid + ".log "
+	logs := ">" + logPath + "gci" + expid + "-proxy-stdout.log 2>" + logPath + "gci" + expid + "-proxy-stderr.log "
 	return proxyCoreSet + repoPath + "gci-files/gci-proxy " + proxyFlags + logs + "&"
 }
 
@@ -131,6 +131,7 @@ func setupFunctionServer(setupCommand, target string) *exec.Cmd {
 func sendFirstReq(target string) (int, string, error) {
 	failsCount := 0
 	maxFailsTolerated := 5000
+	// REMOVE WHEN FIX PROXY's BUG AT FIRST REQ
 	if *useGci {
 		target = "http://" + strings.Split(target, ":")[0] + ":8082"
 	}
