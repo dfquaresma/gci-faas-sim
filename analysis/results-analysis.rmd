@@ -12,6 +12,10 @@ gci = filter(rbind(read.al(paste("../experiment/results/", "gci1", ".csv", sep="
 nogci = filter(rbind(read.al(paste("../experiment/results/", "nogci1", ".csv", sep=""))), status == 200)
 gci$response_time = gci$response_time / 1000000
 nogci$response_time = nogci$response_time / 1000000
+gci$body = gci$body * 1000
+nogci$body = nogci$body * 1000
+gci$diff = gci$response_time - gci$body
+nogci$diff = nogci$response_time - nogci$body
 ```
 
 #### summary table for latency
