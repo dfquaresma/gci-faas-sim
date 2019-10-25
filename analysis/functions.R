@@ -28,19 +28,19 @@ summary_table <- function(df1, tag1, df2, tag2) {
 
   stats1 = stats(df1)
   stats2 = stats(df2)
-  avgdf    <- data.frame("avg",    stats1[1],  stats1[2],  stats2[1],  stats1[2])
-  p50df    <- data.frame("p50",    stats1[3],  stats1[4],  stats2[3],  stats1[4])
-  p95df    <- data.frame("p95",    stats1[5],  stats1[6],  stats2[5],  stats1[6])
-  p99df    <- data.frame("p99",    stats1[7],  stats1[8],  stats2[7],  stats1[8])
-  p999df   <- data.frame("p999",   stats1[9],  stats1[10], stats2[9],  stats1[10])
-  p9999df  <- data.frame("p9999",  stats1[11], stats1[12], stats2[11], stats1[12])
-  p99999df <- data.frame("p99999", stats1[13], stats1[14], stats2[13], stats1[14])
-  distdf   <- data.frame("dist",   stats1[15], stats1[16], stats2[15], stats1[16])
+  avgdf    <- data.frame("avg",    stats1[1],  stats1[2],  stats2[1],  stats2[2])
+  p50df    <- data.frame("p50",    stats1[3],  stats1[4],  stats2[3],  stats2[4])
+  p95df    <- data.frame("p95",    stats1[5],  stats1[6],  stats2[5],  stats2[6])
+  p99df    <- data.frame("p99",    stats1[7],  stats1[8],  stats2[7],  stats2[8])
+  p999df   <- data.frame("p999",   stats1[9],  stats1[10], stats2[9],  stats2[10])
+  p9999df  <- data.frame("p9999",  stats1[11], stats1[12], stats2[11], stats2[12])
+  p99999df <- data.frame("p99999", stats1[13], stats1[14], stats2[13], stats2[14])
+  distdf   <- data.frame("dist",   stats1[15], stats1[16], stats2[15], stats2[16])
 
-  tag1_inf = tag1
-  tag1_sup = tag1
-  tag2_inf = tag2
-  tag2_sup = tag2
+  tag1_inf = paste(tag1, "inf", sep = "-")
+  tag1_sup = paste(tag1, "sup", sep = "-")
+  tag2_inf = paste(tag2, "inf", sep = "-")
+  tag2_sup = paste(tag2, "sup", sep = "-")
   names(avgdf)    <- c("stats", tag1_inf, tag1_sup, tag2_inf, tag2_sup)
   names(p50df)    <- c("stats", tag1_inf, tag1_sup, tag2_inf, tag2_sup)
   names(p95df)    <- c("stats", tag1_inf, tag1_sup, tag2_inf, tag2_sup)
