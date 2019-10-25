@@ -132,10 +132,10 @@ func sendFirstReq(target string) (int, string, error) {
 	maxFailsTolerated := 5000
 	// REMOVE WHEN FIX PROXY's BUG AT FIRST REQ
 	if *useGci {
-		target = "http://" + strings.Split(target, ":")[0] + ":8082"
+		target = strings.Split(target, ":")[0] + ":8082"
 	}
 	for {
-		resp, err := http.Get(target)
+		resp, err := http.Get("http://" + target)
 		if err == nil && resp.StatusCode == http.StatusOK {
 			bodyBytes, err := ioutil.ReadAll(resp.Body)
 			if err != nil {
