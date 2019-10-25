@@ -63,7 +63,7 @@ func main() {
 	tsafter := time.Now()
 	coldStart := time.Since(tsbefore).Nanoseconds()
 	output := make([]string, *nReqs+1)
-	output[0] = fmt.Sprintf("id,status,responseTime,body,tsbefore,tsafter")
+	output[0] = fmt.Sprintf("id,status,response_time,body,tsbefore,tsafter")
 	output[1] = fmt.Sprintf("%d,%d,%d,%s,%d,%d", 0, status, coldStart, body, tsbefore.UnixNano(), tsafter.UnixNano())
 	if err := workload(*target, *nReqs, output); err != nil {
 		log.Fatal(err)
