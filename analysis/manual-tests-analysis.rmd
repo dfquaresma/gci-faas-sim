@@ -6,28 +6,30 @@ output: pdf_document
 ---
 
 # Experimentos utilizando apenas runtime
-#### intervalo de confiança
 ```{r}
-source("analysis.R")
+source("functions.R")
 agent = filter(rbind(read.al(paste("../experiment/manual-tests/agent-thumb/", "vegeta-output", ".csv", sep=""))), status == 200, grepl('MC4', response_body))
-noagent = filter(filter(rbind(read.al(paste("../experiment/manual-tests/no-agent/", "vegeta-output", ".csv", sep=""))), status == 200), latency > 10000000000)
-proxy = filter(filter(rbind(read.al(paste("../experiment/manual-tests/proxy/", "vegeta-output", ".csv", sep=""))), status == 200), latency > 10000000000)
+noagent = filter(rbind(read.al(paste("../experiment/manual-tests/no-agent/", "vegeta-output", ".csv", sep=""))), status == 200)
+proxy = filter(rbind(read.al(paste("../experiment/manual-tests/proxy/", "vegeta-output", ".csv", sep=""))), status == 200)
 agent$latency = agent$latency / 1000000000
 noagent$latency = noagent$latency / 1000000000
 proxy$latency = proxy$latency / 1000000000
 ```
+
 #### plot
 ```{r}
 plot(agent$latency, ylab="latência", main="latências de 5000 requisições com agent")
 plot(noagent$latency, ylab="latência", main="latências de 5000 requisições sem agent")
 plot(proxy$latency, ylab="latência", main="latências de 5000 requisições com proxy")
 ```
+
 #### hist
 ```{r}
 hist(agent$latency, main="latências de 5000 requisições com agent")
 hist(noagent$latency, main="latências de 5000 requisições sem agent")
 hist(proxy$latency, main="latências de 5000 requisições com proxy")
 ```
+
 #### summary table for latency
 ```{r}
 summary_table(agent$latency, "AGENT")

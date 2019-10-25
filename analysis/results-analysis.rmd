@@ -1,0 +1,32 @@
+---
+title: "GCI Impact"
+author: "David Ferreira Quaresma (david.quaresma@ccc.ufcg.edu.br)"
+date: "october, 2019"
+output: pdf_document
+---
+
+# Runtime experiments: GCI vs NOGCI
+```{r}
+source("functions.R")
+gci = filter(rbind(read.al(paste("../experiment/results/", "gci1", ".csv", sep=""))), status == 200)
+nogci = filter(rbind(read.al(paste("../experiment/results/", "nogci1", ".csv", sep=""))), status == 200)
+gci$response_time = gci$response_time / 1000000
+nogci$response_time = nogci$response_time / 1000000
+```
+
+#### summary table for latency
+```{r}
+summary_table(gci$response_time, "GCI")
+summary_table(nogci$response_time, "NOGCI")
+```
+
+#### ECDF for latency
+```{r}
+graph_tail(gci$response_time, nogci$response_time, title="THUMBNAILATOR ECDF", x_limit_inf=0, x_limit_sup=75, annotate_y=0.90)
+```
+
+#### plot
+```{r}
+plot(gci$response_time, ylab="response time", main="GCI")
+plot(nogci$response_time, ylab="response time", main="NOGCI")
+```
