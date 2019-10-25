@@ -74,7 +74,6 @@ func main() {
 }
 
 func checkFlags() error {
-	// TO REVIEW
 	s := strings.Split(*target, ":")
 	if len(s) != 2 {
 		return fmt.Errorf("target must seperate ip and port with ':'. target: %s", *target)
@@ -185,7 +184,6 @@ func sendReq(target string) (int, int64, string, int64, int64, error) {
 }
 
 func createCsv(output []string, resultsPath, fileName string) error {
-	// TO REVIEW
 	file, err := os.OpenFile(resultsPath+fileName, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		return err
