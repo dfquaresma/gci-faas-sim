@@ -159,7 +159,9 @@ func workload(target string, nReqs int64, output []string) error {
 			return err
 		}
 		output[i] = fmt.Sprintf("%d,%d,%d,%s,%d,%d", i, status, responseTime, body, tsbefore, tsafter)
-		time.Sleep(10 * time.Millisecond)
+		if status != 200 {
+			time.Sleep(10 * time.Millisecond)
+		}
 	}
 	return nil
 }
