@@ -2,37 +2,55 @@ require(dplyr)
 require(ggplot2)
 require(quantileCI)
 require(base64enc)
+library(knitr)
 
 read.al <- function(path) {
   df <- read.csv(path, sep=",",header=T, dec=".")
   return (tail(df, -100))
 }
 
-summary_table <- function(df, tag) {
-    p50 = quantileCI::quantile_confint_nyblom(df, 0.5)
-    p95 = quantileCI::quantile_confint_nyblom(df, 0.95)
-    p99 = quantileCI::quantile_confint_nyblom(df, 0.99)
-    p999 = quantileCI::quantile_confint_nyblom(df, 0.999)
-    p9999 = quantileCI::quantile_confint_nyblom(df, 0.9999)
-    p99999 = quantileCI::quantile_confint_nyblom(df, 0.99999)
-    cat("Latency(ms) ", tag, " ")
-    cat("avg:", signif(t.test(df)$conf.int, digits = 2), " | ")
-    cat("50:", signif(p50, digits = 4), " | ")
-    cat("95:", signif(p95, digits = 4), " | " )
-    cat("99:", signif(p99, digits = 4), " |\n")
-    cat("99.9:", signif(p999, digits = 4), " | ")
-    cat("99.99:", signif(p9999, digits = 4), " | ")
-    cat("99.999:", signif(p99999, digits = 4), " | ")
-    cat("Dist.Tail.:", signif(p99999-p50, digits = 4))
-    cat("\n\n")
-}
-
-get_service_time_column <- function(df) {
-  service_time = c()
-  for (val in df$response_body) {
-    service_time <- c(service_time, as.numeric(rawToChar(base64decode(toString(val)))))
+summary_table <- function(df1, tag1, df2, tag2) {
+  qCI <- function(df, p) {
+    return(quantileCI::quantile_confint_nyblom(df, p))
   }
-  return(service_time)
+  stats <- function(df) {
+    avg = signif(t.test(df)$conf.int, digits = 2)
+    p50 = signif(qCI(df, 0.5), digits = 4)
+    p95 = signif(qCI(df, 0.95), digits = 4)
+    p99 = signif(qCI(df, 0.99), digits = 4)
+    p999 = signif(qCI(df, 0.999), digits = 4)
+    p9999 = signif(qCI(df, 0.9999), digits = 4)
+    p99999 = signif(qCI(df, 0.99999), digits = 4)
+    dist = signif(qCI(df, 0.99999)- qCI(df, 0.5), digits = 4)
+    data <- c(avg, p50, p95, p99, p999, p9999, p99999, dist)
+    return(data)
+  }
+
+  stats1 = stats(df1)
+  stats2 = stats(df2)
+  avgdf    <- data.frame("avg",    stats1[1],  stats1[2],  stats2[1],  stats1[2])
+  p50df    <- data.frame("p50",    stats1[3],  stats1[4],  stats2[3],  stats1[4])
+  p95df    <- data.frame("p95",    stats1[5],  stats1[6],  stats2[5],  stats1[6])
+  p99df    <- data.frame("p99",    stats1[7],  stats1[8],  stats2[7],  stats1[8])
+  p999df   <- data.frame("p999",   stats1[9],  stats1[10], stats2[9],  stats1[10])
+  p9999df  <- data.frame("p9999",  stats1[11], stats1[12], stats2[11], stats1[12])
+  p99999df <- data.frame("p99999", stats1[13], stats1[14], stats2[13], stats1[14])
+  distdf   <- data.frame("dist",   stats1[15], stats1[16], stats2[15], stats1[16])
+
+  tag1_inf = tag1
+  tag1_sup = tag1
+  tag2_inf = tag2
+  tag2_sup = tag2
+  names(avgdf)    <- c("stats", tag1_inf, tag1_sup, tag2_inf, tag2_sup)
+  names(p50df)    <- c("stats", tag1_inf, tag1_sup, tag2_inf, tag2_sup)
+  names(p95df)    <- c("stats", tag1_inf, tag1_sup, tag2_inf, tag2_sup)
+  names(p99df)    <- c("stats", tag1_inf, tag1_sup, tag2_inf, tag2_sup)
+  names(p999df)   <- c("stats", tag1_inf, tag1_sup, tag2_inf, tag2_sup)
+  names(p9999df)  <- c("stats", tag1_inf, tag1_sup, tag2_inf, tag2_sup)
+  names(p99999df) <- c("stats", tag1_inf, tag1_sup, tag2_inf, tag2_sup)
+  names(distdf)   <- c("stats", tag1_inf, tag1_sup, tag2_inf, tag2_sup)
+  df <- rbind(avgdf, p50df, p95df, p99df, p999df, p9999df, p99999df, distdf)
+  kable(df, caption = "Summary Table")
 }
 
 graph_tail <- function(gci, nogci, title, x_limit_inf, x_limit_sup, annotate_y) {
@@ -76,4 +94,12 @@ graph_tail <- function(gci, nogci, title, x_limit_inf, x_limit_sup, annotate_y) 
     ylab("rate") 
   
   print(p)
+}
+
+get_service_time_column <- function(df) {
+  service_time = c()
+  for (val in df$response_body) {
+    service_time <- c(service_time, as.numeric(rawToChar(base64decode(toString(val)))))
+  }
+  return(service_time)
 }

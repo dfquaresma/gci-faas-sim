@@ -16,8 +16,7 @@ nogci$response_time = nogci$response_time / 1000000
 
 #### summary table for latency
 ```{r}
-summary_table(gci$response_time, "GCI")
-summary_table(nogci$response_time, "NOGCI")
+summary_table(gci$response_time, "GCI", nogci$response_time, "NOGCI")
 ```
 
 #### ECDF for latency
