@@ -101,7 +101,7 @@ func getNoGciSetupCommand(logPath, expid string) string {
 	gcLogFlags := "-Xlog:gc:file=" + logPath + "nogci-thumb-gc-" + expid + ".log "
 	envvars := noGciEntryPoint + scale + image_url + runtimeCoreSet
 	flags := noGcijavaGCFlags + gcLogFlags
-	logs := ">" + logPath + "nogci-" + funcName + "-stdout-" + expid + ".log 2>" + logPath + "nogci-" + funcName + "-stderr-" + expid + ".log "
+	logs := ">" + logPath + "nogci" + expid + "-" + funcName + "-stdout.log 2>" + logPath + "nogci-" + funcName + "-stderr-" + expid + ".log "
 	return envvars + "java " + flags + "-jar " + jarPath + logs + "&"
 }
 
@@ -112,7 +112,7 @@ func getGciSetupCommand(logPath, expid string) string {
 	libgc := "-Djvmtilib=" + repoPath + "gci-files/libgc.so "
 	gciagent := "-javaagent:" + repoPath + "gci-files/gciagent-0.1-jar-with-dependencies.jar=8500 "
 	gciFlags := libgc + gciagent
-	logs := ">" + logPath + "gci-" + funcName + "-stdout-" + expid + ".log 2>" + logPath + "gci-" + funcName + "-stderr-" + expid + ".log "
+	logs := ">" + logPath + "gci" + expid + "-" + funcName + "-stdout.log 2>" + logPath + "gci-" + funcName + "-stderr-" + expid + ".log "
 	return envvars + "nohup java " + runtimeflags + gciFlags + "-jar " + jarPath + logs + "& " + getProxySetupCommand(logPath, expid)
 }
 
