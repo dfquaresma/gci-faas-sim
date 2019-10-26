@@ -2,7 +2,6 @@ require(dplyr)
 require(ggplot2)
 require(quantileCI)
 require(base64enc)
-library(knitr)
 
 read.al <- function(path) {
   df <- read.csv(path, sep=",",header=T, dec=".")
@@ -37,10 +36,10 @@ summary_table <- function(df1, tag1, df2, tag2) {
   p99999df <- data.frame("p99999", stats1[13], stats1[14], stats2[13], stats2[14])
   distdf   <- data.frame("dist",   stats1[15], stats1[16], stats2[15], stats2[16])
 
-  tag1_inf = paste(tag1, "inf", sep = "-")
-  tag1_sup = paste(tag1, "sup", sep = "-")
-  tag2_inf = paste(tag2, "inf", sep = "-")
-  tag2_sup = paste(tag2, "sup", sep = "-")
+  tag1_inf = paste(tag1, "cii", sep = ".")
+  tag1_sup = paste(tag1, "cis", sep = ".")
+  tag2_inf = paste(tag2, "cii", sep = ".")
+  tag2_sup = paste(tag2, "cis", sep = ".")
   names(avgdf)    <- c("stats", tag1_inf, tag1_sup, tag2_inf, tag2_sup)
   names(p50df)    <- c("stats", tag1_inf, tag1_sup, tag2_inf, tag2_sup)
   names(p95df)    <- c("stats", tag1_inf, tag1_sup, tag2_inf, tag2_sup)
@@ -50,7 +49,7 @@ summary_table <- function(df1, tag1, df2, tag2) {
   names(p99999df) <- c("stats", tag1_inf, tag1_sup, tag2_inf, tag2_sup)
   names(distdf)   <- c("stats", tag1_inf, tag1_sup, tag2_inf, tag2_sup)
   df <- rbind(avgdf, p50df, p95df, p99df, p999df, p9999df, p99999df, distdf)
-  kable(df, caption = "Summary Table")
+  df
 }
 
 graph_tail <- function(gci, nogci, title, x_limit_inf, x_limit_sup, annotate_y) {
