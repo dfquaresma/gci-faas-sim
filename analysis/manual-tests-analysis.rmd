@@ -1,0 +1,53 @@
+---
+title: "Agent Impact"
+author: "David Ferreira Quaresma (david.quaresma@ccc.ufcg.edu.br)"
+date: "october, 2019"
+output: pdf_document
+---
+
+# Experimentos utilizando apenas runtime
+```{r}
+source("functions.R")
+agent = filter(rbind(read.al(paste("../experiment/manual-tests/agent-thumb/", "vegeta-output", ".csv", sep=""))), status == 200, grepl('MC4', response_body))
+noagent = filter(rbind(read.al(paste("../experiment/manual-tests/no-agent/", "vegeta-output", ".csv", sep=""))), status == 200)
+proxy = filter(rbind(read.al(paste("../experiment/manual-tests/proxy/", "vegeta-output", ".csv", sep=""))), status == 200)
+agent$latency = agent$latency / 1000000000
+noagent$latency = noagent$latency / 1000000000
+proxy$latency = proxy$latency / 1000000000
+```
+
+#### plot
+```{r}
+plot(agent$latency, ylab="latência", main="latências de 5000 requisições com agent")
+plot(noagent$latency, ylab="latência", main="latências de 5000 requisições sem agent")
+plot(proxy$latency, ylab="latência", main="latências de 5000 requisições com proxy")
+```
+
+#### hist
+```{r}
+hist(agent$latency, main="latências de 5000 requisições com agent")
+hist(noagent$latency, main="latências de 5000 requisições sem agent")
+hist(proxy$latency, main="latências de 5000 requisições com proxy")
+```
+
+#### summary table for latency
+```{r}
+summary_table(agent$latency, "AGENT")
+summary_table(noagent$latency,"NOAGENT")
+summary_table(proxy$latency, "PROXY")
+```
+
+#### summary table for service time
+```{r}
+agent$service_time = get_service_time_column(agent)
+noagent$service_time = get_service_time_column(noagent)
+proxy$service_time = get_service_time_column(proxy)
+
+agent$service_time = agent$service_time * 1000
+noagent$service_time = noagent$service_time * 1000
+proxy$service_time = proxy$service_time * 1000
+
+summary_table(agent$service_time, "AGENT")
+summary_table(noagent$service_time,"NOAGENT")
+summary_table(proxy$service_time, "PROXY")
+```

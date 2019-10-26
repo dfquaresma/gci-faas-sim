@@ -14,3 +14,5 @@ mvn clean install
 
 cd ../../experiment
 sudo chmod 775 vegeta
+sudo chmod 775 workload
+sudo chmod 400 id_rsa
