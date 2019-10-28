@@ -20,7 +20,7 @@ const (
 	noGciEntryPoint  = "entrypoint_port=8080 "
 	gciEntryPoint    = "entrypoint_port=8082 "
 	scale            = "scale=0.1 "
-	image_url        = "image_url=http://s3.amazonaws.com/wallpapers2/wallpapers/images/000/000/408/thumb/375.jpg?1487671636 "
+	image_url        = "image_url=https://i.imgur.com/BhlDUOR.jpg "
 	runtimeCoreSet   = "taskset 0x1 nice -20 "
 	proxyCoreSet     = "taskset 0x2 nice -20 "
 	noGcijavaGCFlags = "-server -Xms128m -Xmx128m -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC "
