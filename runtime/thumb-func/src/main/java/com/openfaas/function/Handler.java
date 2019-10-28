@@ -51,6 +51,7 @@ public class Handler implements com.openfaas.model.IHandler {
     }
 
     public String callFunction() {
+        BufferedImage image = deepCopy(this.image);
         String err = "";
         try {
             AffineTransform transform = AffineTransform.getScaleInstance(scale, scale); 
@@ -69,6 +70,13 @@ public class Handler implements com.openfaas.model.IHandler {
             e.printStackTrace();
         }
         return err;
+    }
+
+    private BufferedImage deepCopy(BufferedImage bi) {
+        ColorModel cm = bi.getColorModel();
+        boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
+        WritableRaster raster = bi.copyData(bi.getRaster().createCompatibleWritableRaster());
+        return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
     }
 
 }
