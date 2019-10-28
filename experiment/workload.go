@@ -23,9 +23,11 @@ const (
 	image_url        = "image_url=https://i.imgur.com/BhlDUOR.jpg "
 	runtimeCoreSet   = "taskset 0x1 nice -20 "
 	proxyCoreSet     = "taskset 0x2 nice -20 "
-	noGcijavaGCFlags = "-server -Xms128m -Xmx128m -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC "
-	gcijavaGCFlags   = "-server -Xms128m -Xmx128m -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=90 -XX:G1MaxNewSizePercent=90 "
-	proxyFlags       = "--port=8080 --target=127.0.0.1:8082 --gci_target=127.0.0.1:8500 --ygen=104857600 "
+	heapSize         = "-Xms256m -Xmx256m "
+	proxyYgen        = "--ygen=209715200 "
+	noGcijavaGCFlags = "-server " + heapSize + "-XX:+UnlockExperimentalVMOptions -XX:+UseG1GC "
+	gcijavaGCFlags   = "-server " + heapSize + "-XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=90 -XX:G1MaxNewSizePercent=90 "
+	proxyFlags       = "--port=8080 --target=127.0.0.1:8082 --gci_target=127.0.0.1:8500 " + proxyYgen
 	jarPath          = runtimePath + "target/thumbnailator-server-maven-0.0.1-SNAPSHOT.jar "
 	funcName         = "thumb"
 )
