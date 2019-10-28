@@ -23,8 +23,8 @@ const (
 	image_url        = "image_url=http://s3.amazonaws.com/wallpapers2/wallpapers/images/000/000/408/thumb/375.jpg?1487671636 "
 	runtimeCoreSet   = "taskset 0x1 nice -20 "
 	proxyCoreSet     = "taskset 0x2 nice -20 "
-	heapSize         = "-Xms128m -Xmx128m "
-	proxyYgen        = "--ygen=104857600 "
+	heapSize         = "-Xms256m -Xmx256m "
+	proxyYgen        = "--ygen=209715200 "
 	noGcijavaGCFlags = "-server " + heapSize + "-XX:+UnlockExperimentalVMOptions -XX:+UseG1GC "
 	gcijavaGCFlags   = "-server " + heapSize + "-XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=90 -XX:G1MaxNewSizePercent=90 "
 	proxyFlags       = "--port=8080 --target=127.0.0.1:8082 --gci_target=127.0.0.1:8500 " + proxyYgen
