@@ -23,8 +23,8 @@ const (
 	image_url        = "image_url=https://i.imgur.com/BhlDUOR.jpg "
 	runtimeCoreSet   = "taskset 0x1 nice -20 "
 	proxyCoreSet     = "taskset 0x2 nice -20 "
-	heapSize         = "-Xms256m -Xmx256m "
-	proxyYgen        = "--ygen=209715200 "
+	heapSize         = "-Xms512m -Xmx512m "
+	proxyYgen        = "--ygen=419430400 "
 	noGcijavaGCFlags = "-server " + heapSize + "-XX:+UnlockExperimentalVMOptions -XX:+UseG1GC "
 	gcijavaGCFlags   = "-server " + heapSize + "-XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=90 -XX:G1MaxNewSizePercent=90 "
 	proxyFlags       = "--port=8080 --target=127.0.0.1:8082 --gci_target=127.0.0.1:8500 " + proxyYgen
