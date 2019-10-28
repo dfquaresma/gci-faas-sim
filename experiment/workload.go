@@ -53,11 +53,13 @@ func main() {
 	} else {
 		setupCommand = getNoGciSetupCommand(*logPath, *expId)
 	}
+	fmt.Println("SETUP-COMMAND: " + setupCommand)
 	upServerCmd := setupFunctionServer(setupCommand, *target)
 	tsbefore := time.Now()
 	if err := upServerCmd.Start(); err != nil {
 		log.Fatal(err)
 	}
+	fmt.Println("SENDING FIRST REQUEST...")
 	status, body, err := sendFirstReq(*target)
 	if err != nil {
 		log.Fatal(err)
@@ -67,9 +69,11 @@ func main() {
 	output := make([]string, *nReqs+1)
 	output[0] = fmt.Sprintf("id,status,response_time,body,tsbefore,tsafter")
 	output[1] = fmt.Sprintf("%d,%d,%d,%s,%d,%d", 0, status, coldStart, body, tsbefore.UnixNano(), tsafter.UnixNano())
+	fmt.Println("RUNNING WORKLOAD...")
 	if err := workload(*target, *nReqs, output); err != nil {
 		log.Fatal(err)
 	}
+	fmt.Println("SAVING RESULTS...")
 	if err := createCsv(output, *resultsPath, *fileName); err != nil {
 		log.Fatal(err)
 	}
