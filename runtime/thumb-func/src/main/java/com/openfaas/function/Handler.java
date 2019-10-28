@@ -77,7 +77,7 @@ public class Handler implements com.openfaas.model.IHandler {
     private BufferedImage deepCopy(BufferedImage bi) {
         ColorModel cm = bi.getColorModel();
         boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
-        WritableRaster raster = bi.copyData(bi.getRaster().createCompatibleWritableRaster());
+        WritableRaster raster = bi.copyData(null);
         return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
     }
 
