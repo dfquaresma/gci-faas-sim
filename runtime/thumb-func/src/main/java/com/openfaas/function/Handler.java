@@ -8,6 +8,8 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.net.URL;
 import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
+import java.awt.image.ColorModel;
 import javax.imageio.ImageIO;
 
 public class Handler implements com.openfaas.model.IHandler {
