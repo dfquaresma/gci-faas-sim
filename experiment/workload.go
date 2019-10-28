@@ -103,7 +103,7 @@ func checkFlags() error {
 }
 
 func getNoGciSetupCommand(logPath, expid string) string {
-	gcLogFlags := "-Xlog:gc:file=" + logPath + "nogci" + expid + "-thumb-gc.log "
+	gcLogFlags := "-Xloggc:" + logPath + "nogci" + expid + "-thumb-gc.log "
 	envvars := noGciEntryPoint + scale + image_url + runtimeCoreSet
 	flags := noGcijavaGCFlags + gcLogFlags
 	logs := ">" + logPath + "nogci" + expid + "-" + funcName + "-stdout.log 2>" + logPath + "nogci" + expid + "-" + funcName + "-stderr.log "
@@ -111,7 +111,7 @@ func getNoGciSetupCommand(logPath, expid string) string {
 }
 
 func getGciSetupCommand(logPath, expid string) string {
-	gcLogFlags := "-Xlog:gc:file=" + logPath + "gci" + expid + "-thumb-gc.log "
+	gcLogFlags := "-Xloggc:" + logPath + "gci" + expid + "-thumb-gc.log "
 	envvars := gciEntryPoint + scale + image_url + runtimeCoreSet
 	runtimeflags := gcijavaGCFlags + gcLogFlags
 	libgc := "-Djvmtilib=" + repoPath + "gci-files/libgc.so "
