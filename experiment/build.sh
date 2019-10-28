@@ -9,9 +9,6 @@ sudo chmod 775 gci-proxy
 cd ../runtime/thumb-func/
 mvn clean install
 
-cd ../noop-func/
-mvn clean install
-
 cd ../../experiment
 sudo chmod 775 vegeta
 sudo chmod 775 workload
