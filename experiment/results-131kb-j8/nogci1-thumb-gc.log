@@ -1,0 +1,13 @@
+OpenJDK 64-Bit Server VM (25.222-b10) for linux-amd64 JRE (1.8.0_222-8u222-b10-1ubuntu1~18.04.1-b10), built on Jul 18 2019 18:52:48 by "buildd" with gcc 7.4.0
+Memory: 4k page, physical 16424628k(13456708k free), swap 0k(0k free)
+CommandLine flags: -XX:InitialHeapSize=268435456 -XX:MaxHeapSize=268435456 -XX:+PrintGC -XX:+PrintGCTimeStamps -XX:+UnlockExperimentalVMOptions -XX:+UseCompressedClassPointers -XX:+UseCompressedOops -XX:+UseG1GC 
+0.845: [GC pause (G1 Evacuation Pause) (young) 13515K->2115K(256M), 0.0044233 secs]
+1.755: [GC pause (G1 Evacuation Pause) (young) 13379K->3275K(256M), 0.0051084 secs]
+3.052: [GC pause (G1 Evacuation Pause) (young) 16587K->3066K(256M), 0.0072944 secs]
+18.571: [GC pause (G1 Evacuation Pause) (young) 154M->3532K(256M), 0.0056334 secs]
+33.787: [GC pause (G1 Evacuation Pause) (young) 154M->3578K(256M), 0.0073190 secs]
+49.215: [GC pause (G1 Evacuation Pause) (young) 154M->3578K(256M), 0.0044209 secs]
+64.528: [GC pause (G1 Evacuation Pause) (young) 154M->3578K(256M), 0.0086946 secs]
+80.008: [GC pause (G1 Evacuation Pause) (young) 154M->3578K(256M), 0.0079463 secs]
+95.329: [GC pause (G1 Evacuation Pause) (young) 154M->3578K(256M), 0.0050659 secs]
+110.735: [GC pause (G1 Evacuation Pause) (young) 154M->3578K(256M), 0.0052244 secs]
