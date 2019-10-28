@@ -7,7 +7,7 @@
 checkJvmtiError(err, __FILE__, __LINE__)
 
 #ifndef jni_version_const
-#define jni_version_const JNI_VERSION_10
+#define jni_version_const JNI_VERSION_1_8
 #endif
 
 static jvmtiEnv *jvmti;
