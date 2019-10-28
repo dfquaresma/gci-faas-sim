@@ -5,7 +5,7 @@ require(base64enc)
 
 read.al <- function(path) {
   df <- read.csv(path, sep=",",header=T, dec=".")
-  return (tail(df, -100))
+  return (tail(df, -200))
 }
 
 summary_table <- function(df1, tag1, df2, tag2) {
