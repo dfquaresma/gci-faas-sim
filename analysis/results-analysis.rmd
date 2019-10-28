@@ -8,8 +8,8 @@ output: pdf_document
 # Runtime experiments: GCI vs NOGCI
 ```{r echo=FALSE, results='hide', message=FALSE}
 source("functions.R")
-gci = filter(read.al(paste("../experiment/results-131kb/", "gci1", ".csv", sep="")), status == 200)
-nogci = filter(read.al(paste("../experiment/results-131kb/", "nogci1", ".csv", sep="")), status == 200)
+gci = filter(read.al(paste("../experiment/results-131kb-j8/", "gci1", ".csv", sep="")), status == 200)
+nogci = filter(read.al(paste("../experiment/results-131kb-j8/", "nogci1", ".csv", sep="")), status == 200)
 gci$response_time = gci$response_time / 1000000
 nogci$response_time = nogci$response_time / 1000000
 ```
@@ -20,6 +20,11 @@ nogci$response_time = nogci$response_time / 1000000
 - Lógica de negócio da função: [**Redimencionamento de uma imagem**](https://github.com/dfquaresma/gci-faas-sim/blob/master/runtime/thumb-func/src/main/java/com/openfaas/function/Handler.java).
 - Escala de redimencionamento: 0.1.
 - Tamanho da imagem: 131kb.
+- Versão Java 1.8
+- Tamanho do Heap: 256MB
+- Flags de GC: -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=90 -XX:G1MaxNewSizePercent=90
+- Configuração do Proxy: --ygen=209715200
+
 
 #### ECDF for response time
 ```{r  fig.width=15, fig.height=5, echo=FALSE}
