@@ -53,7 +53,7 @@ public class Handler implements com.openfaas.model.IHandler {
     }
 
     public String callFunction() {
-        BufferedImage image = deepCopy(this.image);
+        //BufferedImage image = deepCopy(this.image);
         String err = "";
         try {
             AffineTransform transform = AffineTransform.getScaleInstance(scale, scale); 
