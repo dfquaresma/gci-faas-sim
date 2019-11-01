@@ -6,10 +6,10 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.util.List;
 
-public class FlagsLogger implements RequestHandler<Integer, String> {
+public class FlagsLogger implements RequestHandler<AwsEvent, String> {
 
   @Override
-  public String handleRequest(Integer input, Context context) {
+  public String handleRequest(AwsEvent input, Context context) {
     // took from https://stackoverflow.com/questions/52199875/how-to-tune-java-garbage-collector-in-aws-lambda
     RuntimeMXBean runtimeMxBean = ManagementFactory.getRuntimeMXBean();
     List<String> arguments = runtimeMxBean.getInputArguments();
