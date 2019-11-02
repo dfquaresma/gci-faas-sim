@@ -23,11 +23,11 @@ const (
 	image_url        = "image_url=http://s3.amazonaws.com/wallpapers2/wallpapers/images/000/000/408/thumb/375.jpg?1487671636 "
 	runtimeCoreSet   = "taskset 0x1 nice -20 "
 	proxyCoreSet     = "taskset 0x2 nice -20 "
-	heapSize         = "-Xms512m -Xmx512m "
-	proxyYgen        = "--ygen=419430400 "
+	heapSize         = "-Xms445645k -Xmx445645k " // minimum and maximum heap size of ~435mb, from a virtual ambient of 512mb
+	proxyYgen        = "--ygen=314572800 " // proxy forces it's collects after 300mb of heap usage
 	awsJvmFlags      = "-XX:MaxHeapSize=445645k -XX:MaxMetaspaceSize=52429k -XX:ReservedCodeCacheSize=26214k -Xshare:on -XX:-TieredCompilation -XX:+UseSerialGC -Djava.net.preferIPv4Stack=true "
 	noGcijavaGCFlags = "-server " + heapSize + "-XX:NewRatio=1 " + awsJvmFlags
-	gcijavaGCFlags   = "-server " + heapSize + "-XX:NewRatio=1 " + awsJvmFlags + "-XX:NewSize=461m -XX:MaxNewSize=461m " // 460.8 is 90% of 512, so we use 461
+	gcijavaGCFlags   = "-server " + heapSize + "-XX:NewRatio=1 " + awsJvmFlags + "-XX:NewSize=392m -XX:MaxNewSize=392m " // 391.68mb is 90% of ~435mb, so we use 392mb
 	proxyFlags       = "--port=8080 --target=127.0.0.1:8082 --gci_target=127.0.0.1:8500 " + proxyYgen
 	jarPath          = runtimePath + "target/thumbnailator-server-maven-0.0.1-SNAPSHOT.jar "
 	funcName         = "thumb"
