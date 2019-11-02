@@ -23,7 +23,7 @@ const (
 	image_url        = "image_url=http://s3.amazonaws.com/wallpapers2/wallpapers/images/000/000/408/thumb/375.jpg?1487671636 "
 	runtimeCoreSet   = "taskset 0x1 nice -20 "
 	proxyCoreSet     = "taskset 0x2 nice -20 "
-	heapSize         = "-Xms512m -Xmx512m -XX:MaxPermSize=128m"
+	heapSize         = "-Xms512m -Xmx512m -XX:MaxPermSize=128m "
 	proxyYgen        = "--ygen=419430400 "
 	awsJvmFlags      = "-XX:MaxHeapSize=445645k -XX:MaxMetaspaceSize=52429k -XX:ReservedCodeCacheSize=26214k -Xshare:on -XX:-TieredCompilation -XX:+UseSerialGC -Djava.net.preferIPv4Stack=true "
 	noGcijavaGCFlags = "-server " + heapSize + "-XX:NewRatio=1 " + awsJvmFlags
