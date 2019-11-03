@@ -33,11 +33,11 @@ public class Handler implements com.openfaas.model.IHandler {
         if (exit) {
             System.exit(1);
         }
-        
+
         long before = System.nanoTime();
         String err = callFunction();
         long after = System.nanoTime();
-        
+
         Response res = new Response();
         String output = err + System.lineSeparator();
         if (err.length() == 0) {
@@ -53,7 +53,7 @@ public class Handler implements com.openfaas.model.IHandler {
     }
 
     public String callFunction() {
-        //BufferedImage image = deepCopy(this.image);
+        BufferedImage image = deepCopy(this.image);
         String err = "";
         try {
             AffineTransform transform = AffineTransform.getScaleInstance(scale, scale); 
@@ -64,7 +64,7 @@ public class Handler implements com.openfaas.model.IHandler {
             		+ e.getCause() + System.lineSeparator()
             		+ e.getMessage();
             e.printStackTrace();
-           
+
         } catch (Error e) {
             err = e.toString() + System.lineSeparator()
             		+ e.getCause() + System.lineSeparator()
