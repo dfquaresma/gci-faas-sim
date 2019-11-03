@@ -29,9 +29,15 @@ public class Handler implements com.openfaas.model.IHandler {
 
             // Reading raw bytes of the image.
             URL u = new URL(System.getenv("image_url"));
-            binaryImage = new byte[u.openConnection().getContentLength()];
+            int contentLength = u.openConnection().getContentLength();
+            binaryImage = new byte[contentLength];
             InputStream openStream = u.openStream();
-            openStream.read(binaryImage);
+            int imageSize = openStream.read(binaryImage);
+            if (imageSize != contentLength) {
+                throw new RuntimeException(
+                        String.format("Size of the downloaded image %d is different from the content length %d",
+                                imageSize, contentLength));
+            }
             openStream.close();
         } catch (Exception e) {
             e.printStackTrace();
