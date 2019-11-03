@@ -8,29 +8,32 @@ output: pdf_document
 # Runtime experiments: GCI vs NOGCI
 ```{r echo=FALSE, results='hide', message=FALSE}
 source("functions.R")
-gci = filter(read.al(paste("../experiment/results-131kb-j8/", "gci1", ".csv", sep="")), status == 200)
-nogci = filter(read.al(paste("../experiment/results-131kb-j8/", "nogci1", ".csv", sep="")), status == 200)
+gci = filter(read.al(paste("../experiment/results-131kb-j8-copyimage/", "gci1", ".csv", sep="")), status == 200)
+nogci = filter(read.al(paste("../experiment/results-131kb-j8-copyimage/", "nogci1", ".csv", sep="")), status == 200)
 gci$response_time = gci$response_time / 1000000
+gci$service_time = gci$body / 1000000
 nogci$response_time = nogci$response_time / 1000000
+nogci$service_time = nogci$body / 1000000
 ```
 
 ## Descrição
 - [**script de execução dos experimentos**](https://github.com/dfquaresma/gci-faas-sim/blob/master/experiment/run.sh).
-- Número de requisições: 10 mil, [**código**](https://github.com/dfquaresma/gci-faas-sim/blob/master/experiment/workload.go).
+- Número de requisições: 5 mil, [**código**](https://github.com/dfquaresma/gci-faas-sim/blob/master/experiment/workload.go).
 - Lógica de negócio da função: [**Redimencionamento de uma imagem**](https://github.com/dfquaresma/gci-faas-sim/blob/master/runtime/thumb-func/src/main/java/com/openfaas/function/Handler.java).
 - Escala de redimencionamento: 0.1.
 - Tamanho da imagem: 131kb.
-- Versão Java 1.8
-- Tamanho do Heap: 256MB
-- Flags de GC: -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=90 -XX:G1MaxNewSizePercent=90
-- Configuração do Proxy: --ygen=209715200
-
 
 #### ECDF for response time
 ```{r  fig.width=15, fig.height=5, echo=FALSE}
-graph_tail(gci$response_time, nogci$response_time, title="THUMBNAILATOR ECDF", x_limit_inf=0, x_limit_sup=75, annotate_y=0.90)
+graph_tail(gci$response_time, nogci$response_time, title="THUMBNAILATOR ECDF RESPONSE TIME", x_limit_inf=0, x_limit_sup=75, annotate_y=0.90)
 ```
-Neste ECDF é possível notar que o GCI está perdendo na cauda. Acredito que isto deve ser algum impacto externo que com o aumento do tamanho da imagem e copiando a imagem a cada requisição venha a desaparecer. 
+Neste gráfico é possível notar que a ECDF do GCI está dominando a ECDF do NOGCI, exceto na cauda. Aparentemente, há um "empate" no percentil 99.99.
+
+#### ECDF for service time
+```{r  fig.width=15, fig.height=5, echo=FALSE}
+graph_tail(gci$service_time, nogci$service_time, title="THUMBNAILATOR ECDF SERVICE TIME", x_limit_inf=0, x_limit_sup=75, annotate_y=0.90)
+```
+O mesmo se aplica aqui, só que na cauda a ECDF do GCI aparenta ser dominada pela ECDF do NOGCI. Acredito que isso se deve ao fato de a imagem ser apenas de 131kb.  
 
 #### summary table of confidence interval for response time
 ```{r  fig.width=15, fig.height=5, echo=FALSE}
@@ -40,14 +43,12 @@ Os valores em colunas com .cii são referentes à valores limite inferior do int
 
 #### GCI: comparing response time vs service time, both in milliseconds
 ```{r  fig.width=15, fig.height=5, echo=FALSE}
-gci$service_time = gci$body * 1000
 summary_table(gci$service_time, "gci.st", gci$response_time, "gci.rs")
 ```
 Os valores em colunas com .st são referentes à valores de tempo de serviço. O valores em colunas com .rt são referentes à valores de tempo de serviço. Como esperado, rt é ou maior que st ou não diferente estatísticamente.
 
 #### NOGCI: comparing response time vs service time, both in milliseconds
 ```{r  fig.width=15, fig.height=5, echo=FALSE}
-nogci$service_time = nogci$body * 1000
 summary_table(nogci$service_time, "nogci.st", gci$response_time, "nogci.rt")
 ```
 Os valores em colunas com .st são referentes à valores de tempo de serviço. O valores em colunas com .rt são referentes à valores de tempo de serviço. Como esperado, rt é ou maior que st ou não diferente estatísticamente.
@@ -64,7 +65,7 @@ cat("NOGCI - number of response time values greater then its service time values
 ```{r  fig.width=15, fig.height=5, echo=FALSE}
 summary_table(gci$diff, "gci.st", nogci$diff, "nogci.rt")
 ```
-Essas valores de cauda da diferença entre o tempo de resposta e o tempo de serviço me deixou com pulgas atrás da orelha. Não pretendo perder tempo nisso agora, pois vou tocar os passos já combinados. Tenho suspeitas que possa ser alguma coisa envolvendo a lib http do Go somado a alguma outra fonte de impacto.
+Esta tabela está mais para validação do que para uma análise de fato. Esperamos que os valores aqui não sejam grandes/significativos.
 
 #### GCI: plot response time
 ```{r fig.width=10, fig.height=5, echo=FALSE}

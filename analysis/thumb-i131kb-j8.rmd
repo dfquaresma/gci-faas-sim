@@ -1,0 +1,81 @@
+---
+title: "GCI Impact"
+author: "David Ferreira Quaresma (david.quaresma@ccc.ufcg.edu.br)"
+date: "october, 2019"
+output: pdf_document
+---
+
+# Runtime experiments: GCI vs NOGCI
+```{r echo=FALSE, results='hide', message=FALSE}
+source("functions.R")
+gci = filter(read.al(paste("../experiment/results-131kb-j8/", "gci1", ".csv", sep="")), status == 200)
+nogci = filter(read.al(paste("../experiment/results-131kb-j8/", "nogci1", ".csv", sep="")), status == 200)
+gci$response_time = gci$response_time / 1000000
+gci$service_time = gci$body / 1000000
+nogci$response_time = nogci$response_time / 1000000
+nogci$service_time = nogci$body / 1000000
+```
+
+## Descrição
+- [**script de execução dos experimentos**](https://github.com/dfquaresma/gci-faas-sim/blob/master/experiment/run.sh).
+- Número de requisições: 5 mil, [**código**](https://github.com/dfquaresma/gci-faas-sim/blob/master/experiment/workload.go).
+- Lógica de negócio da função: [**Redimencionamento de uma imagem**](https://github.com/dfquaresma/gci-faas-sim/blob/master/runtime/thumb-func/src/main/java/com/openfaas/function/Handler.java).
+- Escala de redimencionamento: 0.1.
+- Tamanho da imagem: 131kb.
+
+#### ECDF for response time
+```{r  fig.width=15, fig.height=5, echo=FALSE}
+graph_tail(gci$response_time, nogci$response_time, title="THUMBNAILATOR ECDF RESPONSE TIME", x_limit_inf=0, x_limit_sup=75, annotate_y=0.90)
+```
+Neste gráfico é possível notar que a ECDF do GCI está dominando a ECDF do NOGCI.
+
+#### ECDF for service time
+```{r  fig.width=15, fig.height=5, echo=FALSE}
+graph_tail(gci$service_time, nogci$service_time, title="THUMBNAILATOR ECDF SERVICE TIME", x_limit_inf=0, x_limit_sup=75, annotate_y=0.90)
+```
+O mesmo se aplica aqui. E note que os gráficos são bem parecidos o que pode nos indicar que não estamos tendo diferença significativa entre o tempo de resposta e o tempo de serviço. 
+
+#### summary table of confidence interval for response time
+```{r  fig.width=15, fig.height=5, echo=FALSE}
+summary_table(gci$response_time, "gci", nogci$response_time, "nogci")
+```
+Os valores em colunas com .cii são referentes à valores limite inferior do intervalo de confiança. O valores em colunas com .cis são referentes à valores limite superior do intervalo de confiança. Tal qual como no gráfico com ECDF, GCI tá perdendo na cauda da latência. 
+
+#### GCI: comparing response time vs service time, both in milliseconds
+```{r  fig.width=15, fig.height=5, echo=FALSE}
+summary_table(gci$service_time, "gci.st", gci$response_time, "gci.rs")
+```
+Os valores em colunas com .st são referentes à valores de tempo de serviço. O valores em colunas com .rt são referentes à valores de tempo de serviço. Como esperado, rt é ou maior que st ou não diferente estatísticamente.
+
+#### NOGCI: comparing response time vs service time, both in milliseconds
+```{r  fig.width=15, fig.height=5, echo=FALSE}
+summary_table(nogci$service_time, "nogci.st", gci$response_time, "nogci.rt")
+```
+Os valores em colunas com .st são referentes à valores de tempo de serviço. O valores em colunas com .rt são referentes à valores de tempo de serviço. Como esperado, rt é ou maior que st ou não diferente estatísticamente.
+
+#### checking errors
+```{r  fig.width=15, fig.height=5, echo=FALSE}
+gci$diff = gci$response_time - gci$service_time
+nogci$diff = nogci$response_time - nogci$service_time
+cat("GCI   - number of response time values greater then its service time values: ", NROW(filter(gci, diff < 0)), "\n")
+cat("NOGCI - number of response time values greater then its service time values: ", NROW(filter(nogci, diff < 0)), "\n")
+```
+
+#### comparing difference between response time and service time for GCI vs NOGCI
+```{r  fig.width=15, fig.height=5, echo=FALSE}
+summary_table(gci$diff, "gci.st", nogci$diff, "nogci.rt")
+```
+Esta tabela está mais para validação do que para uma análise de fato. Esperamos que os valores aqui não sejam grandes/significativos.
+
+#### GCI: plot response time
+```{r fig.width=10, fig.height=5, echo=FALSE}
+plot(gci$response_time, ylab="response time", main="GCI")
+```
+Este plot é apenas para evidenciar que não há mais as anomalias que antes identificamos.
+
+#### NOGCI: plot response time
+```{r fig.width=10, fig.height=5, echo=FALSE}
+plot(nogci$response_time, ylab="response time", main="NOGCI")
+```
+Este plot é apenas para evidenciar que não há mais as anomalias que antes identificamos.
+
