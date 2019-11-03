@@ -1,12 +1,10 @@
 OpenJDK 64-Bit Server VM (25.222-b10) for linux-amd64 JRE (1.8.0_222-8u222-b10-1ubuntu1~18.04.1-b10), built on Jul 18 2019 18:52:48 by "buildd" with gcc 7.4.0
-Memory: 4k page, physical 16424628k(13457128k free), swap 0k(0k free)
-CommandLine flags: -XX:G1MaxNewSizePercent=90 -XX:G1NewSizePercent=90 -XX:InitialHeapSize=268435456 -XX:MaxHeapSize=268435456 -XX:+PrintGC -XX:+PrintGCTimeStamps -XX:+UnlockExperimentalVMOptions -XX:+UseCompressedClassPointers -XX:+UseCompressedOops -XX:+UseG1GC 
-12.377: [Full GC (JvmtiEnv ForceGarbageCollection)  142M->3043K(256M), 0.0237097 secs]
-23.409: [Full GC (JvmtiEnv ForceGarbageCollection)  122M->3002K(256M), 0.0164810 secs]
-37.190: [Full GC (JvmtiEnv ForceGarbageCollection)  151M->3090K(256M), 0.0172997 secs]
-48.510: [Full GC (JvmtiEnv ForceGarbageCollection)  121M->3008K(256M), 0.0146265 secs]
-62.812: [Full GC (JvmtiEnv ForceGarbageCollection)  151M->3092K(256M), 0.0166691 secs]
-74.155: [Full GC (JvmtiEnv ForceGarbageCollection)  122M->3011K(256M), 0.0175230 secs]
-85.222: [Full GC (JvmtiEnv ForceGarbageCollection)  121M->3011K(256M), 0.0163224 secs]
-96.267: [Full GC (JvmtiEnv ForceGarbageCollection)  121M->3010K(256M), 0.0156017 secs]
-107.540: [Full GC (JvmtiEnv ForceGarbageCollection)  121M->3011K(256M), 0.0161139 secs]
+Memory: 4k page, physical 16424660k(15741284k free), swap 0k(0k free)
+CommandLine flags: -XX:CompressedClassSpaceSize=45297664 -XX:InitialHeapSize=456340480 -XX:MaxHeapSize=456340480 -XX:MaxMetaspaceSize=53686272 -XX:MaxNewSize=411041792 -XX:NewRatio=1 -XX:NewSize=411041792 -XX:+PrintGC -XX:+PrintGCTimeStamps -XX:+RequireSharedSpaces -XX:ReservedCodeCacheSize=26843136 -XX:-TieredCompilation -XX:+UseCompressedClassPointers -XX:+UseCompressedOops -XX:+UseSerialGC -XX:+UseSharedSpaces 
+15.863: [Full GC (JvmtiEnv ForceGarbageCollection)  196151K->3122K(406336K), 0.0193225 secs]
+27.107: [Full GC (JvmtiEnv ForceGarbageCollection)  137638K->3464K(406336K), 0.0118730 secs]
+43.868: [Full GC (JvmtiEnv ForceGarbageCollection)  191192K->3969K(406336K), 0.0153243 secs]
+55.318: [Full GC (JvmtiEnv ForceGarbageCollection)  128707K->3002K(406336K), 0.0117876 secs]
+69.191: [Full GC (JvmtiEnv ForceGarbageCollection)  158441K->3428K(406336K), 0.0099285 secs]
+91.311: [Full GC (JvmtiEnv ForceGarbageCollection)  254178K->4126K(406336K), 0.0160341 secs]
+102.363: [Full GC (JvmtiEnv ForceGarbageCollection)  134715K->4486K(406336K), 0.0131906 secs]
