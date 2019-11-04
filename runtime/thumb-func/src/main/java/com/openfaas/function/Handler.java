@@ -32,7 +32,7 @@ public class Handler implements com.openfaas.model.IHandler {
             int contentLength = u.openConnection().getContentLength();
             binaryImage = new byte[contentLength];
             InputStream openStream = u.openStream();
-            int imageSize = openStream.read(binaryImage);
+            int imageSize = openStream.read(binaryImage, 0, contentLength);
             if (imageSize != contentLength) {
                 throw new RuntimeException(
                         String.format("Size of the downloaded image %d is different from the content length %d",
