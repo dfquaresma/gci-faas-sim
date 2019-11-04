@@ -23,10 +23,10 @@ const (
 	runtimeCoreSet   = "taskset 0x1 nice -20 "
 	proxyCoreSet     = "taskset 0x2 nice -20 "
 	heapSize         = "-Xms445645k -Xmx445645k " // minimum and maximum heap size of ~435mb, from a virtual ambient of 512mb
-	proxyYgen        = "--ygen=314572800 " // proxy forces it's collects after 300mb of heap usage
+	proxyYgen        = "--ygen=157286400 "        // proxy forces it's collects after 150mb of heap usage
 	awsJvmFlags      = "-XX:MaxHeapSize=445645k -XX:MaxMetaspaceSize=52429k -XX:ReservedCodeCacheSize=26214k -Xshare:on -XX:-TieredCompilation -XX:+UseSerialGC -Djava.net.preferIPv4Stack=true "
 	noGcijavaGCFlags = "-server " + heapSize + awsJvmFlags
-	gcijavaGCFlags   = "-server " + heapSize + awsJvmFlags + "-XX:NewSize=392m -XX:MaxNewSize=392m " // 391.68mb is 90% of ~435mb, so we use 392mb
+	gcijavaGCFlags   = "-server " + heapSize + awsJvmFlags + "-XX:NewRatio=1 " // ~210mb to new generation, ~210mb to old generation
 	proxyFlags       = "--port=8080 --target=127.0.0.1:8082 --gci_target=127.0.0.1:8500 " + proxyYgen
 	jarPath          = runtimePath + "target/thumbnailator-server-maven-0.0.1-SNAPSHOT.jar "
 	funcName         = "thumb"
