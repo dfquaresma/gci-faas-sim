@@ -20,14 +20,13 @@ const (
 	noGciEntryPoint  = "entrypoint_port=8080 "
 	gciEntryPoint    = "entrypoint_port=8082 "
 	scale            = "scale=0.1 "
-	image_url        = "image_url=https://i.imgur.com/BhlDUOR.jpg "
 	runtimeCoreSet   = "taskset 0x1 nice -20 "
 	proxyCoreSet     = "taskset 0x2 nice -20 "
 	heapSize         = "-Xms445645k -Xmx445645k " // minimum and maximum heap size of ~435mb, from a virtual ambient of 512mb
 	proxyYgen        = "--ygen=314572800 " // proxy forces it's collects after 300mb of heap usage
 	awsJvmFlags      = "-XX:MaxHeapSize=445645k -XX:MaxMetaspaceSize=52429k -XX:ReservedCodeCacheSize=26214k -Xshare:on -XX:-TieredCompilation -XX:+UseSerialGC -Djava.net.preferIPv4Stack=true "
-	noGcijavaGCFlags = "-server " + heapSize + "-XX:NewRatio=1 " + awsJvmFlags
-	gcijavaGCFlags   = "-server " + heapSize + "-XX:NewRatio=1 " + awsJvmFlags + "-XX:NewSize=392m -XX:MaxNewSize=392m " // 391.68mb is 90% of ~435mb, so we use 392mb
+	noGcijavaGCFlags = "-server " + heapSize + awsJvmFlags
+	gcijavaGCFlags   = "-server " + heapSize + awsJvmFlags + "-XX:NewSize=392m -XX:MaxNewSize=392m " // 391.68mb is 90% of ~435mb, so we use 392mb
 	proxyFlags       = "--port=8080 --target=127.0.0.1:8082 --gci_target=127.0.0.1:8500 " + proxyYgen
 	jarPath          = runtimePath + "target/thumbnailator-server-maven-0.0.1-SNAPSHOT.jar "
 	funcName         = "thumb"
@@ -41,6 +40,7 @@ var (
 	nReqs       = flag.Int64("nreqs", 10000, "number of requests, default 10000")
 	fileName    = flag.String("filename", "", "results file name. It has no default value")
 	resultsPath = flag.String("resultspath", "", "absolute path for save results made. It has no default value")
+	imageUrl    = flag.String("image_url", "", "Url of the image to be resized. It has no default value")
 )
 
 func main() {
@@ -50,9 +50,9 @@ func main() {
 	}
 	var setupCommand string
 	if *useGci {
-		setupCommand = getGciSetupCommand(*logPath, *expId)
+		setupCommand = getGciSetupCommand(*logPath, *imageUrl, *expId)
 	} else {
-		setupCommand = getNoGciSetupCommand(*logPath, *expId)
+		setupCommand = getNoGciSetupCommand(*logPath, *imageUrl, *expId)
 	}
 	fmt.Println("SETUP-COMMAND: " + setupCommand)
 	upServerCmd := setupFunctionServer(setupCommand, *target)
@@ -100,20 +100,24 @@ func checkFlags() error {
 	if _, err := os.Stat(*resultsPath); os.IsNotExist(err) {
 		return fmt.Errorf("resultsPath must exist. resultsPath: %s", *resultsPath)
 	}
+	if len(*imageUrl) == 0 {
+		return fmt.Errorf("imageurl cannot be empty")
+	}
+	// TODO: check if imageUrl is a valid Url.
 	return nil
 }
 
-func getNoGciSetupCommand(logPath, expid string) string {
+func getNoGciSetupCommand(logPath, imageUrl, expid string) string {
 	gcLogFlags := "-Xloggc:" + logPath + "nogci" + expid + "-thumb-gc.log "
-	envvars := noGciEntryPoint + scale + image_url + runtimeCoreSet
+	envvars := noGciEntryPoint + scale + "image_url=" + imageUrl + runtimeCoreSet
 	flags := noGcijavaGCFlags + gcLogFlags
 	logs := ">" + logPath + "nogci" + expid + "-" + funcName + "-stdout.log 2>" + logPath + "nogci" + expid + "-" + funcName + "-stderr.log "
 	return envvars + "java " + flags + "-jar " + jarPath + logs + "&"
 }
 
-func getGciSetupCommand(logPath, expid string) string {
+func getGciSetupCommand(logPath, imageUrl, expid string) string {
 	gcLogFlags := "-Xloggc:" + logPath + "gci" + expid + "-thumb-gc.log "
-	envvars := gciEntryPoint + scale + image_url + runtimeCoreSet
+	envvars := gciEntryPoint + scale + "image_url=" + imageUrl + runtimeCoreSet
 	runtimeflags := gcijavaGCFlags + gcLogFlags
 	libgc := "-Djvmtilib=" + repoPath + "gci-files/libgc.so "
 	gciagent := "-javaagent:" + repoPath + "gci-files/gciagent-0.1-jar-with-dependencies.jar=8500 "

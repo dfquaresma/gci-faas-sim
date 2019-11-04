@@ -6,3 +6,5 @@
 *.classpath
 *.gradle/
 *.settings/
+
+experiment/experiment*
