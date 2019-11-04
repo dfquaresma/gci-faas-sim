@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.awt.image.ColorModel;
 import javax.imageio.ImageIO;
@@ -26,14 +27,22 @@ public class Handler implements com.openfaas.model.IHandler {
             ImageIO.setUseCache(false); // We don't want to cache things out for experimento purposes.
 
             scale = Double.parseDouble(System.getenv("scale"));
-
+            
             // Reading raw bytes of the image.
-            URL u = new URL(System.getenv("image_url"));
+            URL url = new URL(System.getenv("image_url"));
             int contentLength = u.openConnection().getContentLength();
-            binaryImage = new byte[contentLength];
-            InputStream openStream = u.openStream();
-            int imageSize = openStream.read(binaryImage, 0, contentLength);
-            if (imageSize != contentLength) {
+
+            ByteArrayOutputStream output = new ByteArrayOutputStream();
+            try (InputStream inputStream = url.openStream()) {
+                int n = 0;
+                byte[] buffer = new byte[contentLength];
+                while (-1 != (n = inputStream.read(buffer))) {
+                    output.write(buffer, 0, n);
+                }
+            }
+
+            binaryImage = output.toByteArray();
+            if (binaryImage.length != contentLength) {
                 throw new RuntimeException(
                         String.format("Size of the downloaded image %d is different from the content length %d",
                                 imageSize, contentLength));
@@ -44,6 +53,8 @@ public class Handler implements com.openfaas.model.IHandler {
             exit = true;
         }
     }
+
+ 
 
     public IResponse Handle(IRequest req) {
         if (exit) {
