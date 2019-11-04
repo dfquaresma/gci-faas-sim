@@ -109,7 +109,7 @@ func checkFlags() error {
 
 func getNoGciSetupCommand(logPath, imageUrl, expid string) string {
 	gcLogFlags := "-Xloggc:" + logPath + "nogci" + expid + "-thumb-gc.log "
-	envvars := noGciEntryPoint + scale + "image_url=" + imageUrl + runtimeCoreSet
+	envvars := noGciEntryPoint + scale + "image_url=" + imageUrl + " " + runtimeCoreSet
 	flags := noGcijavaGCFlags + gcLogFlags
 	logs := ">" + logPath + "nogci" + expid + "-" + funcName + "-stdout.log 2>" + logPath + "nogci" + expid + "-" + funcName + "-stderr.log "
 	return envvars + "java " + flags + "-jar " + jarPath + logs + "&"
@@ -117,7 +117,7 @@ func getNoGciSetupCommand(logPath, imageUrl, expid string) string {
 
 func getGciSetupCommand(logPath, imageUrl, expid string) string {
 	gcLogFlags := "-Xloggc:" + logPath + "gci" + expid + "-thumb-gc.log "
-	envvars := gciEntryPoint + scale + "image_url=" + imageUrl + runtimeCoreSet
+	envvars := gciEntryPoint + scale + "image_url=" + imageUrl + " " + runtimeCoreSet
 	runtimeflags := gcijavaGCFlags + gcLogFlags
 	libgc := "-Djvmtilib=" + repoPath + "gci-files/libgc.so "
 	gciagent := "-javaagent:" + repoPath + "gci-files/gciagent-0.1-jar-with-dependencies.jar=8500 "
