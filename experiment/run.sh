@@ -18,6 +18,7 @@ echo "ID_RSA_PATH: ${ID_RSA_PATH:=id_rsa}"
 echo "RESULTS_PATH: ${RESULTS_PATH:=/home/ubuntu/gci-faas-sim/experiment/results/}"
 echo "LOCAL_RESULTS_PATH: ${LOCAL_RESULTS_PATH:=/home/davidfq/Desktop/gci-faas-sim/experiment/results/}"
 echo "CD_TO_SCRIPTS_PATH: ${CD_TO_SCRIPTS_PATH:=cd /home/ubuntu/gci-faas-sim/experiment}"
+echo "IMAGE_URL: ${IMAGE_URL:=http://s3.amazonaws.com/wallpapers2/wallpapers/images/000/000/408/thumb/375.jpg?1487671636}" # default image size is 131kb
 
 rm -rf ${LOCAL_RESULTS_PATH}
 
@@ -48,7 +49,7 @@ do
         then
             tmp="gci"
         fi
-        ssh -i ${ID_RSA_PATH} ubuntu@${WORKLOAD_TARGET_IP} -o StrictHostKeyChecking=no "${CD_TO_SCRIPTS_PATH}; ./workload --expid=${expid} -logpath=${RESULTS_PATH} --target=${FUNCTION_TARGET_IP}:${FUNCTION_TARGET_PORT} --usegci=${flag} --nreqs=${NUMBER_OF_REQUESTS} --resultspath=${RESULTS_PATH} --filename=${tmp}${expid}.csv"
+        ssh -i ${ID_RSA_PATH} ubuntu@${WORKLOAD_TARGET_IP} -o StrictHostKeyChecking=no "${CD_TO_SCRIPTS_PATH}; ./workload --expid=${expid} -imageurl=${IMAGE_URL} -logpath=${RESULTS_PATH} --target=${FUNCTION_TARGET_IP}:${FUNCTION_TARGET_PORT} --usegci=${flag} --nreqs=${NUMBER_OF_REQUESTS} --resultspath=${RESULTS_PATH} --filename=${tmp}${expid}.csv"
     done;
 done
 
