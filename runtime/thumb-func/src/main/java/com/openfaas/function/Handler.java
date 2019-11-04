@@ -7,23 +7,39 @@ import java.lang.Error;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.net.URL;
+import java.util.Arrays;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.awt.image.ColorModel;
 import javax.imageio.ImageIO;
 
 public class Handler implements com.openfaas.model.IHandler {
-    static boolean exit; 
+    static boolean exit;
     static double scale;
-    static BufferedImage image;
+    static byte[] binaryImage;
     private int reqCount;
 
     static {
         try {
-            URL imageUrl = new URL(System.getenv("image_url"));
+            ImageIO.setUseCache(false); // We don't want to cache things out for experimento purposes.
+
             scale = Double.parseDouble(System.getenv("scale"));
-            image = ImageIO.read(imageUrl);
-        } catch(Exception e) {
+
+            // Reading raw bytes of the image.
+            URL u = new URL(System.getenv("image_url"));
+            int contentLength = u.openConnection().getContentLength();
+            binaryImage = new byte[contentLength];
+            InputStream openStream = u.openStream();
+            int imageSize = openStream.read(binaryImage);
+            if (imageSize != contentLength) {
+                throw new RuntimeException(
+                        String.format("Size of the downloaded image %d is different from the content length %d",
+                                imageSize, contentLength));
+            }
+            openStream.close();
+        } catch (Exception e) {
             e.printStackTrace();
             exit = true;
         }
@@ -53,32 +69,24 @@ public class Handler implements com.openfaas.model.IHandler {
     }
 
     public String callFunction() {
-        BufferedImage image = deepCopy(this.image);
         String err = "";
         try {
-            AffineTransform transform = AffineTransform.getScaleInstance(scale, scale); 
-            AffineTransformOp op = new AffineTransformOp(transform, AffineTransformOp.TYPE_BILINEAR); 
+            // This copy aims to simulate the effect of downloading the binary image from an
+            // URL, but without having to deal with the variance imposed by network
+            // transmission churn.
+            byte[] rawCopy = Arrays.copyOf(binaryImage, binaryImage.length);
+            BufferedImage image = ImageIO.read(new ByteArrayInputStream(rawCopy));
+            AffineTransform transform = AffineTransform.getScaleInstance(scale, scale);
+            AffineTransformOp op = new AffineTransformOp(transform, AffineTransformOp.TYPE_BILINEAR);
             op.filter(image, null).flush();
         } catch (Exception e) {
-            err = e.toString() + System.lineSeparator()
-            		+ e.getCause() + System.lineSeparator()
-            		+ e.getMessage();
+            err = e.toString() + System.lineSeparator() + e.getCause() + System.lineSeparator() + e.getMessage();
             e.printStackTrace();
 
         } catch (Error e) {
-            err = e.toString() + System.lineSeparator()
-            		+ e.getCause() + System.lineSeparator()
-            		+ e.getMessage();
+            err = e.toString() + System.lineSeparator() + e.getCause() + System.lineSeparator() + e.getMessage();
             e.printStackTrace();
         }
         return err;
     }
-
-    private BufferedImage deepCopy(BufferedImage bi) {
-        ColorModel cm = bi.getColorModel();
-        boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
-        WritableRaster raster = bi.copyData(null);
-        return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
-    }
-
 }
