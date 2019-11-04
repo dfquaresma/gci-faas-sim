@@ -8,8 +8,8 @@ output: pdf_document
 # Runtime experiments: GCI vs NOGCI
 ```{r echo=FALSE, results='hide', message=FALSE}
 source("functions.R")
-gci = filter(read.al(paste("../experiment/results-1mb-j8-copyimage/", "gci1", ".csv", sep="")), status == 200)
-nogci = filter(read.al(paste("../experiment/results-1mb-j8-copyimage/", "nogci1", ".csv", sep="")), status == 200)
+gci = filter(read.al(paste("../experiment/instrumented-exps/results-1mb-j8-copyimage/", "gci1", ".csv", sep="")), status == 200)
+nogci = filter(read.al(paste("../experiment/instrumented-exps/results-1mb-j8-copyimage/", "nogci1", ".csv", sep="")), status == 200)
 gci$response_time = gci$response_time / 1000000
 gci$service_time = gci$body / 1000000
 nogci$response_time = nogci$response_time / 1000000
