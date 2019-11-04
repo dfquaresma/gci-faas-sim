@@ -30,24 +30,24 @@ public class Handler implements com.openfaas.model.IHandler {
             
             // Reading raw bytes of the image.
             URL url = new URL(System.getenv("image_url"));
-            int contentLength = u.openConnection().getContentLength();
+            int contentLength = url.openConnection().getContentLength();
 
             ByteArrayOutputStream output = new ByteArrayOutputStream();
-            try (InputStream inputStream = url.openStream()) {
-                int n = 0;
-                byte[] buffer = new byte[contentLength];
-                while (-1 != (n = inputStream.read(buffer))) {
-                    output.write(buffer, 0, n);
-                }
+            InputStream inputStream = url.openStream();
+            int n = 0;
+            byte[] buffer = new byte[contentLength];
+            while (-1 != (n = inputStream.read(buffer))) {
+                output.write(buffer, 0, n);
             }
-
+            
             binaryImage = output.toByteArray();
-            if (binaryImage.length != contentLength) {
+            int imageSize = binaryImage.length;
+            if (imageSize != contentLength) {
                 throw new RuntimeException(
                         String.format("Size of the downloaded image %d is different from the content length %d",
                                 imageSize, contentLength));
             }
-            openStream.close();
+            inputStream.close();
         } catch (Exception e) {
             e.printStackTrace();
             exit = true;
