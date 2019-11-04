@@ -63,7 +63,7 @@ public class Handler implements com.openfaas.model.IHandler {
             res.setStatusCode(500);
         }
         res.setBody(output);
-        System.out.println(this.reqCount + " - HANDLER LEVEL - SERVICE TIME OF callFunction: " + output);
+        //System.out.println(this.reqCount + " - HANDLER LEVEL - SERVICE TIME OF callFunction: " + output);
         this.reqCount++;
         return res;
     }
