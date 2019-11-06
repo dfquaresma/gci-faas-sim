@@ -24,7 +24,7 @@ public class Handler implements com.openfaas.model.IHandler {
 
     static {
         try {
-            ImageIO.setUseCache(true);//false); // We don't want to cache things out for experimento purposes.
+            ImageIO.setUseCache(false); // We don't want to cache things out for experimento purposes.
 
             scale = Double.parseDouble(System.getenv("scale"));
             
