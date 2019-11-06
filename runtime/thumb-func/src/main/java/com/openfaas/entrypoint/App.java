@@ -47,13 +47,7 @@ public class App {
                     // bad request
                     pout.print("HTTP/1.0 400 Bad Request" + newLine + newLine);
                 } else {
-                    long before = getEdenPoolMemUsage();
-                    System.out.println("EDEN BEFORE: " + before);
                     res = handler.Handle(null);
-                    long after = getEdenPoolMemUsage();
-                    System.out.println("EDEN AFTER: " + after);
-                    System.out.println("EDEN DIFF: " + (after- before));
-
                     String status = "200 OK";
                     if (res.getStatusCode() != 200) {
                         status = "503 SERVICE UNAVAILABLE";
@@ -70,14 +64,5 @@ public class App {
                 } catch (Throwable tri) {System.err.println("Error handling request: " + tri);}
             }
         } catch (Throwable tr) {System.err.println("Could not start server: " + tr);}
-    }
-
-    private static long getEdenPoolMemUsage() {
-        for (final MemoryPoolMXBean pool : ManagementFactory.getMemoryPoolMXBeans()) {
-            if (pool.getName().contains("Eden")) {
-                return pool.getUsage().getUsed();
-            }
-        }
-        return -1;
     }
 }

@@ -80,16 +80,38 @@ public class Handler implements com.openfaas.model.IHandler {
     }
 
     public String callFunction() {
+        long edenBefore = getEdenPoolMemUsage();
+        long edenAfter = getEdenPoolMemUsage();
         String err = "";
         try {
             // This copy aims to simulate the effect of downloading the binary image from an
             // URL, but without having to deal with the variance imposed by network
             // transmission churn.
+            System.out.println("EDEN BEFORE COPY ARRAY: " + edenBefore);
             byte[] rawCopy = Arrays.copyOf(binaryImage, binaryImage.length);
+            System.out.println("EDEN AFTER COPY ARRAY: " + edenAfter);
+            System.out.println("EDEN DIFF COPY ARRAY: " + (edenAfter- edenBefore));
+
+            System.out.println("EDEN BEFORE READ BYTE ARRAY: " + edenBefore);
             BufferedImage image = ImageIO.read(new ByteArrayInputStream(rawCopy));
+            System.out.println("EDEN AFTER READ BYTE ARRAY: " + edenAfter);
+            System.out.println("EDEN DIFF READ BYTE ARRAY: " + (edenAfter- edenBefore));
+
+            System.out.println("EDEN BEFORE TRANSFORM SCALE: " + edenBefore);
             AffineTransform transform = AffineTransform.getScaleInstance(scale, scale);
+            System.out.println("EDEN AFTER TRANSFORM SCALE: " + edenAfter);
+            System.out.println("EDEN DIFF TRANSFORM SCALE: " + (edenAfter- edenBefore));
+
+            System.out.println("EDEN BEFORE TRANSFORM OP: " + edenBefore);
             AffineTransformOp op = new AffineTransformOp(transform, AffineTransformOp.TYPE_BILINEAR);
+            System.out.println("EDEN AFTER TRANSFORM OP: " + edenAfter);
+            System.out.println("EDEN DIFF TRANSFORM OP: " + (edenAfter- edenBefore));
+
+            System.out.println("EDEN BEFORE FILTER AND FLUSH: " + edenBefore);
             op.filter(image, null).flush();
+            System.out.println("EDEN AFTER FILTER AND FLUSH: " + edenAfter);
+            System.out.println("EDEN DIFF FILTER AND FLUSH: " + (edenAfter- edenBefore));
+
         } catch (Exception e) {
             err = e.toString() + System.lineSeparator() + e.getCause() + System.lineSeparator() + e.getMessage();
             e.printStackTrace();
@@ -99,5 +121,14 @@ public class Handler implements com.openfaas.model.IHandler {
             e.printStackTrace();
         }
         return err;
+    }
+
+    private static long getEdenPoolMemUsage() {
+        for (final MemoryPoolMXBean pool : ManagementFactory.getMemoryPoolMXBeans()) {
+            if (pool.getName().contains("Eden")) {
+                return pool.getUsage().getUsed();
+            }
+        }
+        return -1;
     }
 }
