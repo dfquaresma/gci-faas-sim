@@ -16,6 +16,9 @@ import java.io.InputStream;
 import java.awt.image.ColorModel;
 import javax.imageio.ImageIO;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryPoolMXBean;
+
 public class Handler implements com.openfaas.model.IHandler {
     static boolean exit;
     static double scale;
