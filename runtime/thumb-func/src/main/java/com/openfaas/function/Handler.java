@@ -90,28 +90,38 @@ public class Handler implements com.openfaas.model.IHandler {
             // This copy aims to simulate the effect of downloading the binary image from an
             // URL, but without having to deal with the variance imposed by network
             // transmission churn.
+            edenBefore = getEdenPoolMemUsage();
             System.out.println("EDEN BEFORE COPY ARRAY: " + edenBefore);
             byte[] rawCopy = Arrays.copyOf(binaryImage, binaryImage.length);
+            edenAfter = getEdenPoolMemUsage();
             System.out.println("EDEN AFTER COPY ARRAY: " + edenAfter);
             System.out.println("EDEN DIFF COPY ARRAY: " + (edenAfter- edenBefore));
 
+            edenBefore = getEdenPoolMemUsage();
             System.out.println("EDEN BEFORE READ BYTE ARRAY: " + edenBefore);
             BufferedImage image = ImageIO.read(new ByteArrayInputStream(rawCopy));
+            edenAfter = getEdenPoolMemUsage();
             System.out.println("EDEN AFTER READ BYTE ARRAY: " + edenAfter);
             System.out.println("EDEN DIFF READ BYTE ARRAY: " + (edenAfter- edenBefore));
 
+            edenBefore = getEdenPoolMemUsage();
             System.out.println("EDEN BEFORE TRANSFORM SCALE: " + edenBefore);
             AffineTransform transform = AffineTransform.getScaleInstance(scale, scale);
+            edenAfter = getEdenPoolMemUsage();
             System.out.println("EDEN AFTER TRANSFORM SCALE: " + edenAfter);
             System.out.println("EDEN DIFF TRANSFORM SCALE: " + (edenAfter- edenBefore));
 
+            edenBefore = getEdenPoolMemUsage();
             System.out.println("EDEN BEFORE TRANSFORM OP: " + edenBefore);
             AffineTransformOp op = new AffineTransformOp(transform, AffineTransformOp.TYPE_BILINEAR);
+            edenAfter = getEdenPoolMemUsage();
             System.out.println("EDEN AFTER TRANSFORM OP: " + edenAfter);
             System.out.println("EDEN DIFF TRANSFORM OP: " + (edenAfter- edenBefore));
 
+            edenBefore = getEdenPoolMemUsage();
             System.out.println("EDEN BEFORE FILTER AND FLUSH: " + edenBefore);
             op.filter(image, null).flush();
+            edenAfter = getEdenPoolMemUsage();
             System.out.println("EDEN AFTER FILTER AND FLUSH: " + edenAfter);
             System.out.println("EDEN DIFF FILTER AND FLUSH: " + (edenAfter- edenBefore));
 
