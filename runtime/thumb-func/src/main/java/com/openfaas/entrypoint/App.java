@@ -9,6 +9,9 @@ import java.net.*;
 import java.io.*;
 import java.util.*;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryPoolMXBean;
+
 public class App { 
     
     public static void main(String[] args) throws Exception {
@@ -44,7 +47,10 @@ public class App {
                     // bad request
                     pout.print("HTTP/1.0 400 Bad Request" + newLine + newLine);
                 } else {
+                    System.out.println("EDEN BEFORE CALLING HANDLE: " + getEdenPoolMemUsage());
                     res = handler.Handle(null);
+                    System.out.println("EDEN AFTER CALLING HANDLE: " + getEdenPoolMemUsage());
+
                     String status = "200 OK";
                     if (res.getStatusCode() != 200) {
                         status = "503 SERVICE UNAVAILABLE";
@@ -61,5 +67,14 @@ public class App {
                 } catch (Throwable tri) {System.err.println("Error handling request: " + tri);}
             }
         } catch (Throwable tr) {System.err.println("Could not start server: " + tr);}
+    }
+
+    private static long getEdenPoolMemUsage() {
+        for (final MemoryPoolMXBean pool : ManagementFactory.getMemoryPoolMXBeans()) {
+            if (pool.getName().contains("Eden")) {
+                return pool.getUsage().getUsed();
+            }
+        }
+        return -1;
     }
 }
