@@ -47,9 +47,12 @@ public class App {
                     // bad request
                     pout.print("HTTP/1.0 400 Bad Request" + newLine + newLine);
                 } else {
-                    System.out.println("EDEN BEFORE CALLING HANDLE: " + getEdenPoolMemUsage());
+                    long before = getEdenPoolMemUsage();
+                    System.out.println("EDEN BEFORE: " + before);
                     res = handler.Handle(null);
-                    System.out.println("EDEN AFTER CALLING HANDLE: " + getEdenPoolMemUsage());
+                    long after = getEdenPoolMemUsage();
+                    System.out.println("EDEN AFTER: " + after);
+                    System.out.println("EDEN DIFF: " + (after- before));
 
                     String status = "200 OK";
                     if (res.getStatusCode() != 200) {
