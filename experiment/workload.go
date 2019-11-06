@@ -22,8 +22,8 @@ const (
 	scale            = "scale=0.1 "
 	runtimeCoreSet   = "taskset 0x1 nice -20 "
 	proxyCoreSet     = "taskset 0x2 nice -20 "
-	heapSize         = "-Xms445645k -Xmx445645k " // minimum and maximum heap size of ~435mb, from a virtual ambient of 512mb
-	proxyYgen        = "--ygen=104857600 "        // proxy forces it's collects after 100mb of heap usage
+	heapSize         = "-Xms512m -Xmx512m " // minimum and maximum heap size of 512mb, from a virtual ambient of 512mb
+	proxyYgen        = "--ygen=104857600 "  // proxy forces it's collects after 100mb of heap usage
 	awsJvmFlags      = "-XX:MaxHeapSize=445645k -XX:MaxMetaspaceSize=52429k -XX:ReservedCodeCacheSize=26214k -Xshare:on -XX:-TieredCompilation -XX:+UseSerialGC -Djava.net.preferIPv4Stack=true "
 	noGcijavaGCFlags = "-server " + heapSize + awsJvmFlags
 	gcijavaGCFlags   = "-server " + heapSize + awsJvmFlags + "-XX:NewRatio=1 " // ~210mb to new generation, ~210mb to old generation
