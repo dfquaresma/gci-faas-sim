@@ -85,7 +85,7 @@ public class Handler implements com.openfaas.model.IHandler {
             // This copy aims to simulate the effect of downloading the binary image from an
             // URL, but without having to deal with the variance imposed by network
             // transmission churn.
-            byte[] rawCopy = binaryImage;//Arrays.copyOf(binaryImage, binaryImage.length);
+            byte[] rawCopy = Arrays.copyOf(binaryImage, binaryImage.length);
             BufferedImage image = ImageIO.read(new ByteArrayInputStream(rawCopy));
             AffineTransform transform = AffineTransform.getScaleInstance(scale, scale);
             AffineTransformOp op = new AffineTransformOp(transform, AffineTransformOp.TYPE_BILINEAR);
