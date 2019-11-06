@@ -93,11 +93,18 @@ public class Handler implements com.openfaas.model.IHandler {
             byte[] rawCopy = Arrays.copyOf(binaryImage, binaryImage.length);
 
             edenBefore = getEdenPoolMemUsage();
-            System.out.println("EDEN BEFORE READ BYTE ARRAY: " + edenBefore);
-            BufferedImage image = ImageIO.read(new ByteArrayInputStream(rawCopy));
+            System.out.println("EDEN BEFORE InputStream: " + edenBefore);
+            InputStream is = new ByteArrayInputStream(rawCopy);
             edenAfter = getEdenPoolMemUsage();
-            System.out.println("EDEN AFTER READ BYTE ARRAY: " + edenAfter);
-            System.out.println("EDEN DIFF READ BYTE ARRAY: " + (edenAfter- edenBefore));
+            System.out.println("EDEN AFTER InputStream: " + edenAfter);
+            System.out.println("EDEN DIFF InputStream: " + (edenAfter- edenBefore));
+
+            edenBefore = getEdenPoolMemUsage();
+            System.out.println("EDEN BEFORE ImageIO.read: " + edenBefore);
+            BufferedImage image = ImageIO.read(is);
+            edenAfter = getEdenPoolMemUsage();
+            System.out.println("EDEN AFTER ImageIO.read: " + edenAfter);
+            System.out.println("EDEN DIFF ImageIO.read: " + (edenAfter- edenBefore));
 
             AffineTransform transform = AffineTransform.getScaleInstance(scale, scale);
             AffineTransformOp op = new AffineTransformOp(transform, AffineTransformOp.TYPE_BILINEAR);
