@@ -8,7 +8,6 @@ import java.lang.Error;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.net.URL;
-import java.util.Arrays;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.io.ByteArrayInputStream;
@@ -16,6 +15,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.awt.image.ColorModel;
 import javax.imageio.ImageIO;
+
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryPoolMXBean;
 
 public class Handler implements com.openfaas.model.IHandler {
     static boolean exit; 
@@ -62,9 +64,12 @@ public class Handler implements com.openfaas.model.IHandler {
             System.exit(1);
         }
 
+        long edenBefore = getEdenPoolMemUsage();
         long before = System.nanoTime();
         String err = callFunction();
         long after = System.nanoTime();
+        long edenAfter = getEdenPoolMemUsage();
+        System.out.println("EDEN DIFF AFTER CALL FUNC: " + (edenAfter- edenBefore));
 
         Response res = new Response();
         String output = err + System.lineSeparator();
@@ -103,14 +108,21 @@ public class Handler implements com.openfaas.model.IHandler {
         return err;
     }
 
-    private long simulateImageDownload() {
-        byte[] rawCopy = Arrays.copyOf(binaryImage, binaryImage.length);
-        byte sum = 0;
+    private byte[] simulateImageDownload() {
+        byte[] rawCopy = new byte[binaryImage.length];
         for (int i = 0; i < rawCopy.length; i++) {
-            sum += rawCopy[i];
-            rawCopy[i] = sum;
+            rawCopy[i] = binaryImage[i];
         }
-        return sum;
+        return rawCopy;
+    }
+
+    private static long getEdenPoolMemUsage() {
+        for (final MemoryPoolMXBean pool : ManagementFactory.getMemoryPoolMXBeans()) {
+            if (pool.getName().contains("Eden")) {
+                return pool.getUsage().getUsed();
+            }
+        }
+        return -1;
     }
 
 }
