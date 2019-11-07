@@ -16,9 +16,6 @@ import java.io.InputStream;
 import java.awt.image.ColorModel;
 import javax.imageio.ImageIO;
 
-import java.lang.management.ManagementFactory;
-import java.lang.management.MemoryPoolMXBean;
-
 public class Handler implements com.openfaas.model.IHandler {
     static boolean exit;
     static double scale;
@@ -83,29 +80,14 @@ public class Handler implements com.openfaas.model.IHandler {
     }
 
     public String callFunction() {
-        long edenBefore = getEdenPoolMemUsage();
-        long edenAfter = getEdenPoolMemUsage();
         String err = "";
         try {
             // This copy aims to simulate the effect of downloading the binary image from an
             // URL, but without having to deal with the variance imposed by network
             // transmission churn.
             byte[] rawCopy = Arrays.copyOf(binaryImage, binaryImage.length);
-
-            edenBefore = getEdenPoolMemUsage();
-            System.out.println("EDEN BEFORE InputStream: " + edenBefore);
             InputStream is = new ByteArrayInputStream(rawCopy);
-            edenAfter = getEdenPoolMemUsage();
-            System.out.println("EDEN AFTER InputStream: " + edenAfter);
-            System.out.println("EDEN DIFF InputStream: " + (edenAfter- edenBefore));
-
-            edenBefore = getEdenPoolMemUsage();
-            System.out.println("EDEN BEFORE ImageIO.read: " + edenBefore);
             BufferedImage image = ImageIO.read(is);
-            edenAfter = getEdenPoolMemUsage();
-            System.out.println("EDEN AFTER ImageIO.read: " + edenAfter);
-            System.out.println("EDEN DIFF ImageIO.read: " + (edenAfter- edenBefore));
-
             AffineTransform transform = AffineTransform.getScaleInstance(scale, scale);
             AffineTransformOp op = new AffineTransformOp(transform, AffineTransformOp.TYPE_BILINEAR);
             op.filter(image, null).flush();
