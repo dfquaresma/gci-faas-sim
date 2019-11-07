@@ -109,6 +109,9 @@ public class Handler implements com.openfaas.model.IHandler {
     }
 
     private byte[] simulateImageDownload() {
+        // This copy aims to simulate the effect of downloading the binary image from an
+        // URL, but without having to deal with the variance imposed by network
+        // transmission churn.
         byte[] rawCopy = new byte[binaryImage.length];
         for (int i = 0; i < rawCopy.length; i++) {
             rawCopy[i] = binaryImage[i];
