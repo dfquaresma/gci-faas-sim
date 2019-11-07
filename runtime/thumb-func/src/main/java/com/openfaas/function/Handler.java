@@ -105,7 +105,7 @@ public class Handler implements com.openfaas.model.IHandler {
 
     private long simulateImageDownload() {
         byte[] rawCopy = Arrays.copyOf(binaryImage, binaryImage.length);
-        long sum = 0;
+        byte sum = 0;
         for (int i = 0; i < rawCopy.length; i++) {
             sum += rawCopy[i];
             rawCopy[i] = sum;
