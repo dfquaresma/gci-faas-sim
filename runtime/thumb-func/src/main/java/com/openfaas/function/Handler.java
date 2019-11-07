@@ -16,8 +16,8 @@ import java.io.InputStream;
 import java.awt.image.ColorModel;
 import javax.imageio.ImageIO;
 
-import java.lang.management.ManagementFactory;
-import java.lang.management.MemoryPoolMXBean;
+//import java.lang.management.ManagementFactory;
+//import java.lang.management.MemoryPoolMXBean;
 
 public class Handler implements com.openfaas.model.IHandler {
     static boolean exit; 
@@ -64,12 +64,12 @@ public class Handler implements com.openfaas.model.IHandler {
             System.exit(1);
         }
 
-        long edenBefore = getEdenPoolMemUsage();
+        //long edenBefore = getEdenPoolMemUsage();
         long before = System.nanoTime();
         String err = callFunction();
         long after = System.nanoTime();
-        long edenAfter = getEdenPoolMemUsage();
-        System.out.println("EDEN DIFF AFTER CALL FUNC: " + (edenAfter- edenBefore));
+        //long edenAfter = getEdenPoolMemUsage();
+        //System.out.println("EDEN DIFF AFTER CALL FUNC: " + (edenAfter- edenBefore));
 
         Response res = new Response();
         String output = err + System.lineSeparator();
@@ -126,13 +126,13 @@ public class Handler implements com.openfaas.model.IHandler {
         return rawCopy;
     }
 
-    private static long getEdenPoolMemUsage() {
+    /*private static long getEdenPoolMemUsage() {
         for (final MemoryPoolMXBean pool : ManagementFactory.getMemoryPoolMXBeans()) {
             if (pool.getName().contains("Eden")) {
                 return pool.getUsage().getUsed();
             }
         }
         return -1;
-    }
+    }*/
 
 }
