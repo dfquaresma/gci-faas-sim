@@ -88,10 +88,17 @@ public class Handler implements com.openfaas.model.IHandler {
     public String callFunction() {
         String err = "";
         try {
-            simulateImageDownload();
+            // avoid that the return from method escape to stack
+            byte[] arr = simulateImageDownload();
+            
             AffineTransform transform = AffineTransform.getScaleInstance(scale, scale); 
             AffineTransformOp op = new AffineTransformOp(transform, AffineTransformOp.TYPE_BILINEAR); 
             op.filter(image, null).flush();
+
+            // make sure that it will not escape to stack
+            for (int i = 0; i < arr.length; i++) {
+                arr[i] = binaryImage[i];
+            }
 
         } catch (Exception e) {
             err = e.toString() + System.lineSeparator()
