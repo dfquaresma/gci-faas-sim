@@ -51,12 +51,13 @@ do
         fi
         ssh -i ${ID_RSA_PATH} ubuntu@${WORKLOAD_TARGET_IP} -o StrictHostKeyChecking=no "${CD_TO_SCRIPTS_PATH}; ./workload --expid=${expid} -image_url=${IMAGE_URL} -logpath=${RESULTS_PATH} --target=${FUNCTION_TARGET_IP}:${FUNCTION_TARGET_PORT} --usegci=${flag} --nreqs=${NUMBER_OF_REQUESTS} --resultspath=${RESULTS_PATH} --filename=${tmp}${expid}.csv"
     done;
+    
+    mkdir -p ${LOCAL_RESULTS_PATH}
+
+    scp -i ${ID_RSA_PATH} -o StrictHostKeyChecking=no ubuntu@${FUNCTION_TARGET_IP}:"${RESULTS_PATH}*.log" $LOCAL_RESULTS_PATH
+    ssh -i ${ID_RSA_PATH} ubuntu@${FUNCTION_TARGET_IP} -o StrictHostKeyChecking=no "sudo rm -rf ${RESULTS_PATH}"
+
+    scp -i ${ID_RSA_PATH} -o StrictHostKeyChecking=no ubuntu@${WORKLOAD_TARGET_IP}:"${RESULTS_PATH}*.csv" $LOCAL_RESULTS_PATH
+    ssh -i ${ID_RSA_PATH} ubuntu@${WORKLOAD_TARGET_IP} -o StrictHostKeyChecking=no "sudo rm -rf ${RESULTS_PATH}"
+
 done
-
-mkdir -p ${LOCAL_RESULTS_PATH}
-
-scp -i ${ID_RSA_PATH} -o StrictHostKeyChecking=no ubuntu@${FUNCTION_TARGET_IP}:"${RESULTS_PATH}*.log" $LOCAL_RESULTS_PATH
-ssh -i ${ID_RSA_PATH} ubuntu@${FUNCTION_TARGET_IP} -o StrictHostKeyChecking=no "sudo rm -rf ${RESULTS_PATH}"
-
-scp -i ${ID_RSA_PATH} -o StrictHostKeyChecking=no ubuntu@${WORKLOAD_TARGET_IP}:"${RESULTS_PATH}*.csv" $LOCAL_RESULTS_PATH
-ssh -i ${ID_RSA_PATH} ubuntu@${WORKLOAD_TARGET_IP} -o StrictHostKeyChecking=no "sudo rm -rf ${RESULTS_PATH}"
