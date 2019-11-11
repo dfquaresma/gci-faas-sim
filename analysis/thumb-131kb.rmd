@@ -8,8 +8,8 @@ output: pdf_document
 # Runtime experiments: GCI vs NOGCI
 ```{r echo=FALSE, results='hide', message=FALSE}
 source("functions.R")
-gci = filter(read.al(paste("../experiment/instrumented-exps/results-131kb-j8-copyimage/", "gci1", ".csv", sep="")), status == 200)
-nogci = filter(read.al(paste("../experiment/instrumented-exps/results-131kb-j8-copyimage/", "nogci1", ".csv", sep="")), status == 200)
+gci   = filter(read.al(paste("../experiment/instrumented-exps/results-131kb/", "gci1", ".csv", sep="")), status == 200)
+nogci = filter(read.al(paste("../experiment/instrumented-exps/results-131kb/", "nogci1", ".csv", sep="")), status == 200)
 gci$response_time = gci$response_time / 1000000
 gci$service_time = gci$body / 1000000
 nogci$response_time = nogci$response_time / 1000000
@@ -22,24 +22,25 @@ nogci$service_time = nogci$body / 1000000
 - Lógica de negócio da função: [**Redimencionamento de uma imagem**](https://github.com/dfquaresma/gci-faas-sim/blob/master/runtime/thumb-func/src/main/java/com/openfaas/function/Handler.java).
 - Escala de redimencionamento: 0.1.
 - Tamanho da imagem: 131kb.
+- comando para levantar a JVM: 
+    - GCI: entrypoint_port=8082 scale=0.1 image_url=http://s3.amazonaws.com/wallpapers2/wallpapers/images/000/000/408/thumb/375.jpg taskset 0x1 nice -20 nohup java -server -Xms512m -Xmx512m -XX:MaxMetaspaceSize=52429k -XX:ReservedCodeCacheSize=26214k -Xshare:on -XX:-TieredCompilation -XX:+UseSerialGC -Djava.net.preferIPv4Stack=true -XX:NewRatio=1 -Xloggc:/home/ubuntu/gci-faas-sim/experiment/results/gci1-thumb-gc.log -Djvmtilib=/home/ubuntu/gci-faas-sim/gci-files/libgc.so -javaagent:/home/ubuntu/gci-faas-sim/gci-files/gciagent-0.1-jar-with-dependencies.jar=8500 -jar /home/ubuntu/gci-faas-sim/runtime/thumb-func/target/thumbnailator-server-maven-0.0.1-SNAPSHOT.jar >/home/ubuntu/gci-faas-sim/experiment/results/gci1-thumb-stdout.log 2>/home/ubuntu/gci-faas-sim/experiment/results/gci1-thumb-stderr.log & taskset 0x2 nice -20 /home/ubuntu/gci-faas-sim/gci-files/gci-proxy --port=8080 --target=127.0.0.1:8082 --gci_target=127.0.0.1:8500 --ygen=52428800 >/home/ubuntu/gci-faas-sim/experiment/results/gci1-proxy-stdout.log 2>/home/ubuntu/gci-faas-sim/experiment/results/gci1-proxy-stderr.log &
+    - NOGCI: entrypoint_port=8080 scale=0.1 image_url=http://s3.amazonaws.com/wallpapers2/wallpapers/images/000/000/408/thumb/375.jpg taskset 0x1 nice -20 java -server -Xms512m -Xmx512m -XX:MaxMetaspaceSize=52429k -XX:ReservedCodeCacheSize=26214k -Xshare:on -XX:-TieredCompilation -XX:+UseSerialGC -Djava.net.preferIPv4Stack=true -Xloggc:/home/ubuntu/gci-faas-sim/experiment/results/nogci1-thumb-gc.log -jar /home/ubuntu/gci-faas-sim/runtime/thumb-func/target/thumbnailator-server-maven-0.0.1-SNAPSHOT.jar >/home/ubuntu/gci-faas-sim/experiment/results/nogci1-thumb-stdout.log 2>/home/ubuntu/gci-faas-sim/experiment/results/nogci1-thumb-stderr.log &
 
 #### ECDF for response time
 ```{r  fig.width=15, fig.height=5, echo=FALSE}
-graph_tail(gci$response_time, nogci$response_time, title="THUMBNAILATOR ECDF RESPONSE TIME", x_limit_inf=0, x_limit_sup=75, annotate_y=0.90)
+graph_tail(gci$response_time, nogci$response_time, title="THUMBNAILATOR ECDF RESPONSE TIME", x_limit_inf=0, x_limit_sup=60, annotate_y=0.90)
 ```
-Neste gráfico é possível notar que a ECDF do GCI está dominando a ECDF do NOGCI, exceto na cauda. Aparentemente, há um "empate" no percentil 99.99.
 
 #### ECDF for service time
 ```{r  fig.width=15, fig.height=5, echo=FALSE}
-graph_tail(gci$service_time, nogci$service_time, title="THUMBNAILATOR ECDF SERVICE TIME", x_limit_inf=0, x_limit_sup=75, annotate_y=0.90)
+graph_tail(gci$service_time, nogci$service_time, title="THUMBNAILATOR ECDF SERVICE TIME", x_limit_inf=0, x_limit_sup=60, annotate_y=0.90)
 ```
-O mesmo se aplica aqui, só que na cauda a ECDF do GCI aparenta ser dominada pela ECDF do NOGCI. Acredito que isso se deve ao fato de a imagem ser apenas de 131kb.  
 
 #### summary table of confidence interval for response time
 ```{r  fig.width=15, fig.height=5, echo=FALSE}
 summary_table(gci$response_time, "gci", nogci$response_time, "nogci")
 ```
-Os valores em colunas com .cii são referentes à valores limite inferior do intervalo de confiança. O valores em colunas com .cis são referentes à valores limite superior do intervalo de confiança. Tal qual como no gráfico com ECDF, GCI tá perdendo na cauda da latência. 
+Os valores em colunas com .cii são referentes à valores limite inferior do intervalo de confiança. O valores em colunas com .cis são referentes à valores limite superior do intervalo de confiança.
 
 #### GCI: comparing response time vs service time, both in milliseconds
 ```{r  fig.width=15, fig.height=5, echo=FALSE}
@@ -71,11 +72,8 @@ Esta tabela está mais para validação do que para uma análise de fato. Espera
 ```{r fig.width=10, fig.height=5, echo=FALSE}
 plot(gci$response_time, ylab="response time", main="GCI")
 ```
-Este plot é apenas para evidenciar que não há mais as anomalias que antes identificamos.
 
 #### NOGCI: plot response time
 ```{r fig.width=10, fig.height=5, echo=FALSE}
 plot(nogci$response_time, ylab="response time", main="NOGCI")
 ```
-Este plot é apenas para evidenciar que não há mais as anomalias que antes identificamos.
-
