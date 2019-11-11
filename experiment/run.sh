@@ -18,7 +18,7 @@ echo "ID_RSA_PATH: ${ID_RSA_PATH:=id_rsa}"
 echo "RESULTS_PATH: ${RESULTS_PATH:=/home/ubuntu/gci-faas-sim/experiment/results/}"
 echo "LOCAL_RESULTS_PATH: ${LOCAL_RESULTS_PATH:=/home/davidfq/Desktop/gci-faas-sim/experiment/results/}"
 echo "CD_TO_SCRIPTS_PATH: ${CD_TO_SCRIPTS_PATH:=cd /home/ubuntu/gci-faas-sim/experiment}"
-echo "IMAGE_URL: ${IMAGE_URL:=https://i0.wp.com/107.6.131.211/wp-content/uploads/2016/01/pics-012.jpg}" # default image size is 408kb
+echo "IMAGE_URL: ${IMAGE_URL:=http://s3.amazonaws.com/wallpapers2/wallpapers/images/000/000/408/thumb/375}" # default image size is 131kb
 
 rm -rf ${LOCAL_RESULTS_PATH}
 
