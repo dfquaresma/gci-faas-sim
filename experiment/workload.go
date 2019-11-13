@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"encoding/csv"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -41,11 +42,26 @@ var (
 	fileName    = flag.String("filename", "", "results file name. It has no default value")
 	resultsPath = flag.String("resultspath", "", "absolute path for save results made. It has no default value")
 	imageUrl    = flag.String("image_url", "", "Url of the image to be resized. It has no default value")
+
+	// just to post processor feature
+	nFiles          = flag.Int64("nfiles", 1, "number of file to process, default 1")
+	inputPath       = flag.String("inputpath", "", "the absolute path to load CSV files. It has no default value")
+	asPostProcessor = flag.Bool("aspostprocessor", false, "Whether to use workload just as post processor, default false")
 )
 
 func main() {
 	flag.Parse()
-	if err := checkFlags(); err != nil {
+
+	if *asPostProcessor {
+		if err := checkPostProcessorFlags(); err != nil {
+			log.Fatalf("invalid flags: %v", err)
+		}
+		err := postprocess(*nFiles, *inputPath, *resultsPath)
+		log.Fatal(err)
+		os.Exit(0)
+	}
+
+	if err := checkWorkloadFlags(); err != nil {
 		log.Fatalf("invalid flags: %v", err)
 	}
 	var setupCommand string
@@ -80,7 +96,7 @@ func main() {
 	}
 }
 
-func checkFlags() error {
+func checkWorkloadFlags() error {
 	s := strings.Split(*target, ":")
 	if len(s) != 2 {
 		return fmt.Errorf("target must seperate ip and port with ':'. target: %s", *target)
@@ -190,14 +206,72 @@ func sendReq(target string) (int, int64, string, int64, int64, error) {
 		return 0, 0, "", 0, 0, err
 	}
 	status := resp.StatusCode
-	responseTime := time.Since(before).Nanoseconds()
 	body := string(bodyBytes)
 	tsbefore := before.UnixNano()
 	tsafter := after.UnixNano()
+	responseTime := tsafter - tsbefore
 	return status, responseTime, body, tsbefore, tsafter, nil
 }
 
+func checkPostProcessorFlags() error {
+	if _, err := os.Stat(*inputPath); os.IsNotExist(err) {
+		return fmt.Errorf("inputPath must exist. inputPath: %s", *inputPath)
+	}
+	if _, err := os.Stat(*resultsPath); os.IsNotExist(err) {
+		return fmt.Errorf("resultsPath must exist. resultsPath: %s", *resultsPath)
+	}
+	if *nFiles <= 0 {
+		return fmt.Errorf("nFiles must be bigger than zero. nFiles: %d", *nFiles)
+	}
+	return nil
+}
+
+func postprocess(nfiles int64, inputPath, resultsPath string) error {
+	var i int64
+	for i = 1; i <= nfiles; i++ {
+		var loadedData []string
+		var err error
+		gciFileName := "gci" + strconv.FormatInt(i, 10) + ".csv"
+		loadedData, err = loadData(inputPath + gciFileName)
+		if err != nil {
+			return err
+		}
+		err = createCsv(loadedData, resultsPath, gciFileName)
+		if err != nil {
+			return err
+		}
+		noGciFileName := "nogci" + strconv.FormatInt(i, 10) + ".csv"
+		loadedData, err = loadData(inputPath + noGciFileName)
+		if err != nil {
+			return err
+		}
+		err = createCsv(loadedData, resultsPath, noGciFileName)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func loadData(filaPath string) ([]string, error) {
+	f, err := os.Open(filaPath)
+	if err != nil {
+		return nil, err
+	}
+	records, err := csv.NewReader(f).ReadAll()
+	if err != nil {
+		return nil, err
+	}
+	var data []string
+	for _, rowSlice := range records {
+		rowStr := strings.Join(rowSlice, ",")
+		data = append(data, rowStr)
+	}
+	return data, nil
+}
+
 func createCsv(output []string, resultsPath, fileName string) error {
+	output = adjustData(output)
 	file, err := os.OpenFile(resultsPath+fileName, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		return err
@@ -209,4 +283,32 @@ func createCsv(output []string, resultsPath, fileName string) error {
 	datawriter.Flush()
 	file.Close()
 	return nil
+}
+
+func adjustData(data []string) []string {
+	lastSeenIsA503 := false
+	var adjustedData []string
+	for _, row := range data {
+		splitted := strings.Split(row, ",")
+		//id,status,response_time,body,tsbefore,tsafter - to help when iterating slices
+		statusIs503 := splitted[1] == "503" // index 1 is status
+		if lastSeenIsA503 {
+			if statusIs503 {
+				lastIndex := len(adjustedData) - 1
+				last503AData := strings.Split(adjustedData[lastIndex], ",")
+				last503AData[5] = splitted[5]        // updating tsafter
+				last503AData[2] += ":" + splitted[2] // creating a list of response time
+				adjustedData[lastIndex] = strings.Join(last503AData, ",")
+			} else {
+				lastSeenIsA503 = false
+				adjustedData = append(adjustedData, row)
+			}
+		} else {
+			if statusIs503 {
+				lastSeenIsA503 = true
+			}
+			adjustedData = append(adjustedData, row)
+		}
+	}
+	return adjustedData
 }
