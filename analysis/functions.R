@@ -3,6 +3,29 @@ require(ggplot2)
 require(quantileCI)
 require(base64enc)
 
+analyse_i <- function(i) {
+    gci = filter(read.al(paste("../experiment/results/", "gci", as.character(i), ".csv", sep="")), status == 200)
+    gci$response_time = gci$response_time / 1000000
+    gci$service_time = gci$body / 1000000
+
+    nogci = filter(read.al(paste("../experiment/results/", "nogci", as.character(i), ".csv", sep="")), status == 200)
+    nogci$response_time = nogci$response_time / 1000000
+    nogci$service_time = nogci$body / 1000000
+
+    graph_tail(gci$response_time, nogci$response_time, 
+        title=paste("THUMBNAILATOR ECDF RESPONSE TIME", as.character(i)), 
+        x_limit_inf=0, x_limit_sup=max(max(gci$response_time, na.rm = TRUE), max(nogci$response_time, na.rm = TRUE)), 
+        annotate_y=0.90
+    )
+
+    Sys.sleep(2)
+    plot(gci$response_time, ylab="response time", main=paste("GCI", as.character(i)))
+    Sys.sleep(3)
+    plot(nogci$response_time, ylab="response time", main=paste("NOGCI", as.character(i)))
+    Sys.sleep(3)
+    summary_table(gci$response_time, paste("gci", as.character(i)), nogci$response_time, paste("nogci", as.character(i)))
+}
+
 read.al <- function(path) {
   df <- read.csv(path, sep=",",header=T, dec=".")
   return (tail(df, -500))
