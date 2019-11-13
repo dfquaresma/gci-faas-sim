@@ -297,7 +297,7 @@ func adjustData(data []string) []string {
 				lastIndex := len(adjustedData) - 1
 				last503AData := strings.Split(adjustedData[lastIndex], ",")
 				last503AData[5] = splitted[5]        // updating tsafter
-				last503AData[2] += ":" + splitted[2] // creating a list of response time
+				last503AData[3] += ":" + splitted[2] // updating the list of response time at body column
 				adjustedData[lastIndex] = strings.Join(last503AData, ",")
 			} else {
 				lastSeenIsA503 = false
@@ -306,6 +306,8 @@ func adjustData(data []string) []string {
 		} else {
 			if statusIs503 {
 				lastSeenIsA503 = true
+				splitted[3] = splitted[2] // using body column to put a list of response time
+				row = strings.Join(splitted, ",")
 			}
 			adjustedData = append(adjustedData, row)
 		}
