@@ -32,7 +32,7 @@ do
         for op in ${OP};
         do
             echo -e "${RED}RUNNING SIMULATION, OP=${op}, FLAG=${flag}, EXPID=${expid}${NC}"
-            ./gci-simulator -lambda=${LAMBDA} -inputs=${inputs} -output=${OUTPUT_PATH} -optimized=${op} -filename=sim-${flag}${expid} --warmup=${WARMUP}
+            ./simulator -lambda=${LAMBDA} -inputs=${inputs} -output=${OUTPUT_PATH} -optimized=${op} -filename=sim-${flag}${expid} --warmup=${WARMUP}
         done;
     done;
 done
