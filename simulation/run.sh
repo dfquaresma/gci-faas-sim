@@ -20,7 +20,7 @@ echo "INPUT_PATH: ${INPUT_PATH:=/home/davidfq/Desktop/gci-faas-sim/experiment/re
 echo -e "${YELLOW}CREATING PATHS${NC}"
 mkdir -p ${OUTPUT_PATH}
 for expid in `seq ${INITIAL_EXPID} ${NUMBER_OF_EXPERIMENTS}`;
-do    
+do
     for flag in ${FLAGS};
     do
         inputs="${INPUT_PATH}${flag}1.csv"
@@ -33,7 +33,7 @@ do
         do
             echo -e "${RED}RUNNING SIMULATION, OP=${op}, FLAG=${flag}, EXPID=${expid}${NC}"
             ./gci-simulator -lambda=${LAMBDA} -inputs=${inputs} -output=${OUTPUT_PATH} -optimized=${op} -filename=sim-${flag}${expid} --warmup=${WARMUP}
-        done;        
+        done;
     done;
 done
 
