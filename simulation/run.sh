@@ -23,6 +23,8 @@ for expid in `seq ${INITIAL_EXPID} ${NUMBER_OF_EXPERIMENTS}`;
 do
     for flag in ${FLAGS};
     do
+
+        echo -e "${YELLOW}CONCATENATING THE INPUTS${NC}"
         inputs="${INPUT_PATH}${flag}1.csv"
         for id in `seq 2 ${NUMBER_OF_INPUTS}`;
         do
