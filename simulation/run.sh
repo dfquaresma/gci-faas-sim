@@ -7,40 +7,34 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
-echo "LAMBDA: ${LAMBDA:=25}"
-echo "OP: ${OP:=true false}"
+echo "INITIAL_EXPID: ${INITIAL_EXPID:=1}"
+echo "NUMBER_OF_EXPERIMENTS: ${NUMBER_OF_EXPERIMENTS:=1}"
+echo "LAMBDA: ${LAMBDA:=150}"
+echo "WARMUP: ${WARMUP:=500}"
+echo "OP: ${OP:=true false}" # to simulate the optimized scheduler 
 echo "FLAGS: ${FLAGS:=gci nogci}"
-echo "ID_RSA_PATH: ${ID_RSA_PATH:=../experiment/id_rsa}"
-echo "SIM_TARGET_IP: ${FUNCTION_TARGET_IP:=10.11.16.117}"
-echo "NUMBER_OF_INPUTS: ${NUMBER_OF_INPUTS:=32}"
-echo "OUTPUT_PATH: ${OUTPUT_PATH:=/home/ubuntu/gci-faas-sim/simulation/results/}"
-echo "INPUT_PATH: ${INPUT_PATH:=/home/ubuntu/gci-faas-sim/experiment/results/}"
-echo "CD_TO_SCRIPTS_PATH: ${CD_TO_SCRIPTS_PATH:=cd /home/ubuntu/gci-faas-sim/experiment}"
+echo "NUMBER_OF_INPUTS: ${NUMBER_OF_INPUTS:=8}"
+echo "OUTPUT_PATH: ${OUTPUT_PATH:=/home/davidfq/Desktop/gci-faas-sim/simulation/results/}"
+echo "INPUT_PATH: ${INPUT_PATH:=/home/davidfq/Desktop/gci-faas-sim/experiment/results/}"
 
+echo -e "${YELLOW}CREATING PATHS${NC}"
 mkdir -p ${OUTPUT_PATH}
-for flag in ${FLAGS};
-do
-    inputs=""
-    if [ "$flag" = "gci" ]
-    then
-        inputs="${INPUT_PATH}gci1.csv"
-    else
-        inputs="${INPUT_PATH}nogci1.csv"
-    fi
-
-    for id in `seq 2 ${NUMBER_OF_INPUTS}`;
+for expid in `seq ${INITIAL_EXPID} ${NUMBER_OF_EXPERIMENTS}`;
+do    
+    for flag in ${FLAGS};
     do
-        if [ "$flag" = "gci" ]
-        then
-            inputs="${inputs},${INPUT_PATH}gci${id}.csv"
-        else
-            inputs="${inputs},${INPUT_PATH}nogci${id}.csv"
-        fi
-    done;
+        inputs="${INPUT_PATH}${flag}1.csv"
+        for id in `seq 2 ${NUMBER_OF_INPUTS}`;
+        do
+            inputs="${inputs},${INPUT_PATH}${flag}${id}.csv"
+        done;
 
-    for op in ${OP};
-    do
-        ssh -i ${ID_RSA_PATH} ubuntu@${SIM_TARGET_IP} -o StrictHostKeyChecking=no "${CD_TO_SCRIPTS_PATH}; ./simulator -lambda=${LAMBDA} -inputs=${inputs} -output=${OUTPUT_PATH} -optimized=${op}"
+        for op in ${OP};
+        do
+            echo -e "${RED}RUNNING SIMULATION, OP=${op}, FLAG=${flag}, EXPID=${expid}${NC}"
+            ./gci-simulator -lambda=${LAMBDA} -inputs=${inputs} -output=${OUTPUT_PATH} -optimized=${op} -filename=sim-${flag}${expid} --warmup=${WARMUP}
+        done;        
     done;
-    
-done;
+done
+
+
