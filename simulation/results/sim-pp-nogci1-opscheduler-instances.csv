@@ -1,0 +1,2 @@
+id,is_terminated,is_working,is_available,lastWorked,busyTime,up_time,idle_time,efficiency,created_time
+0,true,false,true,35999.881846,5549.658869,36000.017000,30450.358131,0.154157,0.000000
