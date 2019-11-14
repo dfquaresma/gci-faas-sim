@@ -14,8 +14,8 @@ echo "WARMUP: ${WARMUP:=500}"
 echo "OP: ${OP:=true false}" # to simulate the optimized scheduler 
 echo "FLAGS: ${FLAGS:=gci nogci}"
 echo "NUMBER_OF_INPUTS: ${NUMBER_OF_INPUTS:=8}"
-echo "OUTPUT_PATH: ${OUTPUT_PATH:=/home/ubuntu/gci-faas-sim/simulation/results/}"
-echo "INPUT_PATH: ${INPUT_PATH:=/home/ubuntu/gci-faas-sim/experiment/results/}"
+echo "OUTPUT_PATH: ${OUTPUT_PATH:=/home/davidfq/Desktop/gci-faas-sim/simulation/results/}"
+echo "INPUT_PATH: ${INPUT_PATH:=/home/davidfq/Desktop/gci-faas-sim/experiment/results/}"
 
 echo -e "${YELLOW}CREATING PATHS${NC}"
 mkdir -p ${OUTPUT_PATH}
@@ -32,7 +32,7 @@ do
         for op in ${OP};
         do
             echo -e "${RED}RUNNING SIMULATION, OP=${op}, FLAG=${flag}, EXPID=${expid}${NC}"
-            ./simulator -lambda=${LAMBDA} -inputs=${inputs} -output=${OUTPUT_PATH} -optimized=${op} -filename=sim-${flag}${expid} --warmup=${WARMUP}
+            ./gci-simulator -lambda=${LAMBDA} -inputs=${inputs} -output=${OUTPUT_PATH} -optimized=${op} -filename=sim-${flag}${expid} --warmup=${WARMUP}
         done;        
     done;
 done
