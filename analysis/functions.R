@@ -31,6 +31,10 @@ read.al <- function(path) {
   return (tail(df, -500))
 }
 
+read.al.sim <- function(path) {
+  return (read.csv(path, sep=",",header=T, dec="."))
+}
+
 summary_table <- function(df1, tag1, df2, tag2) {
   qCI <- function(df, p) {
     return(quantileCI::quantile_confint_nyblom(df, p))
@@ -75,10 +79,10 @@ summary_table <- function(df1, tag1, df2, tag2) {
   df
 }
 
-graph_tail <- function(gci, nogci, title, x_limit_inf, x_limit_sup, annotate_y) {
+graph_tail <- function(gci, nogci, tags, title, x_limit_inf, x_limit_sup, annotate_y) {
   cmp <- rbind(
-    data.frame("response_time"=gci, Type="GCI"),
-    data.frame("response_time"=nogci, Type="NOGCI")
+    data.frame("response_time"=gci, Type=tags[1]),
+    data.frame("response_time"=nogci, Type=tags[2])
   )
   gci.color <- "blue"
   gci.p999 <- quantile(gci, 0.9999)
@@ -88,6 +92,8 @@ graph_tail <- function(gci, nogci, title, x_limit_inf, x_limit_sup, annotate_y) 
   nogci.p999 <- quantile(nogci, 0.9999)
   nogci.p50 <- quantile(nogci, 0.5)
   
+  x_limit_inf = 0
+  annotate_y = 0.9
   size = 0.5
   alpha = 0.5
   angle = 90
@@ -105,11 +111,9 @@ graph_tail <- function(gci, nogci, title, x_limit_inf, x_limit_sup, annotate_y) 
     annotate(geom="text", x=nogci.p999, y=annotate_y, label="99.99th", angle=angle, color=nogci.color) + 
     geom_vline(xintercept=nogci.p999, linetype="dotted", size=size, alpha=alpha, color=nogci.color) +
     
-    #scale_x_continuous(breaks=seq(0, max(cmp$latency), 10)) +
-    #coord_cartesian(ylim = c(0.99, 1)) +
     xlim(x_limit_inf, x_limit_sup) +
     theme(legend.position="top") +
-    scale_color_manual(breaks = c("GCI", "NOGCI"), values=c("blue", "red")) +
+    scale_color_manual(breaks = tags, values=c("blue", "red")) +
     theme_bw() +
     ggtitle(title) +
     xlab("response time (ms)") +

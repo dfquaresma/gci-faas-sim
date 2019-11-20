@@ -26,12 +26,12 @@ nogci$service_time = nogci$body / 1000000
 
 #### ECDF for response time
 ```{r  fig.width=15, fig.height=5, echo=FALSE}
-graph_tail(gci$response_time, nogci$response_time, title="THUMBNAILATOR ECDF RESPONSE TIME", x_limit_inf=0, x_limit_sup=100, annotate_y=0.90)
+graph_tail(gci$response_time, nogci$response_time, c("GCI", "NOGCI"), title="THUMBNAILATOR ECDF RESPONSE TIME", x_limit_sup=100)
 ```
 
 #### ECDF for service time
 ```{r  fig.width=15, fig.height=5, echo=FALSE}
-graph_tail(gci$service_time, nogci$service_time, title="THUMBNAILATOR ECDF SERVICE TIME", x_limit_inf=0, x_limit_sup=100, annotate_y=0.90)
+graph_tail(gci$service_time, nogci$service_time, c("GCI", "NOGCI"), title="THUMBNAILATOR ECDF SERVICE TIME", x_limit_sup=100)
 ```
 
 #### summary table of confidence interval for response time, both in milliseconds

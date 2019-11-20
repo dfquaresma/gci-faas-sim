@@ -1,0 +1,76 @@
+---
+title: "GCI Impact Simulated"
+author: "David Ferreira Quaresma (david.quaresma@ccc.ufcg.edu.br)"
+date: "october, 2019"
+output: pdf_document
+---
+
+# Runtime experiments: GCI vs NOGCI
+```{r echo=FALSE, results='hide', message=FALSE}
+source("functions.R")
+sim_result_path = "../simulation/results/"
+gci1_normscheduler   = filter(read.al.sim(paste(sim_result_path, "sim-pp-gci1-normscheduler-reqs", ".csv", sep="")), status == 200)
+nogci1_normscheduler = filter(read.al.sim(paste(sim_result_path, "sim-pp-nogci1-normscheduler-reqs", ".csv", sep="")), status == 200)
+gci1_opscheduler   = filter(read.al.sim(paste(sim_result_path, "sim-pp-gci1-opscheduler-reqs", ".csv", sep="")), status == 200)
+nogci1_opscheduler = filter(read.al.sim(paste(sim_result_path, "sim-pp-nogci1-opscheduler-reqs", ".csv", sep="")), status == 200)
+
+gci2_normscheduler   = filter(read.al.sim(paste(sim_result_path, "sim-pp-gci2-normscheduler-reqs", ".csv", sep="")), status == 200)
+nogci2_normscheduler = filter(read.al.sim(paste(sim_result_path, "sim-pp-nogci2-normscheduler-reqs", ".csv", sep="")), status == 200)
+gci2_opscheduler   = filter(read.al.sim(paste(sim_result_path, "sim-pp-gci2-opscheduler-reqs", ".csv", sep="")), status == 200)
+nogci2_opscheduler = filter(read.al.sim(paste(sim_result_path, "sim-pp-nogci2-opscheduler-reqs", ".csv", sep="")), status == 200)
+```
+
+## Descrição
+
+
+#### ECDF for response time
+```{r  fig.width=15, fig.height=5, echo=FALSE}
+graph_tail(gci1_normscheduler$response_time,  nogci1_normscheduler$response_time, c("GCI", "NOGCI"), title="THUMBNAILATOR ECDF RESPONSE TIME - NORM SCHEDULER", x_limit_sup=100)
+graph_tail(gci1_opscheduler$response_time,    nogci1_opscheduler$response_time,   c("GCI", "NOGCI"), title="THUMBNAILATOR ECDF RESPONSE TIME -   OP SCHEDULER", x_limit_sup=100)
+
+graph_tail(gci2_normscheduler$response_time,  nogci2_normscheduler$response_time, c("GCI", "NOGCI"), title="THUMBNAILATOR ECDF RESPONSE TIME - NORM SCHEDULER", x_limit_sup=100)
+graph_tail(gci2_opscheduler$response_time,    nogci2_opscheduler$response_time,   c("GCI", "NOGCI"), title="THUMBNAILATOR ECDF RESPONSE TIME -   OP SCHEDULER", x_limit_sup=100)
+```
+
+#### summary table of confidence interval for response time, both in milliseconds
+```{r  fig.width=15, fig.height=5, echo=FALSE}
+summary_table(gci1_normscheduler$response_time, "gci", nogci1_normscheduler$response_time, "nogci")
+summary_table(  gci1_opscheduler$response_time, "gci",   nogci1_opscheduler$response_time, "nogci")
+
+summary_table(gci2_normscheduler$response_time, "gci", nogci2_normscheduler$response_time, "nogci")
+summary_table(  gci2_opscheduler$response_time, "gci",   nogci2_opscheduler$response_time, "nogci")
+```
+
+#### checking errors
+```{r  fig.width=15, fig.height=5, echo=FALSE}
+cat("GCI   NORM SCHEDULER - number of simulated reqs: ", NROW(gci1_normscheduler$response_time), "\n")
+cat("NOGCI NORM SCHEDULER - number of simulated reqs: ", NROW(nogci1_normscheduler$response_time), "\n")
+cat("GCI   OP SCHEDULER - number of simulated reqs: ", NROW(gci1_opscheduler$response_time), "\n")
+cat("NOGCI OP SCHEDULER - number of simulated reqs: ", NROW(nogci1_opscheduler$response_time), "\n")
+
+cat("GCI   NORM SCHEDULER - number of simulated reqs: ", NROW(gci2_normscheduler$response_time), "\n")
+cat("NOGCI NORM SCHEDULER - number of simulated reqs: ", NROW(nogci2_normscheduler$response_time), "\n")
+cat("GCI   OP SCHEDULER - number of simulated reqs: ", NROW(gci2_opscheduler$response_time), "\n")
+cat("NOGCI OP SCHEDULER - number of simulated reqs: ", NROW(nogci2_opscheduler$response_time), "\n")
+```
+
+#### Comparing Sim1 with Exp1
+```{r  fig.width=15, fig.height=5, echo=FALSE}
+exp_result_path = "../experiment/results/"
+gci1   = filter(read.al(paste(exp_result_path,   "gci1.csv", sep="")), status == 200)
+nogci1 = filter(read.al(paste(exp_result_path, "nogci1.csv", sep="")), status == 200)
+gci1$response_time = gci1$response_time / 1000000
+nogci1$response_time = nogci1$response_time / 1000000
+
+cat("EXP vs SIM: GCI")
+summary_table(  gci1$response_time, "exp",   gci1_normscheduler$response_time, "sim")
+summary_table(nogci1$response_time, "exp", nogci1_normscheduler$response_time, "sim")
+graph_tail(  gci1$response_time,   gci1_normscheduler$response_time, c("EXP", "SIM"), title="THUMBNAILATOR ECDF   GCI RESPONSE TIME - NORM SCHEDULER VS EXP", x_limit_sup=100)
+graph_tail(nogci1$response_time, nogci1_normscheduler$response_time, c("EXP", "SIM"), title="THUMBNAILATOR ECDF NOGCI RESPONSE TIME - NORM SCHEDULER VS EXP", x_limit_sup=100)
+
+cat("EXP vs SIM: NOGCI")
+summary_table(  gci1$response_time, "exp",   gci1_opscheduler$response_time, "sim")
+summary_table(nogci1$response_time, "exp", nogci1_opscheduler$response_time, "sim")
+graph_tail(  gci1$response_time,   gci1_opscheduler$response_time, c("EXP", "SIM"), title="THUMBNAILATOR ECDF   GCI RESPONSE TIME - NORM SCHEDULER VS EXP", x_limit_sup=100)
+graph_tail(nogci1$response_time, nogci1_opscheduler$response_time, c("EXP", "SIM"), title="THUMBNAILATOR ECDF NOGCI RESPONSE TIME - NORM SCHEDULER VS EXP", x_limit_sup=100)
+```
