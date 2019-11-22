@@ -14,10 +14,10 @@ nogci1_normscheduler = filter(read.al.sim(paste(sim_result_path, "sim-pp-nogci1-
 gci1_opscheduler   = filter(read.al.sim(paste(sim_result_path, "sim-pp-gci1-opscheduler-reqs", ".csv", sep="")), status == 200)
 nogci1_opscheduler = filter(read.al.sim(paste(sim_result_path, "sim-pp-nogci1-opscheduler-reqs", ".csv", sep="")), status == 200)
 
-gci2_normscheduler   = filter(read.al.sim(paste(sim_result_path, "sim-pp-gci2-normscheduler-reqs", ".csv", sep="")), status == 200)
-nogci2_normscheduler = filter(read.al.sim(paste(sim_result_path, "sim-pp-nogci2-normscheduler-reqs", ".csv", sep="")), status == 200)
-gci2_opscheduler   = filter(read.al.sim(paste(sim_result_path, "sim-pp-gci2-opscheduler-reqs", ".csv", sep="")), status == 200)
-nogci2_opscheduler = filter(read.al.sim(paste(sim_result_path, "sim-pp-nogci2-opscheduler-reqs", ".csv", sep="")), status == 200)
+gci1_normscheduler$response_time = gci1_normscheduler$response_time * 1000
+nogci1_normscheduler$response_time = nogci1_normscheduler$response_time * 1000
+gci1_opscheduler$response_time = gci1_opscheduler$response_time * 1000
+nogci1_opscheduler$response_time = nogci1_opscheduler$response_time * 1000
 ```
 
 ## Descrição
