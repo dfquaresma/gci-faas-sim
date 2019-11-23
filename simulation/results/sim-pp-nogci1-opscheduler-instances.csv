@@ -1,2 +1,0 @@
-id,is_terminated,is_working,is_available,lastWorked,busyTime,up_time,idle_time,efficiency,created_time
-i0-f0,true,false,true,35999.893930,5549.930739,36000.014000,30450.083261,0.154165,0.000000
