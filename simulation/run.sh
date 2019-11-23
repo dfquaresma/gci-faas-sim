@@ -33,7 +33,7 @@ do
         do
             if [[ "$sched" = "2" && "$flag" = "pp-nogci" ]]; then continue; fi
             echo -e "${RED}RUNNING SIMULATION, OP=${op}, FLAG=${flag}, EXPID=${expid}${NC}"
-            ./simulator -lambda=${LAMBDA} -inputs=${inputs} -output=${OUTPUT_PATH} -scheduler=${sched} -filename=${flag}${expid} --warmup=${WARMUP}
+            ./simulator -lambda=${LAMBDA} -inputs=${inputs} -output=${OUTPUT_PATH} -scheduler=${sched} -scenario=${flag}${expid} --warmup=${WARMUP}
         done;
     done;
     metrics_file_name="${OUTPUT_PATH}sim${expid}-metrics"
