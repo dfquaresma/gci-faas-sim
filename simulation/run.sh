@@ -36,7 +36,7 @@ do
             ./simulator -lambda=${LAMBDA} -inputs=${inputs} -output=${OUTPUT_PATH} -scheduler=${sched} -filename=${flag}${expid} --warmup=${WARMUP}
         done;
     done;
-    metrics_file_name="${$OUTPUT_PATH}sim$expid-metrics.csv"
+    metrics_file_name="${$OUTPUT_PATH}sim${expid}-metrics.csv"
     files=$(ls | grep "metrics" | grep "gci${i}")
     for f in ${files};
     do
