@@ -36,4 +36,13 @@ do
             ./simulator -lambda=${LAMBDA} -inputs=${inputs} -output=${OUTPUT_PATH} -scheduler=${sched} -filename=${flag}${expid} --warmup=${WARMUP}
         done;
     done;
+    metrics_file_name=${$OUTPUT_PATH}"sim$expid-metrics.csv"
+    files=$(ls | grep "metrics" | grep "gci${i}")
+    for f in ${files};
+    do
+        tail --lines=+2 "$f" >> ${metrics_file_name}
+    done
+    header=$(head -1 "$f")
+    sed -i '1 i\'$header ${metrics_file_name}
+    rm -rf "${$OUTPUT_PATH}*.log"
 done
