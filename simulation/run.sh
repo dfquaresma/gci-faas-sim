@@ -25,7 +25,10 @@ do
     do
         echo -e "${YELLOW}CONCATENATING THE INPUTS${NC}"
         inputs="${INPUT_PATH}${flag}1.csv"
-        for id in `seq 2 ${NUMBER_OF_INPUTS}`; do inputs="${inputs},${INPUT_PATH}${flag}${id}.csv"; done;
+        for id in `seq 2 ${NUMBER_OF_INPUTS}`;
+        do
+            inputs="${inputs},${INPUT_PATH}${flag}${id}.csv"
+        done;
         for sched in ${SCHEDULERS};
         do
             if [[ "$sched" = "2" && "$flag" = "pp-nogci" ]]; then continue; fi
