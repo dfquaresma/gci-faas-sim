@@ -8,8 +8,9 @@ YELLOW='\033[1;33m'
 NC='\033[0m'
 
 echo "INITIAL_EXPID: ${INITIAL_EXPID:=1}"
-echo "NUMBER_OF_EXPERIMENTS: ${NUMBER_OF_EXPERIMENTS:=1}"
-echo "LAMBDA: ${LAMBDA:=150}"
+echo "NUMBER_OF_EXPERIMENTS: ${NUMBER_OF_EXPERIMENTS:=5}"
+echo "LAMBDA: ${LAMBDA:=20}"
+echo "SIM_DURATION: ${SIM_DURATION:=2h30m}"
 echo "WARMUP: ${WARMUP:=500}"
 echo "SCHEDULERS: ${SCHEDULERS:=0 1 2}"
 echo "FLAGS: ${FLAGS:=pp-gci pp-nogci}"
@@ -32,8 +33,8 @@ do
         for sched in ${SCHEDULERS};
         do
             if [[ "$sched" = "2" && "$flag" = "pp-nogci" ]]; then continue; fi
-            echo -e "${RED}RUNNING SIMULATION, OP=${op}, FLAG=${flag}, EXPID=${expid}${NC}"
-            ./simulator -lambda=${LAMBDA} -inputs=${inputs} -output=${OUTPUT_PATH} -scheduler=${sched} -scenario=${flag}${expid} --warmup=${WARMUP}
+            echo -e "${RED}RUNNING SIMULATION, SCHEDULER=${sched}, FLAG=${flag}, EXPID=${expid}${NC}"
+            ./simulator -lambda=${LAMBDA} -duration=${SIM_DURATION} -inputs=${inputs} -output=${OUTPUT_PATH} -scheduler=${sched} -scenario=${flag}${expid} --warmup=${WARMUP}
         done;
     done;
     metrics_file_name="${OUTPUT_PATH}sim${expid}-metrics"

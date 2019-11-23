@@ -1,0 +1,6 @@
+scenario,scheduler_name,throughput,instances_cost,instances_efficiency,simulation_exec_time
+pp-gci1,-normscheduler,49.972444,73804.87207,0.0331657885,8
+pp-gci1,-opgcischeduler,50.013444,32105.54336,0.2879003659,4
+pp-gci1,-opscheduler,50.016222,29329.73758,0.2885177510,4
+pp-nogci1,-normscheduler,50.000222,71569.77893,0.0246773421,8
+pp-nogci1,-opscheduler,50.011778,27598.90451,0.3555805535,4
