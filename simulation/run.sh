@@ -25,12 +25,12 @@ do
     do
         echo -e "${YELLOW}CONCATENATING THE INPUTS${NC}"
         inputs="${INPUT_PATH}${flag}1.csv"
-        for id in `seq 2 ${NUMBER_OF_INPUTS}`; do inputs="${inputs},${INPUT_PATH}${flag}${id}.csv" done;
+        for id in `seq 2 ${NUMBER_OF_INPUTS}`; do inputs="${inputs},${INPUT_PATH}${flag}${id}.csv"; done;
         for sched in ${SCHEDULERS};
         do
             if [[ "$sched" = "2" && "$flag" = "pp-nogci" ]]; then continue; fi
             echo -e "${RED}RUNNING SIMULATION, OP=${op}, FLAG=${flag}, EXPID=${expid}${NC}"
-            ./simulator -lambda=${LAMBDA} -inputs=${inputs} -output=${OUTPUT_PATH} -scheduler=${sched} -filename=sim-${flag}${expid} --warmup=${WARMUP}
+            ./simulator -lambda=${LAMBDA} -inputs=${inputs} -output=${OUTPUT_PATH} -scheduler=${sched} -filename=${flag}${expid} --warmup=${WARMUP}
         done;
     done;
 done
