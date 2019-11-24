@@ -5,72 +5,160 @@ date: "october, 2019"
 output: pdf_document
 ---
 
-# Runtime experiments: GCI vs NOGCI
+# Simulation results: GCI vs NOGCI
 ```{r echo=FALSE, results='hide', message=FALSE}
 source("functions.R")
 sim_result_path = "../simulation/results/"
-gci1_normscheduler   = filter(read.al.sim(paste(sim_result_path, "sim-pp-gci1-normscheduler-reqs", ".csv", sep="")), status == 200)
-nogci1_normscheduler = filter(read.al.sim(paste(sim_result_path, "sim-pp-nogci1-normscheduler-reqs", ".csv", sep="")), status == 200)
-gci1_opscheduler   = filter(read.al.sim(paste(sim_result_path, "sim-pp-gci1-opscheduler-reqs", ".csv", sep="")), status == 200)
-nogci1_opscheduler = filter(read.al.sim(paste(sim_result_path, "sim-pp-nogci1-opscheduler-reqs", ".csv", sep="")), status == 200)
-
-gci1_normscheduler$response_time = gci1_normscheduler$response_time * 1000
-nogci1_normscheduler$response_time = nogci1_normscheduler$response_time * 1000
-gci1_opscheduler$response_time = gci1_opscheduler$response_time * 1000
-nogci1_opscheduler$response_time = nogci1_opscheduler$response_time * 1000
+tecdf_nsched     = "ECDF RESPONSE TIME - NORM SCHEDULER"
+tecdf_opsched    = "ECDF RESPONSE TIME - OP SCHEDULER"
+tecdf_opgcisched = "ECDF RESPONSE TIME - OP GCI SCHEDULER"
 ```
 
-## Descrição
-
-
-#### ECDF for response time
+#### ECDF for response time of 1º simulation
 ```{r  fig.width=15, fig.height=5, echo=FALSE}
-graph_tail(gci1_normscheduler$response_time,  nogci1_normscheduler$response_time, c("GCI", "NOGCI"), title="THUMBNAILATOR ECDF RESPONSE TIME - NORM SCHEDULER", x_limit_sup=100)
-graph_tail(gci1_opscheduler$response_time,    nogci1_opscheduler$response_time,   c("GCI", "NOGCI"), title="THUMBNAILATOR ECDF RESPONSE TIME -   OP SCHEDULER", x_limit_sup=100)
-
-graph_tail(gci2_normscheduler$response_time,  nogci2_normscheduler$response_time, c("GCI", "NOGCI"), title="THUMBNAILATOR ECDF RESPONSE TIME - NORM SCHEDULER", x_limit_sup=100)
-graph_tail(gci2_opscheduler$response_time,    nogci2_opscheduler$response_time,   c("GCI", "NOGCI"), title="THUMBNAILATOR ECDF RESPONSE TIME -   OP SCHEDULER", x_limit_sup=100)
+gci1_normscheduler   = filter(read.al.sim(paste(sim_result_path,   "sim-pp-gci1-normscheduler-reqs", ".csv", sep="")), status == 200)
+gci1_opscheduler     = filter(read.al.sim(paste(sim_result_path,     "sim-pp-gci1-opscheduler-reqs", ".csv", sep="")), status == 200)
+gci1_opgcischeduler  = filter(read.al.sim(paste(sim_result_path,  "sim-pp-gci1-opgcischeduler-reqs", ".csv", sep="")), status == 200)
+nogci1_normscheduler = filter(read.al.sim(paste(sim_result_path, "sim-pp-nogci1-normscheduler-reqs", ".csv", sep="")), status == 200)
+nogci1_opscheduler   = filter(read.al.sim(paste(sim_result_path,   "sim-pp-nogci1-opscheduler-reqs", ".csv", sep="")), status == 200)
+gci1_normscheduler$response_time   = gci1_normscheduler$response_time * 1000
+gci1_opscheduler$response_time     = gci1_opscheduler$response_time * 1000
+gci1_opgcischeduler$response_time  = gci1_opgcischeduler$response_time * 1000
+nogci1_normscheduler$response_time = nogci1_normscheduler$response_time * 1000
+nogci1_opscheduler$response_time   = nogci1_opscheduler$response_time * 1000
+graph_tail(gci1_normscheduler$response_time,  nogci1_normscheduler$response_time, c("GCI", "NOGCI"), title=paste("1-", tecdf_nsched, sep=" "), x_limit_sup=100)
+graph_tail(gci1_opscheduler$response_time,    nogci1_opscheduler$response_time,   c("GCI", "NOGCI"), title=paste("1-", tecdf_opsched, sep=" "), x_limit_sup=100)
+graph_tail(gci1_opgcischeduler$response_time,    nogci1_opscheduler$response_time,   c("GCI", "NOGCI"), title=paste("1-", tecdf_opgcisched, sep=" "), x_limit_sup=100)
 ```
-
-#### summary table of confidence interval for response time, both in milliseconds
+#### summary table of confidence interval for response time, both in milliseconds, of 1º simulation
 ```{r  fig.width=15, fig.height=5, echo=FALSE}
 summary_table(gci1_normscheduler$response_time, "gci", nogci1_normscheduler$response_time, "nogci")
 summary_table(  gci1_opscheduler$response_time, "gci",   nogci1_opscheduler$response_time, "nogci")
+summary_table(  gci1_opgcischeduler$response_time, "gci",   nogci1_opscheduler$response_time, "nogci")
+```
 
+#### ECDF for response time of 2º simulation
+```{r  fig.width=15, fig.height=5, echo=FALSE}
+gci2_normscheduler   = filter(read.al.sim(paste(sim_result_path,   "sim-pp-gci2-normscheduler-reqs", ".csv", sep="")), status == 200)
+gci2_opscheduler     = filter(read.al.sim(paste(sim_result_path,     "sim-pp-gci2-opscheduler-reqs", ".csv", sep="")), status == 200)
+gci2_opgcischeduler  = filter(read.al.sim(paste(sim_result_path,  "sim-pp-gci2-opgcischeduler-reqs", ".csv", sep="")), status == 200)
+nogci2_normscheduler = filter(read.al.sim(paste(sim_result_path, "sim-pp-nogci2-normscheduler-reqs", ".csv", sep="")), status == 200)
+nogci2_opscheduler   = filter(read.al.sim(paste(sim_result_path,   "sim-pp-nogci2-opscheduler-reqs", ".csv", sep="")), status == 200)
+gci2_normscheduler$response_time   = gci2_normscheduler$response_time * 1000
+gci2_opscheduler$response_time     = gci2_opscheduler$response_time * 1000
+gci2_opgcischeduler$response_time  = gci2_opgcischeduler$response_time * 1000
+nogci2_normscheduler$response_time = nogci2_normscheduler$response_time * 1000
+nogci2_opscheduler$response_time   = nogci2_opscheduler$response_time * 1000
+graph_tail(gci2_normscheduler$response_time,  nogci2_normscheduler$response_time, c("GCI", "NOGCI"), title=paste("2-", tecdf_nsched, sep=" "), x_limit_sup=100)
+graph_tail(gci2_opscheduler$response_time,    nogci2_opscheduler$response_time,   c("GCI", "NOGCI"), title=paste("2-", tecdf_opsched, sep=" "), x_limit_sup=100)
+graph_tail(gci2_opgcischeduler$response_time,    nogci2_opscheduler$response_time,   c("GCI", "NOGCI"), title=paste("2-", tecdf_opgcisched, sep=" "), x_limit_sup=100)
+```
+#### summary table of confidence interval for response time, both in milliseconds, of 2º simulation
+```{r  fig.width=15, fig.height=5, echo=FALSE}
 summary_table(gci2_normscheduler$response_time, "gci", nogci2_normscheduler$response_time, "nogci")
 summary_table(  gci2_opscheduler$response_time, "gci",   nogci2_opscheduler$response_time, "nogci")
+summary_table(  gci2_opgcischeduler$response_time, "gci",   nogci2_opscheduler$response_time, "nogci")
 ```
 
-#### checking errors
+#### ECDF for response time of 3º simulation
 ```{r  fig.width=15, fig.height=5, echo=FALSE}
-cat("GCI   NORM SCHEDULER - number of simulated reqs: ", NROW(gci1_normscheduler$response_time), "\n")
-cat("NOGCI NORM SCHEDULER - number of simulated reqs: ", NROW(nogci1_normscheduler$response_time), "\n")
-cat("GCI   OP SCHEDULER - number of simulated reqs: ", NROW(gci1_opscheduler$response_time), "\n")
-cat("NOGCI OP SCHEDULER - number of simulated reqs: ", NROW(nogci1_opscheduler$response_time), "\n")
-
-cat("GCI   NORM SCHEDULER - number of simulated reqs: ", NROW(gci2_normscheduler$response_time), "\n")
-cat("NOGCI NORM SCHEDULER - number of simulated reqs: ", NROW(nogci2_normscheduler$response_time), "\n")
-cat("GCI   OP SCHEDULER - number of simulated reqs: ", NROW(gci2_opscheduler$response_time), "\n")
-cat("NOGCI OP SCHEDULER - number of simulated reqs: ", NROW(nogci2_opscheduler$response_time), "\n")
+gci3_normscheduler   = filter(read.al.sim(paste(sim_result_path,   "sim-pp-gci3-normscheduler-reqs", ".csv", sep="")), status == 200)
+gci3_opscheduler     = filter(read.al.sim(paste(sim_result_path,     "sim-pp-gci3-opscheduler-reqs", ".csv", sep="")), status == 200)
+gci3_opgcischeduler  = filter(read.al.sim(paste(sim_result_path,  "sim-pp-gci3-opgcischeduler-reqs", ".csv", sep="")), status == 200)
+nogci3_normscheduler = filter(read.al.sim(paste(sim_result_path, "sim-pp-nogci3-normscheduler-reqs", ".csv", sep="")), status == 200)
+nogci3_opscheduler   = filter(read.al.sim(paste(sim_result_path,   "sim-pp-nogci3-opscheduler-reqs", ".csv", sep="")), status == 200)
+gci3_normscheduler$response_time   = gci3_normscheduler$response_time * 1000
+gci3_opscheduler$response_time     = gci3_opscheduler$response_time * 1000
+gci3_opgcischeduler$response_time  = gci3_opgcischeduler$response_time * 1000
+nogci3_normscheduler$response_time = nogci3_normscheduler$response_time * 1000
+nogci3_opscheduler$response_time   = nogci3_opscheduler$response_time * 1000
+graph_tail(gci3_normscheduler$response_time,  nogci3_normscheduler$response_time, c("GCI", "NOGCI"), title=paste("3-", tecdf_nsched, sep=" "), x_limit_sup=100)
+graph_tail(gci3_opscheduler$response_time,    nogci3_opscheduler$response_time,   c("GCI", "NOGCI"), title=paste("3-", tecdf_opsched, sep=" "), x_limit_sup=100)
+graph_tail(gci3_opgcischeduler$response_time,    nogci3_opscheduler$response_time,   c("GCI", "NOGCI"), title=paste("3-", tecdf_opgcisched, sep=" "), x_limit_sup=100)
+```
+#### summary table of confidence interval for response time, both in milliseconds, of 3º simulation
+```{r  fig.width=15, fig.height=5, echo=FALSE}
+summary_table(gci3_normscheduler$response_time, "gci", nogci3_normscheduler$response_time, "nogci")
+summary_table(  gci3_opscheduler$response_time, "gci",   nogci3_opscheduler$response_time, "nogci")
+summary_table(  gci3_opgcischeduler$response_time, "gci",   nogci3_opscheduler$response_time, "nogci")
 ```
 
-#### Comparing Sim1 with Exp1
+#### ECDF for response time of 4º simulation
 ```{r  fig.width=15, fig.height=5, echo=FALSE}
-exp_result_path = "../experiment/results/"
-gci1   = filter(read.al(paste(exp_result_path,   "gci1.csv", sep="")), status == 200)
-nogci1 = filter(read.al(paste(exp_result_path, "nogci1.csv", sep="")), status == 200)
-gci1$response_time = gci1$response_time / 1000000
-nogci1$response_time = nogci1$response_time / 1000000
+gci4_normscheduler   = filter(read.al.sim(paste(sim_result_path,   "sim-pp-gci4-normscheduler-reqs", ".csv", sep="")), status == 200)
+gci4_opscheduler     = filter(read.al.sim(paste(sim_result_path,     "sim-pp-gci4-opscheduler-reqs", ".csv", sep="")), status == 200)
+gci4_opgcischeduler  = filter(read.al.sim(paste(sim_result_path,  "sim-pp-gci4-opgcischeduler-reqs", ".csv", sep="")), status == 200)
+nogci4_normscheduler = filter(read.al.sim(paste(sim_result_path, "sim-pp-nogci4-normscheduler-reqs", ".csv", sep="")), status == 200)
+nogci4_opscheduler   = filter(read.al.sim(paste(sim_result_path,   "sim-pp-nogci4-opscheduler-reqs", ".csv", sep="")), status == 200)
+gci4_normscheduler$response_time   = gci4_normscheduler$response_time * 1000
+gci4_opscheduler$response_time     = gci4_opscheduler$response_time * 1000
+gci4_opgcischeduler$response_time  = gci4_opgcischeduler$response_time * 1000
+nogci4_normscheduler$response_time = nogci4_normscheduler$response_time * 1000
+nogci4_opscheduler$response_time   = nogci4_opscheduler$response_time * 1000
+graph_tail(gci4_normscheduler$response_time,  nogci4_normscheduler$response_time, c("GCI", "NOGCI"), title=paste("4-", tecdf_nsched, sep=" "), x_limit_sup=100)
+graph_tail(gci4_opscheduler$response_time,    nogci4_opscheduler$response_time,   c("GCI", "NOGCI"), title=paste("4-", tecdf_opsched, sep=" "), x_limit_sup=100)
+graph_tail(gci4_opgcischeduler$response_time,    nogci4_opscheduler$response_time,   c("GCI", "NOGCI"), title=paste("4-", tecdf_opgcisched, sep=" "), x_limit_sup=100)
+```
+#### summary table of confidence interval for response time, both in milliseconds, of 4º simulation
+```{r  fig.width=15, fig.height=5, echo=FALSE}
+summary_table(gci4_normscheduler$response_time, "gci", nogci4_normscheduler$response_time, "nogci")
+summary_table(  gci4_opscheduler$response_time, "gci",   nogci4_opscheduler$response_time, "nogci")
+summary_table(  gci4_opgcischeduler$response_time, "gci",   nogci4_opscheduler$response_time, "nogci")
+```
 
-cat("EXP vs SIM: GCI")
-summary_table(  gci1$response_time, "exp",   gci1_normscheduler$response_time, "sim")
-summary_table(nogci1$response_time, "exp", nogci1_normscheduler$response_time, "sim")
-graph_tail(  gci1$response_time,   gci1_normscheduler$response_time, c("EXP", "SIM"), title="THUMBNAILATOR ECDF   GCI RESPONSE TIME - NORM SCHEDULER VS EXP", x_limit_sup=100)
-graph_tail(nogci1$response_time, nogci1_normscheduler$response_time, c("EXP", "SIM"), title="THUMBNAILATOR ECDF NOGCI RESPONSE TIME - NORM SCHEDULER VS EXP", x_limit_sup=100)
+#### ECDF for response time of 5º simulation
+```{r  fig.width=15, fig.height=5, echo=FALSE}
+gci5_normscheduler   = filter(read.al.sim(paste(sim_result_path,   "sim-pp-gci5-normscheduler-reqs", ".csv", sep="")), status == 200)
+gci5_opscheduler     = filter(read.al.sim(paste(sim_result_path,     "sim-pp-gci5-opscheduler-reqs", ".csv", sep="")), status == 200)
+gci5_opgcischeduler  = filter(read.al.sim(paste(sim_result_path,  "sim-pp-gci5-opgcischeduler-reqs", ".csv", sep="")), status == 200)
+nogci5_normscheduler = filter(read.al.sim(paste(sim_result_path, "sim-pp-nogci5-normscheduler-reqs", ".csv", sep="")), status == 200)
+nogci5_opscheduler   = filter(read.al.sim(paste(sim_result_path,   "sim-pp-nogci5-opscheduler-reqs", ".csv", sep="")), status == 200)
+gci5_normscheduler$response_time   = gci5_normscheduler$response_time * 1000
+gci5_opscheduler$response_time     = gci5_opscheduler$response_time * 1000
+gci5_opgcischeduler$response_time  = gci5_opgcischeduler$response_time * 1000
+nogci5_normscheduler$response_time = nogci5_normscheduler$response_time * 1000
+nogci5_opscheduler$response_time   = nogci5_opscheduler$response_time * 1000
+graph_tail(gci5_normscheduler$response_time,  nogci5_normscheduler$response_time, c("GCI", "NOGCI"), title=paste("5-", tecdf_nsched, sep=" "), x_limit_sup=100)
+graph_tail(gci5_opscheduler$response_time,    nogci5_opscheduler$response_time,   c("GCI", "NOGCI"), title=paste("5-", tecdf_opsched, sep=" "), x_limit_sup=100)
+graph_tail(gci5_opgcischeduler$response_time,    nogci5_opscheduler$response_time,   c("GCI", "NOGCI"), title=paste("5-", tecdf_opgcisched, sep=" "), x_limit_sup=100)
+```
+#### summary table of confidence interval for response time, both in milliseconds, of 5º simulation
+```{r  fig.width=15, fig.height=5, echo=FALSE}
+summary_table(gci5_normscheduler$response_time, "gci", nogci5_normscheduler$response_time, "nogci")
+summary_table(  gci5_opscheduler$response_time, "gci",   nogci5_opscheduler$response_time, "nogci")
+summary_table(  gci5_opgcischeduler$response_time, "gci",   nogci5_opscheduler$response_time, "nogci")
+```
 
-cat("EXP vs SIM: NOGCI")
-summary_table(  gci1$response_time, "exp",   gci1_opscheduler$response_time, "sim")
-summary_table(nogci1$response_time, "exp", nogci1_opscheduler$response_time, "sim")
-graph_tail(  gci1$response_time,   gci1_opscheduler$response_time, c("EXP", "SIM"), title="THUMBNAILATOR ECDF   GCI RESPONSE TIME - NORM SCHEDULER VS EXP", x_limit_sup=100)
-graph_tail(nogci1$response_time, nogci1_opscheduler$response_time, c("EXP", "SIM"), title="THUMBNAILATOR ECDF NOGCI RESPONSE TIME - NORM SCHEDULER VS EXP", x_limit_sup=100)
+
+#### Joining all results into one data frame
+```{r  fig.width=15, fig.height=5, echo=FALSE}
+gci_normscheduler   = rbind(gci1_normscheduler, gci2_normscheduler, gci3_normscheduler, gci4_normscheduler, gci5_normscheduler)
+gci_opscheduler     = rbind(gci1_opscheduler, gci2_opscheduler, gci3_opscheduler, gci4_opscheduler, gci5_opscheduler)
+gci_opgcischeduler  = rbind(gci1_opgcischeduler, gci2_opgcischeduler, gci3_opgcischeduler, gci4_opgcischeduler, gci5_opgcischeduler)
+nogci_normscheduler = rbind(nogci1_normscheduler, nogci2_normscheduler, nogci3_normscheduler, nogci4_normscheduler, nogci5_normscheduler)
+nogci_opscheduler   = rbind(nogci1_opscheduler, nogci2_opscheduler, nogci3_opscheduler, nogci4_opscheduler, nogci5_opscheduler)
+```
+
+#### ECDF for response time of all simulation
+```{r  fig.width=15, fig.height=5, echo=FALSE}
+graph_tail(gci_normscheduler$response_time,  nogci_normscheduler$response_time, c("GCI", "NOGCI"),     title=tecdf_nsched, x_limit_sup=100)
+graph_tail(gci_opscheduler$response_time,   nogci_opscheduler$response_time,  c("GCI", "NOGCI"),    title=tecdf_opsched, x_limit_sup=100)
+graph_tail(gci_opgcischeduler$response_time, nogci_opscheduler$response_time, c("GCI", "NOGCI"), title=tecdf_opgcisched, x_limit_sup=100)
+```
+#### summary table of confidence interval for response time, both in milliseconds, of all simulation
+```{r  fig.width=15, fig.height=5, echo=FALSE}
+summary_table( gci_normscheduler$response_time, "gci", nogci_normscheduler$response_time, "nogci")
+summary_table(   gci_opscheduler$response_time, "gci",   nogci_opscheduler$response_time, "nogci")
+summary_table(gci_opgcischeduler$response_time, "gci",   nogci_opscheduler$response_time, "nogci")
+```
+
+#### Visualizing metrics
+```{r  fig.width=15, fig.height=5, echo=FALSE}
+sim1 = read.al.sim(paste(sim_result_path, "sim1-metrics", ".csv", sep=""))
+sim2 = read.al.sim(paste(sim_result_path, "sim2-metrics", ".csv", sep=""))
+sim3 = read.al.sim(paste(sim_result_path, "sim3-metrics", ".csv", sep=""))
+sim4 = read.al.sim(paste(sim_result_path, "sim4-metrics", ".csv", sep=""))
+sim5 = read.al.sim(paste(sim_result_path, "sim5-metrics", ".csv", sep=""))
+sim_metrics = rbind(sim1, sim2, sim3, sim4, sim5)
+sim_metrics
 ```
