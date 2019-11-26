@@ -129,3 +129,16 @@ get_service_time_column <- function(df) {
   }
   return(service_time)
 }
+
+quantile_wrapped = function(data) {
+  quantile(data, c(.0, .25, .50, .75, .90, .95, .99, .999, .9999, .99999, 1))
+}
+
+quantiles_dataframe_comparison = function(nogci, gci) {
+  comparison = (quantile_wrapped(nogci) / quantile_wrapped(gci))
+  data.frame(
+    nogci      = quantile_wrapped(nogci),
+    gci        = quantile_wrapped(gci),
+    comparison = comparison
+  )
+}
