@@ -54,9 +54,55 @@ quantiles_dataframe_comparison(nogci_opscheduler$response_time,   gci_opgcisched
 
 #### Visualizing metrics
 ```{r  fig.width=15, fig.height=5, echo=FALSE}
-sim_metrics = data.frame()
-for(i in 1:5){
-  sim_metrics = rbind(sim_metrics, read.al.sim(paste(sim_result_path, "sim", as.character(i), "-metrics", ".csv", sep="")))
+source("functions.R")
+sim_result_path = "../simulation/results/"
+gci_normscheduler   = c(  "gci",  "normscheduler", 0, 0, 0, 0)
+gci_opscheduler     = c(  "gci",    "opscheduler", 0, 0, 0, 0)
+gci_opgcischeduler  = c(  "gci", "opgcischeduler", 0, 0, 0, 0)
+nogci_normscheduler = c("nogci",  "normscheduler", 0, 0, 0, 0)
+nogci_opscheduler   = c("nogci",    "opscheduler", 0, 0, 0, 0)
+mean_at_i <- function(i, a, b) {
+  a = as.double(a)
+  return( ((i - 1) * a + b) / i )
 }
-sim_metrics
+for(i in 1:5){
+  simi_metrics = read.al.sim(paste(sim_result_path, "sim", as.character(i), "-metrics.csv", sep=""))
+  gcii_normscheduler   = filter(filter(simi_metrics, scenario == paste(  "pp-gci", as.character(i), sep="")), scheduler_name == "-normscheduler")
+  gcii_opscheduler     = filter(filter(simi_metrics, scenario == paste(  "pp-gci", as.character(i), sep="")), scheduler_name == "-opscheduler")
+  gcii_opgcischeduler  = filter(filter(simi_metrics, scenario == paste(  "pp-gci", as.character(i), sep="")), scheduler_name == "-opgcischeduler")
+  nogcii_normscheduler = filter(filter(simi_metrics, scenario == paste("pp-nogci", as.character(i), sep="")), scheduler_name == "-normscheduler")
+  nogcii_opscheduler   = filter(filter(simi_metrics, scenario == paste("pp-nogci", as.character(i), sep="")), scheduler_name == "-opscheduler")
+
+  gci_normscheduler[3]   = mean_at_i(i, gci_normscheduler[3], gcii_normscheduler$throughput)
+  gci_opscheduler[3]     = mean_at_i(i, gci_opscheduler[3], gcii_opscheduler$throughput)
+  gci_opgcischeduler[3]  = mean_at_i(i, gci_opgcischeduler[3], gcii_opgcischeduler$throughput)
+  nogci_normscheduler[3] = mean_at_i(i, nogci_normscheduler[3], nogcii_normscheduler$throughput)
+  nogci_opscheduler[3]   = mean_at_i(i, nogci_opscheduler[3], nogcii_opscheduler$throughput)
+
+  gci_normscheduler[4]   = mean_at_i(i, gci_normscheduler[4], gcii_normscheduler$instances_cost)
+  gci_opscheduler[4]     = mean_at_i(i, gci_opscheduler[4], gcii_opscheduler$instances_cost)
+  gci_opgcischeduler[4]  = mean_at_i(i, gci_opgcischeduler[4], gcii_opgcischeduler$instances_cost)
+  nogci_normscheduler[4] = mean_at_i(i, nogci_normscheduler[4], nogcii_normscheduler$instances_cost)
+  nogci_opscheduler[4]   = mean_at_i(i, nogci_opscheduler[4], nogcii_opscheduler$instances_cost)
+
+  gci_normscheduler[5]   = mean_at_i(i, gci_normscheduler[5], gcii_normscheduler$instances_efficiency)
+  gci_opscheduler[5]     = mean_at_i(i, gci_opscheduler[5], gcii_opscheduler$instances_efficiency)
+  gci_opgcischeduler[5]  = mean_at_i(i, gci_opgcischeduler[5], gcii_opgcischeduler$instances_efficiency)
+  nogci_normscheduler[5] = mean_at_i(i, nogci_normscheduler[5], nogcii_normscheduler$instances_efficiency)
+  nogci_opscheduler[5]   = mean_at_i(i, nogci_opscheduler[5], nogcii_opscheduler$instances_efficiency)
+
+  gci_normscheduler[6]   = mean_at_i(i, gci_normscheduler[6], gcii_normscheduler$simulation_exec_time)
+  gci_opscheduler[6]     = mean_at_i(i, gci_opscheduler[6], gcii_opscheduler$simulation_exec_time)
+  gci_opgcischeduler[6]  = mean_at_i(i, gci_opgcischeduler[6], gcii_opgcischeduler$simulation_exec_time)
+  nogci_normscheduler[6] = mean_at_i(i, nogci_normscheduler[6], nogcii_normscheduler$simulation_exec_time)
+  nogci_opscheduler[6]   = mean_at_i(i, nogci_opscheduler[6], nogcii_opscheduler$simulation_exec_time)
+}
+take_col_i <- function(i) {return (c(gci_normscheduler[i], gci_opscheduler[i], gci_opgcischeduler[i], nogci_normscheduler[i], nogci_opscheduler[i]))}
+scenario = take_col_i(1)
+scheduler_name = take_col_i(2)
+throughput = take_col_i(3)
+instances_cost = take_col_i(4)
+instances_efficiency = take_col_i(5)
+simulation_exec_time = take_col_i(6)
+data.frame(scenario,scheduler_name,throughput,instances_cost,instances_efficiency,simulation_exec_time)
 ```
