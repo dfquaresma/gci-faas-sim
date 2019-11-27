@@ -6,16 +6,7 @@ output: pdf_document
 ---
 
 # Pergunta geral: qual o impacto do GCI quando utilizado no contexto de computação serverless?
-## Em relação ao tempo de resposta e throughput: a fim de evitar o impacto do coletor de lixo, há melhoria no tempo de resposta mesmo ao submeter uma requisição a possíveis vários redirecionamentos e um cold-start?
-Apesar de não se ter notado impacto no throughput durante as simulações, notou-se um impacto positivo do GCI, contribuindo para um melhor valor de tempo de resposta nos percentils não afetados por coldstart. 
-No caso do escalonador normal, a redução do tempo de serviço quando utilizado o GCI chega até 10% no percentil 99.9. No caso do escalonador ótimo para provisionamento não ciente do GCI, utilizar o GCI diminui o tempo de resposta em até 22% no percentil 99.99. Por fim, no caso do escalonador ótimo considerando a presença do GCI, fazer uso do GCI diminui o tempo de resposta em até 32% no percentil 99.99.
-
-## Em relação à eficiência: a fim de evitar o impacto do coletor de lixo, há prejuízo no uso eficiente dos recursos computacionais ao levantar novas instâncias para dar suporte às redistribuições de requisições?
-Como esperado, o cenário com escalonador normal, quando comparado aos demais escalonadores, possui o maior custo e menor eficiência dos recursos, tanto para com GCI quanto sem ele. Se compararmos para este escalonador a configuração com GCI e sem GCI, notamos que o GCI aumenta o custo e em 4% e aumenta a eficiência em aproximadamente 13%.
-Com relação ao cenário utilizando GCI e os escalonadores ótimos, não conseguimos observar variança significativa com relação ao custo e eficiência. Contudo, Podemos notar que houve um impacto negativo do GCI quando comparado ao caso ótimo sem GCI, onde o aumento no custo foi de aproximadamente 12% e a redução da eficiência foi de aproximadamente 26%.
-
-# Simulation results: GCI vs NOGCI
-```{r echo=FALSE, results='hide', message=FALSE}
+```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE}
 source("functions.R")
 sim_result_path = "../simulation/results/"
 gci_normscheduler   = data.frame()
@@ -37,32 +28,89 @@ nogci_normscheduler$response_time = nogci_normscheduler$response_time * 1000
 nogci_opscheduler$response_time   = nogci_opscheduler$response_time * 1000
 ```
 
-#### ECDF for response time of all simulation
-```{r  fig.width=15, fig.height=5, echo=FALSE}
-tecdf_nsched     = "ECDF RESPONSE TIME - NORM SCHEDULER"
-tecdf_opsched    = "ECDF RESPONSE TIME - OP SCHEDULER"
-tecdf_opgcisched = "ECDF RESPONSE TIME - OP GCI SCHEDULER"
-graph_tail(gci_normscheduler$response_time,  nogci_normscheduler$response_time, c("GCI", "NOGCI"),     title=tecdf_nsched, x_limit_sup=100)
-graph_tail(gci_opscheduler$response_time,   nogci_opscheduler$response_time,  c("GCI", "NOGCI"),    title=tecdf_opsched, x_limit_sup=100)
-graph_tail(gci_opgcischeduler$response_time, nogci_opscheduler$response_time, c("GCI", "NOGCI"), title=tecdf_opgcisched, x_limit_sup=100)
-```
+## Descrição das simulações:
+- Tempo de experimento simulado: 2 horas e 30 minutos
+- Número de repetições: 5
+- Tamanho da amostra por simulação: aproximadamente 2.250.000 requisições
+- Tamanho da amostra unindo as simulações: aproximadamente 11.250.000 requisições
+- Warmup aplicado aos arquivos de entrada da simulação: 500
+- Lambda da distribuição Poisson: 20
 
-#### summary table of confidence interval for response time, both in milliseconds, of all simulation
-```{r  fig.width=15, fig.height=5, echo=FALSE}
+## Em relação ao tempo de resposta e throughput: a fim de evitar o impacto do coletor de lixo, há melhoria no tempo de resposta mesmo ao submeter uma requisição a possíveis vários redirecionamentos e um cold-start?
+Apesar de não se ter notado impacto no throughput durante as simulações (que pode ser obseravado na tabela de visualização presente na resposta da segunda pergunta), notou-se um impacto positivo do GCI, contribuindo para um melhor valor de tempo de resposta nos percentils não afetados por coldstart.
+
+
+### Analisando estatísticamente o tempo de resposta dos resultados
+Na análise estatística utilizando intervalo de confiança, temos o objetivo de identificar diferenças estatísticas em medidas da amostra (tais como média, mediana e percentis). Uma diferença estatística pode ser identificada ao notar a inexistência de interseções nos intervalos de confiança de uma dada medida. Caso haja uma interseção entre os intervalos comparados, não podemos afirmar que há diferença estatística entre os dois valores observados.
+```{r  fig.width=15, fig.height=5, echo=FALSE, warning=FALSE}
+tcit_nsched     = "TABELA 1: CONFIDENCE INTERVAL FOR RESPONSE TIME IN MS - NORM SCHEDULER"
+print(tcit_nsched)
 summary_table( gci_normscheduler$response_time, "gci", nogci_normscheduler$response_time, "nogci")
+```
+Na tabela 1 referente ao cenário com o escalonador normal, é possível notar que temos diferença estatística até o percentil 99.9. Os demais percentis (acima de 99.9) não serão considerados pois sofreram impacto do coldstart.
+```{r  fig.width=15, fig.height=5, echo=FALSE, warning=FALSE}
+tcit_opsched    = "TABELA 2: CONFIDENCE INTERVAL FOR RESPONSE TIME IN MS - OP SCHEDULER"
+print(tcit_opsched)
 summary_table(   gci_opscheduler$response_time, "gci",   nogci_opscheduler$response_time, "nogci")
+```
+Na tabela 2 referente ao cenário com o escalonador ótimo que não sabe do GCI, é possível notar que temos diferença estatística até o percentil 99.99. O percentil 99.999 não será considerado pois sofreu impacto do coldstart.
+```{r  fig.width=15, fig.height=5, echo=FALSE, warning=FALSE}
+tcit_opgcisched = "TABELA 3: CONFIDENCE INTERVAL FOR RESPONSE TIME IN MS - OP GCI SCHEDULER"
+print(tcit_opgcisched)
 summary_table(gci_opgcischeduler$response_time, "gci",   nogci_opscheduler$response_time, "nogci")
 ```
+Na tabela 3 referente ao cenário com o escalonador ótimo que sabe da presença do GCI, é possível notar que temos diferença estatística até o percentil 99.999. Assim, podemos estudar todo o espectro de percentis da distribuição do tempo de serviço para este caso.
 
-#### comparison table for response time, of all simulation
-```{r  fig.width=15, fig.height=5, echo=FALSE}
-quantiles_dataframe_comparison(nogci_normscheduler$response_time,  gci_normscheduler$response_time)
-quantiles_dataframe_comparison(nogci_opscheduler$response_time,      gci_opscheduler$response_time)
-quantiles_dataframe_comparison(nogci_opscheduler$response_time,   gci_opgcischeduler$response_time)
+
+### Análise do tempo de resposta utilizando ECDFs
+É possível notar que o GCI obteve melhor desempenho através de toda a distribuição do tempo de serviço de sua função ECDF. A seguir, as ECDFs para cada configuração de escalonador, comparando o cenário com GCI (intitulado GCI) e o sem GCI (intitulado NOGCI).
+
+```{r  fig.width=15, fig.height=5, echo=FALSE, warning=FALSE}
+tecdf_nsched     = "FIGURA 1: ECDF RESPONSE TIME - NORM SCHEDULER"
+graph_tail(gci_normscheduler$response_time,  nogci_normscheduler$response_time, c("GCI", "NOGCI"),     title=tecdf_nsched, x_limit_sup=100)
+```
+Na Figura 1, não podemos observar os percentils 99.99th pois estes foram impactados pelo coldstart e, por isto, tornaram-se outliers.
+
+```{r  fig.width=15, fig.height=5, echo=FALSE, warning=FALSE}
+tecdf_opsched    = "FIGURA 2: ECDF RESPONSE TIME - OP SCHEDULER"
+graph_tail(gci_opscheduler$response_time,   nogci_opscheduler$response_time,  c("GCI", "NOGCI"),    title=tecdf_opsched, x_limit_sup=100)
 ```
 
-#### Visualizing metrics
-```{r  fig.width=15, fig.height=5, echo=FALSE}
+```{r  fig.width=15, fig.height=5, echo=FALSE, warning=FALSE}
+tecdf_opgcisched = "FIGURA 3: ECDF RESPONSE TIME - OP GCI SCHEDULER"
+graph_tail(gci_opgcischeduler$response_time, nogci_opscheduler$response_time, c("GCI", "NOGCI"), title=tecdf_opgcisched, x_limit_sup=100)
+```
+Já nas Figuras 2 e 3, quando observamos o GCI, notamos que o percentil 99.99th diminui quando o escalonador ótimo tem ciencia do GCI. Por fim, de modo geral, podemos afirmar que a partir das ECDFs o GCI diminui o tempo de serviço ao longo de toda a ECDF, quando comparado ao NOGCI. 
+
+
+### Análise do tempo de resposta através de tabelas de comparação
+No caso do escalonador normal, a redução do tempo de serviço quando utilizado o GCI chega até 10% no percentil 99.9. No caso do escalonador ótimo para provisionamento não ciente do GCI, utilizar o GCI diminui o tempo de resposta em até 22% no percentil 99.99. Por fim, no caso do escalonador ótimo considerando a presença do GCI, fazer uso do GCI diminui o tempo de resposta em até 32% no percentil 99.99.
+A tabela a seguir apresenta a comparação entre GCI e NOGCI através da razão entre o tempo de resposta do caso NOGCI e GCI, isto é, o valor na coluna comparison representa o valor do tempo de resposta do NOGCI dividido pelo tempo de resposta do GCI. 
+```{r  fig.width=15, fig.height=5, echo=FALSE, warning=FALSE}
+tct_nsched     = "TABELA 1: COMPARISON TABLE FOR RESPONSE TIME IN MS - NORM SCHEDULER"
+print(tct_nsched)
+quantiles_dataframe_comparison(nogci_normscheduler$response_time,  gci_normscheduler$response_time)
+```
+Na tabela 1, é importante ressaltar que o impacto do coldstart já se apresenta a partir do percentil 99.99 e, por isto, conduzimos nossas análises do tempo de resposta para o escalonador normal apenas até o percentil 99.9.
+```{r  fig.width=15, fig.height=5, echo=FALSE, warning=FALSE}
+tct_opsched    = "TABELA 2: COMPARISON TABLE FOR RESPONSE TIME IN MS - OP SCHEDULER"
+print(tct_opsched)
+quantiles_dataframe_comparison(nogci_opscheduler$response_time,      gci_opscheduler$response_time)
+```
+Na tabela 2, notamos que o impacto do coldstart já não se faz presente para o caso NOGCI, conforme esperado. Contudo, a partir do percentil 99.999 o GCI sofre impacto de coldstart e, por isto, conduzimos as análises relacionadas ao escalonador ótimo (não considerando o GCI) até o percentil 99.99.
+```{r  fig.width=15, fig.height=5, echo=FALSE, warning=FALSE}
+tct_opgcisched = "TABELA 3: COMPARISON TABLE FOR RESPONSE TIME IN MS - OP GCI SCHEDULER"
+print(tct_opgcisched)
+quantiles_dataframe_comparison(nogci_opscheduler$response_time,   gci_opgcischeduler$response_time)
+```
+Na tabela 3, uma vez que por construção o modelo de escalonador utilizado não gera impacto do coletor de lixo, podemos utilizar todos os percentils para conduzir a análise.
+
+
+## Em relação à eficiência: a fim de evitar o impacto do coletor de lixo, há prejuízo no uso eficiente dos recursos computacionais ao levantar novas instâncias para dar suporte às redistribuições de requisições?
+Como esperado, o cenário com escalonador normal, quando comparado aos demais escalonadores, possui o maior custo e menor eficiência dos recursos, tanto para com GCI quanto sem ele. Se compararmos para este escalonador a configuração com GCI e sem GCI, notamos que o GCI aumenta o custo e em 4% e aumenta a eficiência em aproximadamente 13%.
+Com relação ao cenário utilizando GCI e os escalonadores ótimos, não conseguimos observar variança significativa com relação ao custo e eficiência. Contudo, Podemos notar que houve um impacto negativo do GCI quando comparado ao caso ótimo sem GCI, onde o aumento no custo foi de aproximadamente 12% e a redução da eficiência foi de aproximadamente 26%.
+Abaixo, uma tabela para visualização das métricas extraídas das simulações. Os valores presentes nesta tabela é uma média dos valores extraídos das simulações.
+```{r echo=FALSE, warning=FALSE}
 source("functions.R")
 sim_result_path = "../simulation/results/"
 gci_normscheduler   = c(  "gci",  "normscheduler", 0, 0, 0, 0)
@@ -113,5 +161,5 @@ throughput = take_col_i(3)
 instances_cost = take_col_i(4)
 instances_efficiency = take_col_i(5)
 simulation_exec_time = take_col_i(6)
-data.frame(scenario,scheduler_name,throughput,instances_cost,instances_efficiency,simulation_exec_time)
+data.frame(scenario,scheduler_name,throughput,instances_cost,instances_efficiency)
 ```
