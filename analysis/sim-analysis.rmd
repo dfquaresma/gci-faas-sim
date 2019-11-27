@@ -5,6 +5,15 @@ date: "october, 2019"
 output: pdf_document
 ---
 
+# Pergunta geral: qual o impacto do GCI quando utilizado no contexto de computação serverless?
+## Em relação ao tempo de resposta e throughput: a fim de evitar o impacto do coletor de lixo, há melhoria no tempo de resposta mesmo ao submeter uma requisição a possíveis vários redirecionamentos e um cold-start?
+Apesar de não se ter notado impacto no throughput durante as simulações, notou-se um impacto positivo do GCI, contribuindo para um melhor valor de tempo de resposta nos percentils não afetados por coldstart. 
+No caso do escalonador normal, a redução do tempo de serviço quando utilizado o GCI chega até 10% no percentil 99.9. No caso do escalonador ótimo para provisionamento não ciente do GCI, utilizar o GCI diminui o tempo de resposta em até 22% no percentil 99.99. Por fim, no caso do escalonador ótimo considerando a presença do GCI, fazer uso do GCI diminui o tempo de resposta em até 32% no percentil 99.99.
+
+## Em relação à eficiência: a fim de evitar o impacto do coletor de lixo, há prejuízo no uso eficiente dos recursos computacionais ao levantar novas instâncias para dar suporte às redistribuições de requisições?
+Como esperado, o cenário com escalonador normal, quando comparado aos demais escalonadores, possui o maior custo e menor eficiência dos recursos, tanto para com GCI quanto sem ele. Se compararmos para este escalonador a configuração com GCI e sem GCI, notamos que o GCI aumenta o custo e em 4% e aumenta a eficiência em aproximadamente 13%.
+Com relação ao cenário utilizando GCI e os escalonadores ótimos, não conseguimos observar variança significativa com relação ao custo e eficiência. Contudo, Podemos notar que houve um impacto negativo do GCI quando comparado ao caso ótimo sem GCI, onde o aumento no custo foi de aproximadamente 12% e a redução da eficiência foi de aproximadamente 26%.
+
 # Simulation results: GCI vs NOGCI
 ```{r echo=FALSE, results='hide', message=FALSE}
 source("functions.R")
