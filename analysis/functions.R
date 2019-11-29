@@ -79,6 +79,63 @@ summary_table <- function(df1, tag1, df2, tag2) {
   df
 }
 
+summary_table_sim <- function(df1, df2, df3, df4, df5, df6, tags) {
+  qCI <- function(df, p) {
+    return(quantileCI::quantile_confint_nyblom(df, p))
+  }
+  stats <- function(df) {
+    avg = signif(t.test(df)$conf.int, digits = 2)
+    p50 = signif(qCI(df, 0.5), digits = 4)
+    p95 = signif(qCI(df, 0.95), digits = 4)
+    p99 = signif(qCI(df, 0.99), digits = 4)
+    p999 = signif(qCI(df, 0.999), digits = 4)
+    p9999 = signif(qCI(df, 0.9999), digits = 4)
+    p99999 = signif(qCI(df, 0.99999), digits = 4)
+    dist = signif(qCI(df, 0.99999)- qCI(df, 0.5), digits = 4)
+    data <- c(avg, p50, p95, p99, p999, p9999, p99999, dist)
+    return(data)
+  }
+
+  stats1 = stats(df1)
+  stats2 = stats(df2)
+  stats3 = stats(df3)
+  stats4 = stats(df4)
+  stats5 = stats(df5)
+  stats6 = stats(df6)
+  
+  avgdf    <- data.frame("avg",     stats1[2],  stats2[1],  stats3[2],  stats4[1],  stats5[2],  stats6[1])
+  p50df    <- data.frame("p50",     stats1[4],  stats2[3],  stats3[4],  stats4[3],  stats5[4],  stats6[3])
+  p95df    <- data.frame("p95",     stats1[6],  stats2[5],  stats3[6],  stats4[5],  stats5[6],  stats6[5])
+  p99df    <- data.frame("p99",     stats1[8],  stats2[7],  stats3[8],  stats4[7],  stats5[8],  stats6[7])
+  p999df   <- data.frame("p999",   stats1[10],  stats2[9], stats3[10],  stats4[9], stats5[10],  stats6[9])
+  p9999df  <- data.frame("p9999",  stats1[12], stats2[11], stats3[12], stats4[11], stats5[12], stats6[11])
+  p99999df <- data.frame("p99999", stats1[14], stats2[13], stats3[14], stats4[13], stats5[14], stats6[13])
+  distdf   <- data.frame("dist",   stats1[16], stats2[15], stats3[16], stats4[15], stats5[16], stats6[15])
+  
+  tag1_inf = paste(tags[1], "cii", sep = ".")
+  tag1_sup = paste(tags[1], "cis", sep = ".")
+  tag2_inf = paste(tags[2], "cii", sep = ".")
+  tag2_sup = paste(tags[2], "cis", sep = ".")
+  tag3_inf = paste(tags[3], "cii", sep = ".")
+  tag3_sup = paste(tags[3], "cis", sep = ".")
+  tag4_inf = paste(tags[4], "cii", sep = ".")
+  tag4_sup = paste(tags[4], "cis", sep = ".")
+  tag5_inf = paste(tags[5], "cii", sep = ".")
+  tag5_sup = paste(tags[5], "cis", sep = ".")
+  tag6_inf = paste(tags[6], "cii", sep = ".")
+  tag6_sup = paste(tags[6], "cis", sep = ".")
+  names(avgdf)    <- c("stats", tag1_sup, tag2_inf, tag3_sup, tag4_inf, tag5_sup, tag6_inf)
+  names(p50df)    <- c("stats", tag1_sup, tag2_inf, tag3_sup, tag4_inf, tag5_sup, tag6_inf)
+  names(p95df)    <- c("stats", tag1_sup, tag2_inf, tag3_sup, tag4_inf, tag5_sup, tag6_inf)
+  names(p99df)    <- c("stats", tag1_sup, tag2_inf, tag3_sup, tag4_inf, tag5_sup, tag6_inf)
+  names(p999df)   <- c("stats", tag1_sup, tag2_inf, tag3_sup, tag4_inf, tag5_sup, tag6_inf)
+  names(p9999df)  <- c("stats", tag1_sup, tag2_inf, tag3_sup, tag4_inf, tag5_sup, tag6_inf)
+  names(p99999df) <- c("stats", tag1_sup, tag2_inf, tag3_sup, tag4_inf, tag5_sup, tag6_inf)
+  names(distdf)   <- c("stats", tag1_sup, tag2_inf, tag3_sup, tag4_inf, tag5_sup, tag6_inf)
+  df <- rbind(avgdf, p50df, p95df, p99df, p999df, p9999df, p99999df, distdf)
+  df
+}
+
 graph_tail <- function(gci, nogci, tags, title, x_limit_inf, x_limit_sup, annotate_y) {
   cmp <- rbind(
     data.frame("response_time"=gci, Type=tags[1]),
@@ -92,7 +149,6 @@ graph_tail <- function(gci, nogci, tags, title, x_limit_inf, x_limit_sup, annota
   nogci.p999 <- quantile(nogci, 0.9999)
   nogci.p50 <- quantile(nogci, 0.5)
   
-  x_limit_inf = 0
   annotate_y = 0.9
   size = 0.5
   alpha = 0.5
@@ -141,4 +197,16 @@ quantiles_dataframe_comparison = function(nogci, gci) {
     gci        = quantile_wrapped(gci),
     comparison = comparison
   )
+}
+
+quantiles_dataframe_comparison_sim = function(df1, df2, df3, df4, df5, df6) {
+  normsched = (quantile_wrapped(df1) / quantile_wrapped(df2))
+  opsched = (quantile_wrapped(df3) / quantile_wrapped(df4))
+  opgcisched = (quantile_wrapped(df5) / quantile_wrapped(df6))
+  comparissons = data.frame(
+    normsched  = normsched,
+    opsched    = opsched,
+    opgcisched = opgcisched
+  )
+  return(comparissons)
 }
