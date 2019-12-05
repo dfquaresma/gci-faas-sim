@@ -39,7 +39,7 @@ do
     metrics_file_name="${OUTPUT_PATH}sim${expid}-metrics"
     EXP_PATH=$(pwd)
     cd ${OUTPUT_PATH}
-    files=$(ls | grep "metrics" | grep "gci${i}")
+    files=$(ls | grep "metrics" | grep "gc" | grep "${i}")
     for f in ${files}; do cat "$f" >> "${metrics_file_name}.log"; done
     header=$(head -1 "${metrics_file_name}.log")
     grep -v "${header}" "${metrics_file_name}.log" > "${metrics_file_name}.csv"

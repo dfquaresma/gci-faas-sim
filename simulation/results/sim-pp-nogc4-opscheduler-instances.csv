@@ -1,0 +1,4 @@
+id,is_terminated,is_working,is_available,lastWorked,busyTime,up_time,idle_time,efficiency,created_time
+i1-f1,true,false,true,9000.009991,3019.250296,8999.973000,5980.722704,0.335473,0.041000
+i2-f2,true,false,true,8999.991108,3294.567850,8995.966000,5701.398150,0.366227,4.048000
+i0-f0,true,false,true,8997.266215,3334.077964,9000.014000,5665.936036,0.370453,0.000000
