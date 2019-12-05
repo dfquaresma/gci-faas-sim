@@ -8,8 +8,13 @@ output: pdf_document
 # Runtime experiments: GCI vs NOGCI
 ```{r echo=FALSE, results='hide', message=FALSE}
 source("functions.R")
-gci   = filter(read.al(paste("../experiment/results/",   "gci1", ".csv", sep="")), status == 200)
-nogci = filter(read.al(paste("../experiment/results/", "nogci1", ".csv", sep="")), status == 200)
+results_path = "../experiment/results/"
+gci = data.frame()
+nogci = data.frame()
+for (i in 1:8) {
+  gci   =  rbind(gci,   filter(read.al(paste(results_path,   "gci", as.character(i) ,".csv", sep="")), status == 200))
+  nogci =  rbind(nogci, filter(read.al(paste(results_path, "nogci", as.character(i) ,".csv", sep="")), status == 200))
+}
 gci$response_time = gci$response_time / 1000000
 gci$service_time = gci$body / 1000000
 nogci$response_time = nogci$response_time / 1000000
@@ -26,12 +31,12 @@ nogci$service_time = nogci$body / 1000000
 
 #### ECDF for response time
 ```{r  fig.width=15, fig.height=5, echo=FALSE}
-graph_tail(gci$response_time, nogci$response_time, c("GCI", "NOGCI"), title="THUMBNAILATOR ECDF RESPONSE TIME", x_limit_sup=100)
+graph_tail(gci$response_time, nogci$response_time, c("GCI", "NOGCI"), title="THUMBNAILATOR ECDF RESPONSE TIME", x_limit_inf=0, x_limit_sup=100)
 ```
 
 #### ECDF for service time
 ```{r  fig.width=15, fig.height=5, echo=FALSE}
-graph_tail(gci$service_time, nogci$service_time, c("GCI", "NOGCI"), title="THUMBNAILATOR ECDF SERVICE TIME", x_limit_sup=100)
+graph_tail(gci$service_time, nogci$service_time, c("GCI", "NOGCI"), title="THUMBNAILATOR ECDF SERVICE TIME", x_limit_inf=0, x_limit_sup=100)
 ```
 
 #### summary table of confidence interval for response time, both in milliseconds

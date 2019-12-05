@@ -65,6 +65,18 @@ summary_table_sim(
   nogci_opscheduler,
   tags
 )
+summary_table(
+  gci_normscheduler, tags[1],
+  nogci_normscheduler, tags[2]
+)
+summary_table(
+  gci_opscheduler, tags[3],
+  nogci_opscheduler, tags[4]
+)
+summary_table(
+  gci_opgcischeduler, tags[5],
+  nogci_opscheduler, tags[6]
+)
 ```
 Na tabela 1 referente ao cenário com o escalonador normal (normsched.gci.cis normsched.nogci.cii), é possível notar que temos diferença estatística até o percentil 99.9. Os demais percentis (acima de 99.9) não serão considerados pois sofreram impacto do coldstart.
 Também na tabela 1, o cenário relacionado com o escalonador ótimo que não sabe do GCI (opsched.gci.cis opmsched.nogci.cii), é possível notar que temos diferença estatística até o percentil 99.99. O percentil 99.999 não será considerado pois sofreu impacto do coldstart.
@@ -76,18 +88,75 @@ Por fim, ainda na tabela 1 e referente ao cenário com o escalonador ótimo que 
 
 ```{r  fig.width=15, fig.height=5, echo=FALSE, warning=FALSE}
 tecdf_nsched     = "FIGURA 1: ECDF RESPONSE TIME - NORM SCHEDULER"
-graph_tail(gci_normscheduler,  nogci_normscheduler, c("GCI", "NOGCI"),     title=tecdf_nsched,  x_limit_inf=40, x_limit_sup=70)
+qg  = quantile(gci_normscheduler, c(.0, .25, .50, .75, .90, .95, .99, .999, .9999, .99999, 1))
+qng = quantile(nogci_normscheduler, c(.0, .25, .50, .75, .90, .95, .99, .999, .9999, .99999, 1))
+pmin.x = min(qg[1], qng[1])
+pmax.x = max(qg[8], qng[8])
+pmin.y = 0.0
+pmax.y = 0.999
+graph_tail_sim(gci=gci_normscheduler,  nogci=nogci_normscheduler,
+           tags= c("GCI", "NOGCI"), title=paste(tecdf_nsched, "- 0-4 quantile", sep=" "),
+           x_limit_inf=pmin.x, x_limit_sup=pmax.x,
+           y_limit_inf=pmin.y, y_limit_sup=pmax.y, p999_instead_p9999=TRUE
+)
+pmin.x = min(qg[4], qng[4])
+pmax.x = max(qg[8], qng[8])
+pmin.y = 0.75
+pmax.y = 0.999
+graph_tail_sim(gci=gci_normscheduler,  nogci=nogci_normscheduler,
+           tags= c("GCI", "NOGCI"), title=paste(tecdf_nsched, "- 3-4 quantile", sep=" "),
+           x_limit_inf=pmin.x, x_limit_sup=pmax.x,
+           y_limit_inf=pmin.y, y_limit_sup=pmax.y, p999_instead_p9999=TRUE
+)
 ```
 Na Figura 1, não podemos observar os percentils 99.99th pois estes foram impactados pelo coldstart e, por isto, tornaram-se outliers.
 
 ```{r  fig.width=15, fig.height=5, echo=FALSE, warning=FALSE}
 tecdf_opsched    = "FIGURA 2: ECDF RESPONSE TIME - OP SCHEDULER"
-graph_tail(gci_opscheduler,   nogci_opscheduler,  c("GCI", "NOGCI"),    title=tecdf_opsched, x_limit_inf=40, x_limit_sup=70)
+qg  = quantile(gci_opscheduler, c(.0, .25, .50, .75, .90, .95, .99, .999, .9999, .99999, 1))
+qng = quantile(nogci_opscheduler, c(.0, .25, .50, .75, .90, .95, .99, .999, .9999, .99999, 1))
+pmin.x = min(qg[1], qng[1])
+pmax.x = max(qg[9], qng[9])
+pmin.y = 0.0
+pmax.y = 0.9999
+graph_tail_sim(gci=gci_opscheduler,  nogci=nogci_opscheduler,
+           tags= c("GCI", "NOGCI"), title=paste(tecdf_opsched, "- 0-4 quantile", sep=" "),
+           x_limit_inf=pmin.x, x_limit_sup=pmax.x,
+           y_limit_inf=pmin.y, y_limit_sup=pmax.y
+)
+pmin.x = min(qg[4], qng[4])
+pmax.x = max(qg[9], qng[9])
+pmin.y = 0.75
+pmax.y = 0.9999
+graph_tail_sim(gci=gci_opscheduler,  nogci=nogci_opscheduler,
+           tags= c("GCI", "NOGCI"), title=paste(tecdf_opsched, "- 3-4 quantile", sep=" "),
+           x_limit_inf=pmin.x, x_limit_sup=pmax.x,
+           y_limit_inf=pmin.y, y_limit_sup=pmax.y
+)
 ```
 
 ```{r  fig.width=15, fig.height=5, echo=FALSE, warning=FALSE}
 tecdf_opgcisched = "FIGURA 3: ECDF RESPONSE TIME - OP GCI SCHEDULER"
-graph_tail(gci_opgcischeduler, nogci_opscheduler, c("GCI", "NOGCI"), title=tecdf_opgcisched,  x_limit_inf=40, x_limit_sup=70)
+qg  = quantile(gci_opgcischeduler, c(.0, .25, .50, .75, .90, .95, .99, .999, .9999, .99999, 1))
+qng = quantile(nogci_opscheduler, c(.0, .25, .50, .75, .90, .95, .99, .999, .9999, .99999, 1))
+pmin.x = min(qg[1], qng[1])
+pmax.x = max(qg[9], qng[9])
+pmin.y = 0.0
+pmax.y = 0.9999
+graph_tail_sim(gci=gci_opgcischeduler,  nogci=nogci_opscheduler,
+           tags= c("GCI", "NOGCI"), title=paste(tecdf_opgcisched, "- 0-4 quantile", sep=" "),
+           x_limit_inf=pmin.x, x_limit_sup=pmax.x,
+           y_limit_inf=pmin.y, y_limit_sup=pmax.y
+)
+pmin.x = min(qg[4], qng[4])
+pmax.x = max(qg[9], qng[9])
+pmin.y = 0.75
+pmax.y = 0.9999
+graph_tail_sim(gci=gci_opgcischeduler,  nogci=nogci_opscheduler,
+           tags= c("GCI", "NOGCI"), title=paste(tecdf_opgcisched, "- 3-4 quantile", sep=" "),
+           x_limit_inf=pmin.x, x_limit_sup=pmax.x,
+           y_limit_inf=pmin.y, y_limit_sup=pmax.y
+)
 ```
 Já nas Figuras 2 e 3, quando observamos o GCI, notamos que o percentil 99.99th diminui quando o escalonador ótimo tem ciencia do GCI. Por fim, de modo geral, podemos afirmar que a partir das ECDFs o GCI diminui o tempo de serviço ao longo de toda a ECDF, quando comparado ao NOGCI. 
 
