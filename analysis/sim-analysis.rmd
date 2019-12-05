@@ -8,7 +8,7 @@ output: pdf_document
 # Pergunta geral: qual o impacto do GCI quando utilizado no contexto de computação serverless?
 ```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE}
 source("functions.R")
-sim_result_path = "../simulation/results/"
+sim_result_path = "../simulation/results0/"
 gci_normscheduler   = data.frame()
 gci_opscheduler     = data.frame()
 gci_opgcischeduler  = data.frame()
@@ -52,9 +52,9 @@ Na análise estatística utilizando intervalo de confiança, temos o objetivo de
 tcit = "TABELA 1: CONFIDENCE INTERVAL FOR RESPONSE TIME IN MS"
 print(tcit)
 tags = c(
-  "normsc.gci",  "normsc.nogci",
+  "nsc.gci",  "nsc.nogci",
   "opsc.gci", "opsc.nogci",
-  "opgcisc.gci", "opgcisc.nogci"
+  "opgsc.gci", "opgsc.nogci"
   )
 summary_table_sim(
   gci_normscheduler,
@@ -94,17 +94,21 @@ pmin.x = min(qg[1], qng[1])
 pmax.x = max(qg[8], qng[8])
 pmin.y = 0.0
 pmax.y = 0.999
+print(paste(tecdf_nsched, "- 0-4 quantile", sep=" "))
 graph_tail_sim(gci=gci_normscheduler,  nogci=nogci_normscheduler,
-           tags= c("GCI", "NOGCI"), title=paste(tecdf_nsched, "- 0-4 quantile", sep=" "),
+           tags= c("GCI", "NOGCI"),
            x_limit_inf=pmin.x, x_limit_sup=pmax.x,
-           y_limit_inf=pmin.y, y_limit_sup=pmax.y, p999_instead_p9999=TRUE
+           y_limit_inf=pmin.y, y_limit_sup=pmax.y, p999_instead_p9999=TRUE, img_name="figura1-ecdf-normsc.png"
 )
+```
+```{r  fig.width=15, fig.height=5, echo=FALSE, warning=FALSE}
 pmin.x = min(qg[4], qng[4])
 pmax.x = max(qg[8], qng[8])
 pmin.y = 0.75
 pmax.y = 0.999
+print(paste(tecdf_nsched, "- 3-4 quantile", sep=" "))
 graph_tail_sim(gci=gci_normscheduler,  nogci=nogci_normscheduler,
-           tags= c("GCI", "NOGCI"), title=paste(tecdf_nsched, "- 3-4 quantile", sep=" "),
+           tags= c("GCI", "NOGCI"),
            x_limit_inf=pmin.x, x_limit_sup=pmax.x,
            y_limit_inf=pmin.y, y_limit_sup=pmax.y, p999_instead_p9999=TRUE
 )
@@ -119,17 +123,22 @@ pmin.x = min(qg[1], qng[1])
 pmax.x = max(qg[9], qng[9])
 pmin.y = 0.0
 pmax.y = 0.9999
+print(paste(tecdf_opsched, "- 0-4 quantile", sep=" "))
 graph_tail_sim(gci=gci_opscheduler,  nogci=nogci_opscheduler,
-           tags= c("GCI", "NOGCI"), title=paste(tecdf_opsched, "- 0-4 quantile", sep=" "),
+           tags= c("GCI", "NOGCI"),
            x_limit_inf=pmin.x, x_limit_sup=pmax.x,
-           y_limit_inf=pmin.y, y_limit_sup=pmax.y
+           y_limit_inf=pmin.y, y_limit_sup=pmax.y, img_name="figura2-ecdf-opsc.png"
 )
+
+```
+```{r  fig.width=15, fig.height=5, echo=FALSE, warning=FALSE}
 pmin.x = min(qg[4], qng[4])
 pmax.x = max(qg[9], qng[9])
 pmin.y = 0.75
 pmax.y = 0.9999
+print(paste(tecdf_opsched, "- 3-4 quantile", sep=" "))
 graph_tail_sim(gci=gci_opscheduler,  nogci=nogci_opscheduler,
-           tags= c("GCI", "NOGCI"), title=paste(tecdf_opsched, "- 3-4 quantile", sep=" "),
+           tags= c("GCI", "NOGCI"),
            x_limit_inf=pmin.x, x_limit_sup=pmax.x,
            y_limit_inf=pmin.y, y_limit_sup=pmax.y
 )
@@ -143,17 +152,21 @@ pmin.x = min(qg[1], qng[1])
 pmax.x = max(qg[9], qng[9])
 pmin.y = 0.0
 pmax.y = 0.9999
+print(paste(tecdf_opgcisched, "- 0-4 quantile", sep=" "))
 graph_tail_sim(gci=gci_opgcischeduler,  nogci=nogci_opscheduler,
-           tags= c("GCI", "NOGCI"), title=paste(tecdf_opgcisched, "- 0-4 quantile", sep=" "),
+           tags= c("GCI", "NOGCI"),
            x_limit_inf=pmin.x, x_limit_sup=pmax.x,
-           y_limit_inf=pmin.y, y_limit_sup=pmax.y
+           y_limit_inf=pmin.y, y_limit_sup=pmax.y, img_name="figura3-ecdf-opgcisc.png"
 )
+```
+```{r  fig.width=15, fig.height=5, echo=FALSE, warning=FALSE}
 pmin.x = min(qg[4], qng[4])
 pmax.x = max(qg[9], qng[9])
 pmin.y = 0.75
 pmax.y = 0.9999
+print(paste(tecdf_opgcisched, "- 3-4 quantile", sep=" "))
 graph_tail_sim(gci=gci_opgcischeduler,  nogci=nogci_opscheduler,
-           tags= c("GCI", "NOGCI"), title=paste(tecdf_opgcisched, "- 3-4 quantile", sep=" "),
+           tags= c("GCI", "NOGCI"),
            x_limit_inf=pmin.x, x_limit_sup=pmax.x,
            y_limit_inf=pmin.y, y_limit_sup=pmax.y
 )
@@ -182,7 +195,7 @@ Como esperado, o cenário com escalonador normal, quando comparado aos demais es
 Com relação ao cenário utilizando GCI e os escalonadores ótimos, não conseguimos observar variança significativa com relação ao custo e eficiência. Contudo, Podemos notar que houve um impacto negativo do GCI quando comparado ao caso ótimo sem GCI, onde o aumento no custo foi de aproximadamente 12% e a redução da eficiência foi de aproximadamente 26%.
 Abaixo, uma tabela para visualização das métricas extraídas das simulações. Os valores presentes nesta tabela é uma média dos valores extraídos das simulações.
 ```{r echo=FALSE, warning=FALSE}
-sim_result_path = "../simulation/results/"
+sim_result_path = "../simulation/results0/"
 gci_normscheduler_met   = c(  "gci",  "normscheduler", 0, 0, 0, 0)
 gci_opscheduler_met     = c(  "gci",    "opscheduler", 0, 0, 0, 0)
 gci_opgcischeduler_met  = c(  "gci", "opgcischeduler", 0, 0, 0, 0)
