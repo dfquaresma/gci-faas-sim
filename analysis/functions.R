@@ -178,6 +178,77 @@ graph_tail <- function(gci, nogci, tags, title, x_limit_inf, x_limit_sup, annota
   print(p)
 }
 
+graph_tail_sim <- function(gci, nogci, tags, x_limit_inf, x_limit_sup, y_limit_inf, y_limit_sup, 
+                           annotate_y, p999_instead_p9999=FALSE, img_name=FALSE) {
+  cmp <- rbind(
+    data.frame("response_time"=gci, tipo=tags[1]),
+    data.frame("response_time"=nogci, tipo=tags[2])
+  )
+  gci.color <- "blue"
+  gci.q3 <- quantile(gci, 0.75)
+  gci.p50 <- quantile(gci, 0.5)
+  gci.q1 <- quantile(gci, 0.25)
+  
+  nogci.color <- "red"
+  nogci.q3 <- quantile(nogci, 0.75)
+  nogci.p50 <- quantile(nogci, 0.5)
+  nogci.q1 <- quantile(nogci, 0.25)
+  
+  tail_tag = "99.99th"
+  tail = 0.9999
+  if (p999_instead_p9999) {
+    tail_tag = "99.9th"
+    tail = 0.999
+  }
+  gci.tail <- quantile(gci, tail)
+  nogci.tail <- quantile(nogci, tail)
+  
+  annotate_y = 0.9
+  size = 0.5
+  alpha = 0.5
+  angle = 90
+  p <- ggplot(cmp, aes(response_time, color=tipo)) +
+    stat_ecdf(size=size) +
+    
+    # Q1
+    annotate(geom="text", x=gci.q1, y=annotate_y, label="1-quantile", angle=angle, color=gci.color) +
+    geom_vline(xintercept=gci.q1, linetype="dotted", size=size, alpha=alpha, color=gci.color) +
+    annotate(geom="text", x=nogci.q1, y=annotate_y, label="1-quantile", angle=angle, color=nogci.color) + 
+    geom_vline(xintercept=nogci.q1, linetype="dotted", size=size, alpha=alpha, color=nogci.color) +
+    
+    # P50
+    annotate(geom="text", x=gci.p50, y=annotate_y, label="Median", angle=angle, color=gci.color) +
+    geom_vline(xintercept=gci.p50, linetype="dotted", size=size, alpha=alpha, color=gci.color) +
+    annotate(geom="text", x=nogci.p50, y=annotate_y, label="Median", angle=angle, color=nogci.color) + 
+    geom_vline(xintercept=nogci.p50, linetype="dotted", size=size, alpha=alpha, color=nogci.color) +
+    
+    # Q3
+    annotate(geom="text", x=gci.q3, y=annotate_y, label="3-quantile", angle=angle, color=gci.color) +
+    geom_vline(xintercept=gci.q3, linetype="dotted", size=size, alpha=alpha, color=gci.color) +
+    annotate(geom="text", x=nogci.q3, y=annotate_y, label="3-quantile", angle=angle, color=nogci.color) + 
+    geom_vline(xintercept=nogci.q3, linetype="dotted", size=size, alpha=alpha, color=nogci.color) +
+    
+    # P9999
+    annotate(geom="text", x=gci.tail, y=annotate_y, label=tail_tag, angle=angle, color=gci.color) +
+    geom_vline(xintercept=gci.tail, linetype="dotted", size=size, alpha=alpha, color=gci.color) +
+    annotate(geom="text", x=nogci.tail, y=annotate_y, label=tail_tag, angle=angle, color=nogci.color) + 
+    geom_vline(xintercept=nogci.tail, linetype="dotted", size=size, alpha=alpha, color=nogci.color) +
+    
+    xlim(x_limit_inf, x_limit_sup) +
+    ylim(y_limit_inf, y_limit_sup) +
+    theme(legend.position="top") +
+    scale_color_manual(breaks = tags, values=c("blue", "red")) +
+    theme_bw() +
+    xlab("Tempo de Resposta (ms)") +
+    ylab("ECDF")
+  
+  if (img_name != FALSE) {
+      ggsave(img_name, width=10, height=5)
+    }
+  print(p)
+  
+}
+
 get_service_time_column <- function(df) {
   service_time = c()
   for (val in df$response_body) {
