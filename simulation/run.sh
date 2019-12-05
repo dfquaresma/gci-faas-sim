@@ -15,8 +15,8 @@ echo "WARMUP: ${WARMUP:=500}"
 echo "SCHEDULERS: ${SCHEDULERS:=0 1 2}"
 echo "FLAGS: ${FLAGS:=pp-gci pp-nogci pp-nogc}"
 echo "NUMBER_OF_INPUTS: ${NUMBER_OF_INPUTS:=8}"
-echo "OUTPUT_PATH: ${OUTPUT_PATH:=/home/davidfq/Desktop/gci-faas-sim/simulation/results/}"
-echo "INPUT_PATH: ${INPUT_PATH:=/home/davidfq/Desktop/gci-faas-sim/experiment/results/}"
+echo "OUTPUT_PATH: ${OUTPUT_PATH:=/home/ubuntu/gci-faas-sim/simulation/results/}"
+echo "INPUT_PATH: ${INPUT_PATH:=/home/ubuntu/gci-faas-sim/experiment/results/}"
 
 echo -e "${YELLOW}CREATING PATHS${NC}"
 mkdir -p ${OUTPUT_PATH}
