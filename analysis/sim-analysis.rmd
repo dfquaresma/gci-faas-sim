@@ -8,30 +8,42 @@ output: pdf_document
 # Pergunta geral: qual o impacto do GCI quando utilizado no contexto de computação serverless?
 ```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE}
 source("functions.R")
-sim_result_path = "../simulation/results0/"
+sim_result_path = "../simulation/results/"
 gci_normscheduler   = data.frame()
 gci_opscheduler     = data.frame()
 gci_opgcischeduler  = data.frame()
 nogci_normscheduler = data.frame()
 nogci_opscheduler   = data.frame()
+nogci_opgcischeduler  = data.frame()
+nogc_normscheduler = data.frame()
+nogc_opscheduler   = data.frame()
+nogc_opgcischeduler  = data.frame()
 readInput <- function(gcname, schname, i) {
   f = paste(sim_result_path, gcname, as.character(i), "-", schname, "-reqs.csv", sep="")
   dt = filter(read.al.sim(f), status == 200)
   cols = c("response_time")
   return(dt[cols])
 }
-for(i in 1:5){
+for(i in 1:4){
   gci_normscheduler   = rbind(gci_normscheduler, readInput("sim-pp-gci", "normscheduler", i))
   gci_opscheduler     = rbind(gci_opscheduler, readInput("sim-pp-gci", "opscheduler", i))
   gci_opgcischeduler  = rbind(gci_opgcischeduler, readInput("sim-pp-gci", "opgcischeduler", i))
   nogci_normscheduler = rbind(nogci_normscheduler, readInput("sim-pp-nogci", "normscheduler", i))
   nogci_opscheduler   = rbind(nogci_opscheduler, readInput("sim-pp-nogci", "opscheduler", i))
+  nogci_opgcischeduler  = rbind(gci_opgcischeduler, readInput("sim-pp-nogci", "opgcischeduler", i))
+  nogc_normscheduler = rbind(nogci_normscheduler, readInput("sim-pp-nogc", "normscheduler", i))
+  nogc_opscheduler   = rbind(nogci_opscheduler, readInput("sim-pp-nogc", "opscheduler", i))
+  nogc_opgcischeduler  = rbind(gci_opgcischeduler, readInput("sim-pp-nogc", "opgcischeduler", i))
 }
 gci_normscheduler   = gci_normscheduler$response_time * 1000
 gci_opscheduler     = gci_opscheduler$response_time * 1000
 gci_opgcischeduler  = gci_opgcischeduler$response_time * 1000
 nogci_normscheduler = nogci_normscheduler$response_time * 1000
 nogci_opscheduler   = nogci_opscheduler$response_time * 1000
+nogci_opgcischeduler  = nogci_opgcischeduler$response_time * 1000
+nogc_normscheduler = nogc_normscheduler$response_time * 1000
+nogc_opscheduler   = nogc_opscheduler$response_time * 1000
+nogc_opgcischeduler  = nogc_opgcischeduler$response_time * 1000
 ```
 
 ## Descrição das simulações:
@@ -77,6 +89,19 @@ summary_table(
   gci_opgcischeduler, tags[5],
   nogci_opscheduler, tags[6]
 )
+
+tags = c(
+  "nsc.nogc",  "nsc.nogci",
+  "opsc.nogc", "opsc.nogci"
+)
+summary_table(
+  nogc_normscheduler, tags[1],
+  nogci_normscheduler, tags[2]
+)
+summary_table(
+  nogc_opscheduler, tags[3],
+  nogci_opscheduler, tags[4]
+)
 ```
 Na tabela 1 referente ao cenário com o escalonador normal (normsched.gci.cis normsched.nogci.cii), é possível notar que temos diferença estatística até o percentil 99.9. Os demais percentis (acima de 99.9) não serão considerados pois sofreram impacto do coldstart.
 Também na tabela 1, o cenário relacionado com o escalonador ótimo que não sabe do GCI (opsched.gci.cis opmsched.nogci.cii), é possível notar que temos diferença estatística até o percentil 99.99. O percentil 99.999 não será considerado pois sofreu impacto do coldstart.
@@ -101,18 +126,6 @@ graph_tail_sim(gci=gci_normscheduler,  nogci=nogci_normscheduler,
            y_limit_inf=pmin.y, y_limit_sup=pmax.y, p999_instead_p9999=TRUE, img_name="figura1-ecdf-normsc.png"
 )
 ```
-```{r  fig.width=15, fig.height=5, echo=FALSE, warning=FALSE}
-pmin.x = min(qg[4], qng[4])
-pmax.x = max(qg[8], qng[8])
-pmin.y = 0.75
-pmax.y = 0.999
-print(paste(tecdf_nsched, "- 3-4 quantile", sep=" "))
-graph_tail_sim(gci=gci_normscheduler,  nogci=nogci_normscheduler,
-           tags= c("GCI", "NOGCI"),
-           x_limit_inf=pmin.x, x_limit_sup=pmax.x,
-           y_limit_inf=pmin.y, y_limit_sup=pmax.y, p999_instead_p9999=TRUE
-)
-```
 Na Figura 1, não podemos observar os percentils 99.99th pois estes foram impactados pelo coldstart e, por isto, tornaram-se outliers.
 
 ```{r  fig.width=15, fig.height=5, echo=FALSE, warning=FALSE}
@@ -131,18 +144,6 @@ graph_tail_sim(gci=gci_opscheduler,  nogci=nogci_opscheduler,
 )
 
 ```
-```{r  fig.width=15, fig.height=5, echo=FALSE, warning=FALSE}
-pmin.x = min(qg[4], qng[4])
-pmax.x = max(qg[9], qng[9])
-pmin.y = 0.75
-pmax.y = 0.9999
-print(paste(tecdf_opsched, "- 3-4 quantile", sep=" "))
-graph_tail_sim(gci=gci_opscheduler,  nogci=nogci_opscheduler,
-           tags= c("GCI", "NOGCI"),
-           x_limit_inf=pmin.x, x_limit_sup=pmax.x,
-           y_limit_inf=pmin.y, y_limit_sup=pmax.y
-)
-```
 
 ```{r  fig.width=15, fig.height=5, echo=FALSE, warning=FALSE}
 tecdf_opgcisched = "FIGURA 3: ECDF RESPONSE TIME - OP GCI SCHEDULER"
@@ -157,18 +158,6 @@ graph_tail_sim(gci=gci_opgcischeduler,  nogci=nogci_opscheduler,
            tags= c("GCI", "NOGCI"),
            x_limit_inf=pmin.x, x_limit_sup=pmax.x,
            y_limit_inf=pmin.y, y_limit_sup=pmax.y, img_name="figura3-ecdf-opgcisc.png"
-)
-```
-```{r  fig.width=15, fig.height=5, echo=FALSE, warning=FALSE}
-pmin.x = min(qg[4], qng[4])
-pmax.x = max(qg[9], qng[9])
-pmin.y = 0.75
-pmax.y = 0.9999
-print(paste(tecdf_opgcisched, "- 3-4 quantile", sep=" "))
-graph_tail_sim(gci=gci_opgcischeduler,  nogci=nogci_opscheduler,
-           tags= c("GCI", "NOGCI"),
-           x_limit_inf=pmin.x, x_limit_sup=pmax.x,
-           y_limit_inf=pmin.y, y_limit_sup=pmax.y
 )
 ```
 Já nas Figuras 2 e 3, quando observamos o GCI, notamos que o percentil 99.99th diminui quando o escalonador ótimo tem ciencia do GCI. Por fim, de modo geral, podemos afirmar que a partir das ECDFs o GCI diminui o tempo de serviço ao longo de toda a ECDF, quando comparado ao NOGCI. 
@@ -195,49 +184,73 @@ Como esperado, o cenário com escalonador normal, quando comparado aos demais es
 Com relação ao cenário utilizando GCI e os escalonadores ótimos, não conseguimos observar variança significativa com relação ao custo e eficiência. Contudo, Podemos notar que houve um impacto negativo do GCI quando comparado ao caso ótimo sem GCI, onde o aumento no custo foi de aproximadamente 12% e a redução da eficiência foi de aproximadamente 26%.
 Abaixo, uma tabela para visualização das métricas extraídas das simulações. Os valores presentes nesta tabela é uma média dos valores extraídos das simulações.
 ```{r echo=FALSE, warning=FALSE}
-sim_result_path = "../simulation/results0/"
-gci_normscheduler_met   = c(  "gci",  "normscheduler", 0, 0, 0, 0)
-gci_opscheduler_met     = c(  "gci",    "opscheduler", 0, 0, 0, 0)
-gci_opgcischeduler_met  = c(  "gci", "opgcischeduler", 0, 0, 0, 0)
-nogci_normscheduler_met = c("nogci",  "normscheduler", 0, 0, 0, 0)
-nogci_opscheduler_met   = c("nogci",    "opscheduler", 0, 0, 0, 0)
+sim_result_path = "../simulation/results/"
+gci_normscheduler_met    = c(  "gci",  "normscheduler", 0, 0, 0, 0)
+gci_opscheduler_met      = c(  "gci",    "opscheduler", 0, 0, 0, 0)
+gci_opgcischeduler_met   = c(  "gci", "opgcischeduler", 0, 0, 0, 0)
+nogci_normscheduler_met  = c("nogci",  "normscheduler", 0, 0, 0, 0)
+nogci_opscheduler_met    = c("nogci",    "opscheduler", 0, 0, 0, 0)
+nogci_opgcischeduler_met = c("nogci", "opgcischeduler", 0, 0, 0, 0)
+nogc_normscheduler_met   = c("nogc",  "normscheduler", 0, 0, 0, 0)
+nogc_opscheduler_met     = c("nogc",    "opscheduler", 0, 0, 0, 0)
+nogc_opgcischeduler_met  = c("nogc", "opgcischeduler", 0, 0, 0, 0)
 mean_at_i <- function(i, a, b) {
   a = as.double(a)
   return( ((i - 1) * a + b) / i )
 }
-for(i in 1:5){
+for(i in 1:4){
   simi_metrics = read.al.sim(paste(sim_result_path, "sim", as.character(i), "-metrics.csv", sep=""))
-  gcii_normscheduler   = filter(filter(simi_metrics, scenario == paste(  "pp-gci", as.character(i), sep="")), scheduler_name == "-normscheduler")
-  gcii_opscheduler     = filter(filter(simi_metrics, scenario == paste(  "pp-gci", as.character(i), sep="")), scheduler_name == "-opscheduler")
-  gcii_opgcischeduler  = filter(filter(simi_metrics, scenario == paste(  "pp-gci", as.character(i), sep="")), scheduler_name == "-opgcischeduler")
-  nogcii_normscheduler = filter(filter(simi_metrics, scenario == paste("pp-nogci", as.character(i), sep="")), scheduler_name == "-normscheduler")
-  nogcii_opscheduler   = filter(filter(simi_metrics, scenario == paste("pp-nogci", as.character(i), sep="")), scheduler_name == "-opscheduler")
+  gcii_normscheduler    = filter(filter(simi_metrics, scenario == paste(  "pp-gci", as.character(i), sep="")), scheduler_name == "-normscheduler")
+  gcii_opscheduler      = filter(filter(simi_metrics, scenario == paste(  "pp-gci", as.character(i), sep="")), scheduler_name == "-opscheduler")
+  gcii_opgcischeduler   = filter(filter(simi_metrics, scenario == paste(  "pp-gci", as.character(i), sep="")), scheduler_name == "-opgcischeduler")
+  nogcii_normscheduler  = filter(filter(simi_metrics, scenario == paste("pp-nogci", as.character(i), sep="")), scheduler_name == "-normscheduler")
+  nogcii_opscheduler    = filter(filter(simi_metrics, scenario == paste("pp-nogci", as.character(i), sep="")), scheduler_name == "-opscheduler")
+  nogcii_opgcischeduler = filter(filter(simi_metrics, scenario == paste("pp-nogci", as.character(i), sep="")), scheduler_name == "-opgcischeduler")
+  nogci_normscheduler   = filter(filter(simi_metrics, scenario == paste("pp-nogc", as.character(i), sep="")),  scheduler_name == "-normscheduler")
+  nogci_opscheduler     = filter(filter(simi_metrics, scenario == paste("pp-nogc", as.character(i), sep="")),  scheduler_name == "-opscheduler")
+  nogci_opgcischeduler  = filter(filter(simi_metrics, scenario == paste("pp-nogc", as.character(i), sep="")),  scheduler_name == "-opgcischeduler")
 
-  gci_normscheduler_met[3]   = mean_at_i(i, gci_normscheduler_met[3], gcii_normscheduler$throughput)
-  gci_opscheduler_met[3]     = mean_at_i(i, gci_opscheduler_met[3], gcii_opscheduler$throughput)
-  gci_opgcischeduler_met[3]  = mean_at_i(i, gci_opgcischeduler_met[3], gcii_opgcischeduler$throughput)
-  nogci_normscheduler_met[3] = mean_at_i(i, nogci_normscheduler_met[3], nogcii_normscheduler$throughput)
-  nogci_opscheduler_met[3]   = mean_at_i(i, nogci_opscheduler_met[3], nogcii_opscheduler$throughput)
+  gci_normscheduler_met[3]    = mean_at_i(i, gci_normscheduler_met[3],    gcii_normscheduler$throughput)
+  gci_opscheduler_met[3]      = mean_at_i(i, gci_opscheduler_met[3],      gcii_opscheduler$throughput)
+  gci_opgcischeduler_met[3]   = mean_at_i(i, gci_opgcischeduler_met[3],   gcii_opgcischeduler$throughput)
+  nogci_normscheduler_met[3]  = mean_at_i(i, nogci_normscheduler_met[3],  nogcii_normscheduler$throughput)
+  nogci_opscheduler_met[3]    = mean_at_i(i, nogci_opscheduler_met[3],    nogcii_opscheduler$throughput)
+  nogci_opgcischeduler_met[3] = mean_at_i(i, nogci_opgcischeduler_met[3], nogcii_opgcischeduler$throughput)
+  nogc_normscheduler_met[3]   = mean_at_i(i, nogc_normscheduler_met[3],   nogci_normscheduler$throughput)
+  nogc_opscheduler_met[3]     = mean_at_i(i, nogc_opscheduler_met[3],     nogci_opscheduler$throughput)
+  nogc_opgcischeduler_met[3]  = mean_at_i(i, nogc_opgcischeduler_met[3],  nogci_opgcischeduler$throughput)
 
-  gci_normscheduler_met[4]   = mean_at_i(i, gci_normscheduler_met[4], gcii_normscheduler$instances_cost)
-  gci_opscheduler_met[4]     = mean_at_i(i, gci_opscheduler_met[4], gcii_opscheduler$instances_cost)
-  gci_opgcischeduler_met[4]  = mean_at_i(i, gci_opgcischeduler_met[4], gcii_opgcischeduler$instances_cost)
-  nogci_normscheduler_met[4] = mean_at_i(i, nogci_normscheduler_met[4], nogcii_normscheduler$instances_cost)
-  nogci_opscheduler_met[4]   = mean_at_i(i, nogci_opscheduler_met[4], nogcii_opscheduler$instances_cost)
+  gci_normscheduler_met[4]    = mean_at_i(i, gci_normscheduler_met[4],    gcii_normscheduler$instances_cost)
+  gci_opscheduler_met[4]      = mean_at_i(i, gci_opscheduler_met[4],      gcii_opscheduler$instances_cost)
+  gci_opgcischeduler_met[4]   = mean_at_i(i, gci_opgcischeduler_met[4],   gcii_opgcischeduler$instances_cost)
+  nogci_normscheduler_met[4]  = mean_at_i(i, nogci_normscheduler_met[4],  nogcii_normscheduler$instances_cost)
+  nogci_opscheduler_met[4]    = mean_at_i(i, nogci_opscheduler_met[4],    nogcii_opscheduler$instances_cost)
+  nogci_opgcischeduler_met[4] = mean_at_i(i, nogci_opgcischeduler_met[4], nogcii_opgcischeduler$instances_cost)
+  nogc_normscheduler_met[4]   = mean_at_i(i, nogc_normscheduler_met[4],   nogci_normscheduler$instances_cost)
+  nogc_opscheduler_met[4]     = mean_at_i(i, nogc_opscheduler_met[4],     nogci_opscheduler$instances_cost)
+  nogc_opgcischeduler_met[4]  = mean_at_i(i, nogc_opgcischeduler_met[4],  nogci_opgcischeduler$instances_cost)
 
-  gci_normscheduler_met[5]   = mean_at_i(i, gci_normscheduler_met[5], gcii_normscheduler$instances_efficiency)
-  gci_opscheduler_met[5]     = mean_at_i(i, gci_opscheduler_met[5], gcii_opscheduler$instances_efficiency)
-  gci_opgcischeduler_met[5]  = mean_at_i(i, gci_opgcischeduler_met[5], gcii_opgcischeduler$instances_efficiency)
-  nogci_normscheduler_met[5] = mean_at_i(i, nogci_normscheduler_met[5], nogcii_normscheduler$instances_efficiency)
-  nogci_opscheduler_met[5]   = mean_at_i(i, nogci_opscheduler_met[5], nogcii_opscheduler$instances_efficiency)
+  gci_normscheduler_met[5]    = mean_at_i(i, gci_normscheduler_met[5],    gcii_normscheduler$instances_efficiency)
+  gci_opscheduler_met[5]      = mean_at_i(i, gci_opscheduler_met[5],      gcii_opscheduler$instances_efficiency)
+  gci_opgcischeduler_met[5]   = mean_at_i(i, gci_opgcischeduler_met[5],   gcii_opgcischeduler$instances_efficiency)
+  nogci_normscheduler_met[5]  = mean_at_i(i, nogci_normscheduler_met[5],  nogcii_normscheduler$instances_efficiency)
+  nogci_opscheduler_met[5]    = mean_at_i(i, nogci_opscheduler_met[5],    nogcii_opscheduler$instances_efficiency)
+  nogci_opgcischeduler_met[5] = mean_at_i(i, nogci_opgcischeduler_met[5], nogcii_opgcischeduler$instances_efficiency)
+  nogc_normscheduler_met[5]   = mean_at_i(i, nogc_normscheduler_met[5],   nogci_normscheduler$instances_efficiency)
+  nogc_opscheduler_met[5]     = mean_at_i(i, nogc_opscheduler_met[5],     nogci_opscheduler$instances_efficiency)
+  nogc_opgcischeduler_met[5]  = mean_at_i(i, nogc_opgcischeduler_met[5],  nogci_opgcischeduler$instances_efficiency)
 
-  gci_normscheduler_met[6]   = mean_at_i(i, gci_normscheduler_met[6], gcii_normscheduler$simulation_exec_time)
-  gci_opscheduler_met[6]     = mean_at_i(i, gci_opscheduler_met[6], gcii_opscheduler$simulation_exec_time)
-  gci_opgcischeduler_met[6]  = mean_at_i(i, gci_opgcischeduler_met[6], gcii_opgcischeduler$simulation_exec_time)
-  nogci_normscheduler_met[6] = mean_at_i(i, nogci_normscheduler_met[6], nogcii_normscheduler$simulation_exec_time)
-  nogci_opscheduler_met[6]   = mean_at_i(i, nogci_opscheduler_met[6], nogcii_opscheduler$simulation_exec_time)
+  gci_normscheduler_met[6]    = mean_at_i(i, gci_normscheduler_met[6],    gcii_normscheduler$simulation_exec_time)
+  gci_opscheduler_met[6]      = mean_at_i(i, gci_opscheduler_met[6],      gcii_opscheduler$simulation_exec_time)
+  gci_opgcischeduler_met[6]   = mean_at_i(i, gci_opgcischeduler_met[6],   gcii_opgcischeduler$simulation_exec_time)
+  nogci_normscheduler_met[6]  = mean_at_i(i, nogci_normscheduler_met[6],  nogcii_normscheduler$simulation_exec_time)
+  nogci_opscheduler_met[6]    = mean_at_i(i, nogci_opscheduler_met[6],    nogcii_opscheduler$simulation_exec_time)
+  nogci_opgcischeduler_met[6] = mean_at_i(i, nogci_opgcischeduler_met[6], nogcii_opgcischeduler$simulation_exec_time)
+  nogc_normscheduler_met[6]   = mean_at_i(i, nogc_normscheduler_met[6],   nogci_normscheduler$simulation_exec_time)
+  nogc_opscheduler_met[6]     = mean_at_i(i, nogc_opscheduler_met[6],     nogci_opscheduler$simulation_exec_time)
+  nogc_opgcischeduler_met[6]  = mean_at_i(i, nogc_opgcischeduler_met[6],  nogci_opgcischeduler$simulation_exec_time)
 }
-take_col_i <- function(i) {return (c(gci_normscheduler_met[i], gci_opscheduler_met[i], gci_opgcischeduler_met[i], nogci_normscheduler_met[i], nogci_opscheduler_met[i]))}
+take_col_i <- function(i) {return (c(gci_normscheduler_met[i], gci_opscheduler_met[i], gci_opgcischeduler_met[i], nogci_normscheduler_met[i], nogci_opscheduler_met[i], nogci_opgcischeduler_met[i], nogc_normscheduler_met[i], nogc_opscheduler_met[i], nogc_opgcischeduler_met[i]))}
 scenario = take_col_i(1)
 scheduler_name = take_col_i(2)
 throughput = take_col_i(3)
