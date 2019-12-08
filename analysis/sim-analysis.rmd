@@ -9,14 +9,14 @@ output: pdf_document
 ```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE}
 source("functions.R")
 sim_result_path = "../simulation/results/"
-gci_normscheduler   = data.frame()
-gci_opscheduler     = data.frame()
-gci_opgcischeduler  = data.frame()
-nogci_normscheduler = data.frame()
-nogci_opscheduler   = data.frame()
-nogci_opgcischeduler  = data.frame()
-nogc_normscheduler = data.frame()
-nogc_opscheduler   = data.frame()
+gci_normscheduler    = data.frame()
+gci_opscheduler      = data.frame()
+gci_opgcischeduler   = data.frame()
+nogci_normscheduler  = data.frame()
+nogci_opscheduler    = data.frame()
+nogci_opgcischeduler = data.frame()
+nogc_normscheduler   = data.frame()
+nogc_opscheduler     = data.frame()
 nogc_opgcischeduler  = data.frame()
 readInput <- function(gcname, schname, i) {
   f = paste(sim_result_path, gcname, as.character(i), "-", schname, "-reqs.csv", sep="")
@@ -25,24 +25,24 @@ readInput <- function(gcname, schname, i) {
   return(dt[cols])
 }
 for(i in 1:4){
-  gci_normscheduler   = rbind(gci_normscheduler, readInput("sim-pp-gci", "normscheduler", i))
-  gci_opscheduler     = rbind(gci_opscheduler, readInput("sim-pp-gci", "opscheduler", i))
-  gci_opgcischeduler  = rbind(gci_opgcischeduler, readInput("sim-pp-gci", "opgcischeduler", i))
-  nogci_normscheduler = rbind(nogci_normscheduler, readInput("sim-pp-nogci", "normscheduler", i))
-  nogci_opscheduler   = rbind(nogci_opscheduler, readInput("sim-pp-nogci", "opscheduler", i))
-  nogci_opgcischeduler  = rbind(gci_opgcischeduler, readInput("sim-pp-nogci", "opgcischeduler", i))
-  nogc_normscheduler = rbind(nogci_normscheduler, readInput("sim-pp-nogc", "normscheduler", i))
-  nogc_opscheduler   = rbind(nogci_opscheduler, readInput("sim-pp-nogc", "opscheduler", i))
-  nogc_opgcischeduler  = rbind(gci_opgcischeduler, readInput("sim-pp-nogc", "opgcischeduler", i))
+  gci_normscheduler    = rbind(gci_normscheduler,   readInput("sim-pp-gci",   "normscheduler", i))
+  gci_opscheduler      = rbind(gci_opscheduler,     readInput("sim-pp-gci",   "opscheduler", i))
+  gci_opgcischeduler   = rbind(gci_opgcischeduler,  readInput("sim-pp-gci",   "opgcischeduler", i))
+  nogci_normscheduler  = rbind(nogci_normscheduler, readInput("sim-pp-nogci", "normscheduler", i))
+  nogci_opscheduler    = rbind(nogci_opscheduler,   readInput("sim-pp-nogci", "opscheduler", i))
+  nogci_opgcischeduler = rbind(gci_opgcischeduler,  readInput("sim-pp-nogci", "opgcischeduler", i))
+  nogc_normscheduler   = rbind(nogc_normscheduler,  readInput("sim-pp-nogc",  "normscheduler", i))
+  nogc_opscheduler     = rbind(nogc_opscheduler,    readInput("sim-pp-nogc",  "opscheduler", i))
+  nogc_opgcischeduler  = rbind(nogc_opgcischeduler, readInput("sim-pp-nogc",  "opgcischeduler", i))
 }
-gci_normscheduler   = gci_normscheduler$response_time * 1000
-gci_opscheduler     = gci_opscheduler$response_time * 1000
-gci_opgcischeduler  = gci_opgcischeduler$response_time * 1000
-nogci_normscheduler = nogci_normscheduler$response_time * 1000
-nogci_opscheduler   = nogci_opscheduler$response_time * 1000
-nogci_opgcischeduler  = nogci_opgcischeduler$response_time * 1000
-nogc_normscheduler = nogc_normscheduler$response_time * 1000
-nogc_opscheduler   = nogc_opscheduler$response_time * 1000
+gci_normscheduler    = gci_normscheduler$response_time * 1000
+gci_opscheduler      = gci_opscheduler$response_time * 1000
+gci_opgcischeduler   = gci_opgcischeduler$response_time * 1000
+nogci_normscheduler  = nogci_normscheduler$response_time * 1000
+nogci_opscheduler    = nogci_opscheduler$response_time * 1000
+nogci_opgcischeduler = nogci_opgcischeduler$response_time * 1000
+nogc_normscheduler   = nogc_normscheduler$response_time * 1000
+nogc_opscheduler     = nogc_opscheduler$response_time * 1000
 nogc_opgcischeduler  = nogc_opgcischeduler$response_time * 1000
 ```
 
@@ -56,7 +56,6 @@ nogc_opgcischeduler  = nogc_opgcischeduler$response_time * 1000
 
 ## Em relação ao tempo de resposta e throughput: a fim de evitar o impacto do coletor de lixo, há melhoria no tempo de resposta mesmo ao submeter uma requisição a possíveis vários redirecionamentos e um cold-start?
 Apesar de não se ter notado impacto no throughput durante as simulações (que pode ser obseravado na tabela de visualização presente na resposta da segunda pergunta), notou-se um impacto positivo do GCI, contribuindo para um melhor valor de tempo de resposta nos percentils não afetados por coldstart.
-
 
 ### Analisando estatísticamente o tempo de resposta dos resultados
 Na análise estatística utilizando intervalo de confiança, temos o objetivo de identificar diferenças estatísticas em medidas da amostra (tais como média, mediana e percentis). Uma diferença estatística pode ser identificada ao notar a inexistência de interseções nos intervalos de confiança de uma dada medida. Caso haja uma interseção entre os intervalos comparados, não podemos afirmar que há diferença estatística entre os dois valores observados.
@@ -88,19 +87,6 @@ summary_table(
 summary_table(
   gci_opgcischeduler, tags[5],
   nogci_opscheduler, tags[6]
-)
-
-tags = c(
-  "nsc.nogc",  "nsc.nogci",
-  "opsc.nogc", "opsc.nogci"
-)
-summary_table(
-  nogc_normscheduler, tags[1],
-  nogci_normscheduler, tags[2]
-)
-summary_table(
-  nogc_opscheduler, tags[3],
-  nogci_opscheduler, tags[4]
 )
 ```
 Na tabela 1 referente ao cenário com o escalonador normal (normsched.gci.cis normsched.nogci.cii), é possível notar que temos diferença estatística até o percentil 99.9. Os demais percentis (acima de 99.9) não serão considerados pois sofreram impacto do coldstart.
@@ -142,7 +128,6 @@ graph_tail_sim(gci=gci_opscheduler,  nogci=nogci_opscheduler,
            x_limit_inf=pmin.x, x_limit_sup=pmax.x,
            y_limit_inf=pmin.y, y_limit_sup=pmax.y, img_name="figura2-ecdf-opsc.png"
 )
-
 ```
 
 ```{r  fig.width=15, fig.height=5, echo=FALSE, warning=FALSE}
@@ -162,7 +147,6 @@ graph_tail_sim(gci=gci_opgcischeduler,  nogci=nogci_opscheduler,
 ```
 Já nas Figuras 2 e 3, quando observamos o GCI, notamos que o percentil 99.99th diminui quando o escalonador ótimo tem ciencia do GCI. Por fim, de modo geral, podemos afirmar que a partir das ECDFs o GCI diminui o tempo de serviço ao longo de toda a ECDF, quando comparado ao NOGCI. 
 
-
 ### Análise do tempo de resposta através de tabelas de comparação
 No caso do escalonador normal, a redução do tempo de serviço quando utilizado o GCI chega até 10% no percentil 99.9. No caso do escalonador ótimo para provisionamento não ciente do GCI, utilizar o GCI diminui o tempo de resposta em até 22% no percentil 99.99. Por fim, no caso do escalonador ótimo considerando a presença do GCI, fazer uso do GCI diminui o tempo de resposta em até 32% no percentil 99.99.
 A tabela a seguir apresenta a comparação entre GCI e NOGCI através da razão entre o tempo de resposta do caso NOGCI e GCI, isto é, o valor na coluna comparison representa o valor do tempo de resposta do NOGCI dividido pelo tempo de resposta do GCI. 
@@ -178,6 +162,68 @@ quantiles_dataframe_comparison_sim(
 Na tabela 2, é importante ressaltar que o impacto do coldstart no cenário normsched já se apresenta a partir do percentil 99.99 e, por isto, conduzimos nossas análises do tempo de resposta para o escalonador normal apenas até o percentil 99.9.
 Também tabela 2, no cenário opsched observamos que o impacto do coldstart já não se faz presente para o caso NOGCI, conforme esperado. Contudo, a partir do percentil 99.999 o GCI sofre impacto de coldstart e, por isto, conduzimos as análises relacionadas ao escalonador ótimo (não considerando o GCI) até o percentil 99.99.
 Por último, na tabela 3 atendo-se para o cenário opgcisched, uma vez que por construção o modelo de escalonador utilizado não gera impacto do coletor de lixo, podemos utilizar todos os percentils para conduzir a análise.
+
+## NOGC vs GC
+### Analisando estatísticamente o tempo de resposta dos resultados
+```{r  fig.width=15, fig.height=5, echo=FALSE, warning=FALSE}
+tcit = "TABELA 5: CONFIDENCE INTERVAL FOR RESPONSE TIME IN MS"
+print(tcit)
+tags = c(
+  "nsc.nogc",  "nsc.nogci",
+  "opsc.nogc", "opsc.nogci"
+)
+summary_table(
+  nogc_normscheduler, tags[1],
+  nogci_normscheduler, tags[2]
+)
+summary_table(
+  nogc_opscheduler, tags[3],
+  nogci_opscheduler, tags[4]
+)
+```
+
+### Análise do tempo de resposta utilizando ECDFs
+```{r  fig.width=15, fig.height=5, echo=FALSE, warning=FALSE}
+tecdf_nsched     = "FIGURA 6: ECDF RESPONSE TIME - OP SCHEDULER"
+qg  = quantile(nogc_normscheduler, c(.0, .25, .50, .75, .90, .95, .99, .999, .9999, .99999, 1))
+qng = quantile(nogci_normscheduler, c(.0, .25, .50, .75, .90, .95, .99, .999, .9999, .99999, 1))
+pmin.x = min(qg[1], qng[1])
+pmax.x = max(qg[8], qng[8])
+pmin.y = 0.0
+pmax.y = 0.999
+print(paste(tecdf_nsched, "- 0-4 quantile", sep=" "))
+graph_tail_sim(gci=nogc_normscheduler,  nogci=nogci_normscheduler,
+           tags= c("NOGC", "GC"),
+           x_limit_inf=pmin.x, x_limit_sup=pmax.x,
+           y_limit_inf=pmin.y, y_limit_sup=pmax.y, p999_instead_p9999=TRUE, img_name="figura1-gcvsnogc-ecdf-normsc.png"
+)
+```
+
+```{r  fig.width=15, fig.height=5, echo=FALSE, warning=FALSE}
+tecdf_opsched    = "FIGURA 2: ECDF RESPONSE TIME - OP SCHEDULER"
+qg  = quantile(nogc_opscheduler, c(.0, .25, .50, .75, .90, .95, .99, .999, .9999, .99999, 1))
+qng = quantile(nogci_opscheduler, c(.0, .25, .50, .75, .90, .95, .99, .999, .9999, .99999, 1))
+pmin.x = min(qg[1], qng[1])
+pmax.x = max(qg[9], qng[9])
+pmin.y = 0.0
+pmax.y = 0.9999
+print(paste(tecdf_opsched, "- 0-4 quantile", sep=" "))
+graph_tail_sim(gci=nogc_opscheduler,  nogci=nogci_opscheduler,
+           tags= c("NOGC", "GC"),
+           x_limit_inf=pmin.x, x_limit_sup=pmax.x,
+           y_limit_inf=pmin.y, y_limit_sup=pmax.y, img_name="figura2-gcvsnogc-ecdf-opsc.png"
+)
+```
+
+### Análise do tempo de resposta através de tabelas de comparação
+```{r  fig.width=15, fig.height=5, echo=FALSE, warning=FALSE}
+tct_nsched     = "TABELA 2: COMPARISON TABLE FOR RESPONSE TIME"
+print(tct_nsched)
+quantiles_dataframe_comparison_sim2(
+  nogci_normscheduler, nogc_normscheduler,
+  nogci_opscheduler,   nogc_opscheduler
+)
+```
 
 ## Em relação à eficiência: a fim de evitar o impacto do coletor de lixo, há prejuízo no uso eficiente dos recursos computacionais ao levantar novas instâncias para dar suporte às redistribuições de requisições?
 Como esperado, o cenário com escalonador normal, quando comparado aos demais escalonadores, possui o maior custo e menor eficiência dos recursos, tanto para com GCI quanto sem ele. Se compararmos para este escalonador a configuração com GCI e sem GCI, notamos que o GCI aumenta o custo e em 4% e aumenta a eficiência em aproximadamente 13%.
@@ -195,8 +241,8 @@ nogc_normscheduler_met   = c("nogc",  "normscheduler", 0, 0, 0, 0)
 nogc_opscheduler_met     = c("nogc",    "opscheduler", 0, 0, 0, 0)
 nogc_opgcischeduler_met  = c("nogc", "opgcischeduler", 0, 0, 0, 0)
 mean_at_i <- function(i, a, b) {
-  a = as.double(a)
-  return( ((i - 1) * a + b) / i )
+  aux = as.double(a)
+  return( ((i - 1) * aux + b) / i )
 }
 for(i in 1:4){
   simi_metrics = read.al.sim(paste(sim_result_path, "sim", as.character(i), "-metrics.csv", sep=""))

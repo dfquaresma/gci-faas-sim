@@ -281,3 +281,13 @@ quantiles_dataframe_comparison_sim = function(df1, df2, df3, df4, df5, df6) {
   )
   return(comparissons)
 }
+
+quantiles_dataframe_comparison_sim2 = function(df1, df2, df3, df4) {
+  normsched = (quantile_wrapped(df1) / quantile_wrapped(df2))
+  opsched = (quantile_wrapped(df3) / quantile_wrapped(df4))
+  comparissons = data.frame(
+    normsched  = normsched,
+    opsched    = opsched
+  )
+  return(comparissons)
+}
