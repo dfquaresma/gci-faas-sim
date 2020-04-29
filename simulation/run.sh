@@ -11,6 +11,7 @@ echo "INITIAL_EXPID: ${INITIAL_EXPID:=1}"
 echo "NUMBER_OF_EXPERIMENTS: ${NUMBER_OF_EXPERIMENTS:=4}"
 echo "LAMBDA: ${LAMBDA:=20}"
 echo "SIM_DURATION: ${SIM_DURATION:=2h30m}"
+echo "IDLENESS: ${IDLENESS:=5m}"
 echo "WARMUP: ${WARMUP:=500}"
 echo "SCHEDULERS: ${SCHEDULERS:=0 1 2}"
 echo "FLAGS: ${FLAGS:=pp-gci pp-nogci pp-nogc}"
@@ -33,7 +34,7 @@ do
         for sched in ${SCHEDULERS};
         do
             echo -e "${RED}RUNNING SIMULATION, SCHEDULER=${sched}, FLAG=${flag}, EXPID=${expid}${NC}"
-            ./simulator -lambda=${LAMBDA} -duration=${SIM_DURATION} -inputs=${inputs} -output=${OUTPUT_PATH} -scheduler=${sched} -scenario=${flag}${expid} --warmup=${WARMUP}
+            ./simulator -idleness=${IDLENESS} -lambda=${LAMBDA} -duration=${SIM_DURATION} -inputs=${inputs} -output=${OUTPUT_PATH} -scheduler=${sched} -scenario=${flag}${IDLENESS}${expid} --warmup=${WARMUP}
         done;
     done;
     metrics_file_name="${OUTPUT_PATH}sim${expid}-metrics"
