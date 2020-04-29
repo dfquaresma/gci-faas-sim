@@ -1,0 +1,121 @@
+---
+title: "TODO"
+author: "TODO"
+date: "Abril, 2020"
+output: pdf_document
+---
+```{r setup, include=FALSE}
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(scales)
+library(gridExtra)
+library(stringr)
+options(scipen=999)
+```
+
+```{r}
+load_csv <- function(file_name){
+  df <- read.csv(file_name)
+  return(df)
+}
+
+get_data <- function(path_name){
+  results_path = path_name
+  gci_30s <- rbind(
+    load_csv(paste(results_path, "sim-pp-gci30s1-normscheduler-instances.csv", sep=""))
+  )
+  gci_5m <- rbind(
+    load_csv(paste(results_path, "sim-pp-gci5m1-normscheduler-instances.csv", sep=""))
+  )
+  gci_15m <- rbind(
+    load_csv(paste(results_path, "sim-pp-gci15m1-normscheduler-instances.csv", sep=""))
+  )
+  gci_45m <- rbind(
+    load_csv(paste(results_path, "sim-pp-gci45m1-normscheduler-instances.csv", sep=""))
+  )
+  gci_60m <- rbind(
+    load_csv(paste(results_path, "sim-pp-gci60m1-normscheduler-instances.csv", sep=""))
+  )
+  
+  nogci_30s <- rbind(
+    load_csv(paste(results_path, "sim-pp-nogci30s1-normscheduler-instances.csv", sep=""))
+  )
+  nogci_5m <- rbind(
+    load_csv(paste(results_path, "sim-pp-nogci5m1-normscheduler-instances.csv", sep=""))
+  )
+  nogci_15m <- rbind(
+    load_csv(paste(results_path, "sim-pp-nogci15m1-normscheduler-instances.csv", sep=""))
+  )
+  nogci_45m <- rbind(
+    load_csv(paste(results_path, "sim-pp-nogci45m1-normscheduler-instances.csv", sep=""))
+  )
+  nogci_60m <- rbind(
+    load_csv(paste(results_path, "sim-pp-nogci60m1-normscheduler-instances.csv", sep=""))
+  )
+    
+  idle_deadline = c('exp1: 30s', 'exp2: 5m', 'exp3: 15m', 'exp4: 45m', 'exp5: 60m')
+  gci_idle = c(sum(gci_30s$idle_time),  sum(gci_5m$idle_time),  sum(gci_15m$idle_time),  sum(gci_45m$idle_time),  sum(gci_60m$idle_time))
+  nogci_idle = c(sum(nogci_30s$idle_time),  sum(nogci_5m$idle_time),  sum(nogci_15m$idle_time),  sum(nogci_45m$idle_time),  sum(nogci_60m$idle_time))
+  
+  gci_cost = c(sum(gci_30s$busyTime), sum(gci_5m$busyTime),  sum(gci_15m$busyTime),  sum(gci_45m$busyTime),  sum(gci_60m$busyTime))
+  nogci_cost = c(sum(nogci_30s$busyTime), sum(nogci_5m$busyTime), sum(nogci_15m$busyTime), sum(nogci_45m$busyTime), sum(nogci_60m$busyTime))
+  
+  gci_efficiency = c(mean(gci_30s$efficiency), mean(gci_5m$efficiency), mean(gci_15m$efficiency), mean(gci_45m$efficiency), mean(gci_60m$efficiency))
+  nogci_efficiency = c(mean(nogci_30s$efficiency), mean(nogci_5m$efficiency), mean(nogci_15m$efficiency), mean(nogci_45m$efficiency), mean(nogci_60m$efficiency))
+  
+  df = data.frame(idle_deadline, gci_idle, nogci_idle, gci_cost, nogci_cost, gci_efficiency, nogci_efficiency)
+  
+  return(df)
+}
+
+get_plot <- function(df, eff_rate, perc, title) {
+  p <- ggplot(df, aes(x = idle_deadline, group = 1)) +
+  ggtitle(title) +
+  geom_line(aes(y = gci_cost, colour = "GCI Cost")) +
+  geom_line(aes(y = nogci_cost, colour = "NOGCI Cost")) +
+  geom_line(aes(y = gci_idle, colour = "GCI Idle")) +
+  geom_line(aes(y = nogci_idle, colour = "NOGCI Idle")) +
+  geom_line(aes(y = gci_efficiency*eff_rate, colour = "GCI Efficiency")) +
+  geom_line(aes(y = nogci_efficiency*eff_rate, colour = "NOGCI Efficiency")) +
+  scale_y_continuous(name = "Time (s)",
+    sec.axis = sec_axis(~./5, name = "Percentage", labels = function(b) {paste0(round(b / perc, 0), "%")})) + 
+  theme(
+      axis.title.y = element_text(color = "black"),
+      axis.title.y.right = element_text(color = "black"))
+  return(p)
+}
+```
+
+```{r}
+df = get_data("../simulation/results10h/")
+get_plot(df, 3500000, 6500, "CostxIdlexEfficiêncy for 10h of simulation")
+
+df2 = get_data("../simulation/results2h30m/")
+get_plot(df2, 2900000, 6000, "CostxIdlexEfficiêncy for 2h30m of simulation")
+```
+
+```{r}
+p <- ggplot(df, aes(x = idle_deadline, group = 1)) +
+ggtitle("Cost of instances to user in 10h of simulation") +
+geom_line(aes(y = gci_cost, colour = "GCI Cost")) +
+geom_line(aes(y = nogci_cost, colour = "NOGCI Cost")) +
+scale_y_continuous(name = "Time (s)",
+  sec.axis = sec_axis(~./5, name = "Percentage", labels = function(b) {paste0(round(b / 1, 0), "%")})) + 
+theme(
+    axis.title.y = element_text(color = "black"),
+    axis.title.y.right = element_text(color = "black"))
+p
+
+
+p <- ggplot(df2, aes(x = idle_deadline, group = 1)) +
+ggtitle("Cost of instances to user in 2h30m of simulation") +
+geom_line(aes(y = gci_cost, colour = "GCI Cost")) +
+geom_line(aes(y = nogci_cost, colour = "NOGCI Cost")) +
+scale_y_continuous(name = "Time (s)",
+  sec.axis = sec_axis(~./5, name = "Percentage", labels = function(b) {paste0(round(b / 1, 0), "%")})) + 
+theme(
+    axis.title.y = element_text(color = "black"),
+    axis.title.y.right = element_text(color = "black"))
+p
+```
